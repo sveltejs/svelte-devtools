@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store'
+import { writable, get } from 'svelte/store'
 
 export const selectedComponent = writable(null)
 export const selectedNode = writable(null)
@@ -12,7 +12,7 @@ port.postMessage({
 })
 port.onMessage.addListener(msg => {
   switch (msg.type) {
-    case 'addNode':
+    case 'addNode': {
       msg.node.children = []
 
       const targetNode = nodeMap.get(msg.target)
@@ -31,13 +31,25 @@ port.onMessage.addListener(msg => {
       }
 
       break
-    case 'removeNode':
+    }
+
+    case 'removeNode': {
       const node = nodeMap.get(msg.node.id)
       const index = node.parent.children.findIndex(o => o.id == node.id)
       node.parent.children.splice(index, 1)
       nodeMap.delete(node.id)
 
       break
+    }
+
+    case 'updateNode': {
+      const node = nodeMap.get(msg.node.id)
+      Object.assign(node, msg.node)
+
+      if (get(selectedComponent).id == msg.node.id)
+        selectedComponent.update(o => o)
+      break
+    }
   }
   rootNodes.update(o => o)
 })

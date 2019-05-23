@@ -37,7 +37,6 @@ document.addEventListener('SvelteInsertEachBlock', e => {
   const node = {
     id: _id++,
     type: 'each',
-    children: [],
     properties: { ctx: JSON.parse(JSON.stringify(e.detail.block)) }
   }
   nodeMap.set(e.detail.block, node)
@@ -65,7 +64,6 @@ document.addEventListener('SvelteInsertHTMLElement', e => {
         : e.detail.node.nodeValue
         ? 'text'
         : 'anchor',
-    children: [],
     properties: serializeDOM(e.detail.node)
   }
   nodeMap.set(e.detail.node, node)
@@ -88,7 +86,6 @@ document.addEventListener('SvelteInsertComponent', e => {
   const node = {
     id: _id++,
     type: 'component',
-    children: [],
     properties: serializeComponent(e.detail.component)
   }
   nodeMap.set(e.detail.component.$$.ctx, node)
@@ -113,6 +110,15 @@ document.addEventListener('SvelteRemoveNode', e => {
   nodeMap.delete(e.detail.node)
   port.postMessage({
     type: 'removeNode',
+    node
+  })
+})
+
+document.addEventListener('SvelteUpdate', e => {
+  const node = nodeMap.get(e.detail.ctx)
+  node.properties.ctx = JSON.parse(JSON.stringify(e.detail.ctx))
+  port.postMessage({
+    type: 'updateNode',
     node
   })
 })

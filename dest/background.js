@@ -57,6 +57,10 @@ function instrument(details) {
         'function make_dirty(component, key) {',
         'window.make_dirty = $&'
       )
+      .replace(
+        /function update\(\$\$\) {[^]+?}/,
+        '$&\ndocument.dispatchEvent(new CustomEvent("SvelteUpdate", { detail: { ctx: $$$$.ctx } }));'
+      )
     filter.write(encoder.encode(str))
     filter.disconnect()
   }
