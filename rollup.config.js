@@ -4,10 +4,14 @@ import resolve from 'rollup-plugin-node-resolve'
 
 export default [{
   input: 'src/index.js',
+  external: ['browser'],
   output: {
     file: 'dest/devtools/bundle.js',
     name: 'App',
-    format: 'iife'
+    format: 'iife',
+    globals: {
+      browser: 'browser'
+    }
   },
   plugins: [
     svelte({

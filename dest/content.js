@@ -92,6 +92,7 @@ document.addEventListener('SvelteInsertComponent', e => {
     properties: serializeComponent(e.detail.component)
   }
   nodeMap.set(e.detail.component.$$.ctx, node)
+  nodeMap.set(node.id, e.detail.component)
   ctxMap.set(node.id, e.detail.component.$$.ctx)
   let target = nodeMap.get(e.detail.target)
   if (!target || ctxMap.get(target.id) != e.detail.ctx) {
@@ -115,3 +116,15 @@ document.addEventListener('SvelteRemoveNode', e => {
     node
   })
 })
+
+exportFunction(
+  (id, key, value) => {
+    const component = nodeMap.get(id).wrappedJSObject
+    component.$$.ctx[key] = value
+    window.wrappedJSObject.make_dirty(component, key)
+  },
+  window,
+  {
+    defineAs: 'setSvelteState'
+  }
+)

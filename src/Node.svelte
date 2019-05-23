@@ -54,7 +54,7 @@
     $selectedNode = id
 
     let node = { id, type, properties, parent }
-    while (node.type != 'component') {
+    while (node && node.type != 'component') {
       node = node.parent
     }
     $selectedComponent = node

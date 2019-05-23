@@ -53,6 +53,10 @@ function instrument(details) {
         /function create_each_block(?:_\d+)?\(ctx\) {[^]+?d\(detaching\) {/g,
         '$&\ndocument.dispatchEvent(new CustomEvent("SvelteRemoveNode", { detail: { node: ctx } }));'
       )
+      .replace(
+        'function make_dirty(component, key) {',
+        'window.make_dirty = $&'
+      )
     filter.write(encoder.encode(str))
     filter.disconnect()
   }
