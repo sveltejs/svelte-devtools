@@ -52,12 +52,12 @@
   class:collapsed
   on:click|stopPropagation={e => {
     $selectedNode = id
-    let _type = type
-    let node = { id, properties, parent }
-    while (_type != 'component') {
+
+    let node = { id, type, properties, parent }
+    while (node.type != 'component') {
       node = node.parent
     }
-    selectedComponent.set(node)
+    $selectedComponent = node
   }}>
   {#if children.length}
     <span class="collapse-button" on:click={e => (collapsed = !collapsed)}>
