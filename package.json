@@ -1,0 +1,23 @@
+{
+  "name": "svelte-devtools",
+  "version": "0.0.1",
+  "description": "An extension that allows inspection of Svelte component hierarchy and state in the Firefox Developer Tools.",
+  "license": "MIT",
+  "repository": "github:RedHatter/svelte-devtools",
+  "scripts": {
+    "dev": "http-serve test/public -p 8940 & web-ext run --bc -s dest -u http://127.0.0.1:8940 -u about:debugging && kill $!",
+    "build": "$npm_execpath run build:format && rollup -c",
+    "build:format": "node --experimental-modules ./scripts/format.mjs"
+  },
+  "devDependencies": {
+    "http-serve": "^1.0.1",
+    "prettier": "git+https://github.com/RedHatter/prettier.git",
+    "prettier-plugin-svelte": "^0.5.1",
+    "rollup": "^1.12.3",
+    "rollup-plugin-node-resolve": "^5.0.0",
+    "rollup-plugin-svelte": "^5.0.3",
+    "svelte": "^3.4.2",
+    "tiny-glob": "^0.2.6",
+    "web-ext": "^3.0.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "Svelte Devtools",
+  "version": "0.0.1",
+  "description": "An extension that allows inspection of Svelte component hierarchy and state in the Firefox Developer Tools.",
+  "icons": {
+    "24": "svelte-logo.svg",
+    "48": "svelte-logo.svg",
+    "96": "svelte-logo.svg"
+  },
+  "permissions": ["webRequest", "webRequestBlocking", "<all_urls>"],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "run_at": "document_start",
+      "matches": ["*://*/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "devtools_page": "devtools/index.html"
+}
