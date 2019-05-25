@@ -1,7 +1,7 @@
 <script>
   import { selectedCtx } from './store.js'
   import { devtools } from 'browser'
-  import StateProperty from './StateProperty.svelte'
+  import Editable from './Editable.svelte'
 
   function setState(key, value) {
     devtools.inspectedWindow.eval(
@@ -12,17 +12,28 @@
 
 <style>
   div {
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 5px;
+    overflow-y: auto;
+    padding: 8px;
     width: 300px;
+    border-left: 1px solid rgb(224, 224, 226);
+    color: rgb(57, 63, 76);
+    line-height: 2;
   }
+
+  h1 {
+    margin: 0;
+    color: rgb(118, 118, 118);
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
 </style>
 
 {#if $selectedCtx}
   <div>
     <h1>State</h1>
     {#each Object.entries($selectedCtx.properties.ctx) as [key, value] (key)}
-      <StateProperty
+      <Editable
         {key}
         {value}
         on:blur={e => setState(key, e.target.textContent)} />

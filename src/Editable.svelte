@@ -18,16 +18,35 @@
 <style>
   div {
     display: flex;
+    margin-left: 12px;
   }
 
   span {
     flex-grow: 1;
+    white-space: pre;
+  }
+
+  .string {
+    color: rgb(102, 153, 0);
+  }
+
+  .number {
+    color: rgb(153, 0, 85);
+  }
+
+  .boolean {
+    color: rgb(0, 119, 170);
+  }
+
+  .object {
+    color: rgb(153, 153, 153);
   }
 </style>
 
 <div>
-   {key}:
+   {key}:&nbsp;
   <span
+    class={typeof value}
     contenteditable
     bind:this={valueElement}
     on:focus={e => select(e.target)}
