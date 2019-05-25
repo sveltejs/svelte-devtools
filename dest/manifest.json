@@ -8,16 +8,9 @@
     "48": "svelte-logo.svg",
     "96": "svelte-logo.svg"
   },
-  "permissions": ["webRequest", "webRequestBlocking", "<all_urls>"],
+  "permissions": ["tabs", "webRequest", "webRequestBlocking", "<all_urls>"],
   "background": {
     "scripts": ["background.js"]
   },
-  "content_scripts": [
-    {
-      "run_at": "document_start",
-      "matches": ["*://*/*"],
-      "js": ["content.js"]
-    }
-  ],
   "devtools_page": "devtools/index.html"
 }

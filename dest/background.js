@@ -68,21 +68,24 @@ function instrument(details) {
   return {}
 }
 
-browser.webRequest.onBeforeRequest.addListener(
-  instrument,
-  { urls: ['*://*/*'], types: ['script'] },
-  ['blocking']
-)
-
 const toolsPorts = new Map()
 const pagePorts = new Map()
 
+browser.runtime.onConnect.addListener(port => {
+  if (port.sender.url == browser.runtime.getURL('/devtools/panel.html')) {
+    port.onMessage.addListener(handleToolsMessage)
+  } else {
+    port.onMessage.addListener(handlePageMessage)
+    pagePorts.set(port.sender.tab.id, port)
+  }
+})
+
 function handleToolsMessage(msg, port) {
   if (msg.type == 'init') {
-    toolsPorts.set(msg.id, port)
+    setup(msg.tabId, port)
   }
 
-  const page = pagePorts.get(msg.id)
+  const page = pagePorts.get(msg.tabId)
   if (page) page.postMessage(msg)
 }
 
@@ -91,11 +94,32 @@ function handlePageMessage(msg, port) {
   if (tools) tools.postMessage(msg)
 }
 
-browser.runtime.onConnect.addListener(port => {
-  if (port.sender.tab) {
-    pagePorts.set(port.sender.tab.id, port)
-    port.onMessage.addListener(handlePageMessage)
-  } else {
-    port.onMessage.addListener(handleToolsMessage)
-  }
-})
+function attachScript(tabId, changed) {
+  if (changed.status != 'loading' || !changed.url) return
+
+  toolsPorts.get(tabId).postMessage({ type: 'init' })
+  browser.tabs.executeScript(tabId, {
+    file: '/content.js',
+    runAt: 'document_start'
+  })
+}
+
+function setup(tabId, port) {
+  toolsPorts.set(tabId, port)
+  port.onDisconnect.addListener(() => {
+    toolsPorts.delete(tabId)
+    pagePorts.delete(tabId)
+    browser.tabs.onUpdated.removeListener(attachScript)
+    browser.webRequest.onBeforeRequest.removeListener(instrument)
+  })
+
+  browser.tabs.onUpdated.addListener(attachScript, {
+    properties: ['status'],
+    tabId
+  })
+  browser.webRequest.onBeforeRequest.addListener(
+    instrument,
+    { urls: ['*://*/*'], types: ['script'], tabId },
+    ['blocking']
+  )
+}

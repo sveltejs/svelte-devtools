@@ -9,7 +9,7 @@ const nodeMap = new Map()
 const port = browser.runtime.connect()
 port.postMessage({
   type: 'init',
-  id: browser.devtools.inspectedWindow.tabId
+  tabId: browser.devtools.inspectedWindow.tabId
 })
 port.onMessage.addListener(msg => {
   switch (msg.type) {
