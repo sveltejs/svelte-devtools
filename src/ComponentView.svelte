@@ -1,13 +1,6 @@
 <script>
   import { selectedCtx } from './store.js'
-  import { devtools } from 'browser'
   import Editable from './Editable.svelte'
-
-  function setState(key, value) {
-    devtools.inspectedWindow.eval(
-      `setSvelteState(${$selectedCtx.id}, '${key}', ${value})`
-    )
-  }
 </script>
 
 <style>
@@ -26,7 +19,6 @@
     font-weight: bold;
     font-size: 1rem;
   }
-
 </style>
 
 {#if $selectedCtx}
@@ -34,10 +26,7 @@
     <h1>State</h1>
     <ul>
       {#each Object.entries($selectedCtx.properties.ctx) as [key, value] (key)}
-        <Editable
-          {key}
-          {value}
-          on:blur={e => setState(key, e.target.textContent)} />
+        <Editable id={$selectedCtx.id} {key} {value} />
       {/each}
     </ul>
   </div>
