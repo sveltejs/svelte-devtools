@@ -16,7 +16,7 @@ async function format(path) {
       semi: false,
       singleQuote: true,
       pluginSearchDirs: ['.'],
-      sortOrder: 'zen'
+      cssSortOrder: 'zen'
     })
     if (formatted == contents) {
       console.log(`\x1b[2m${path}\x1b[0m`)

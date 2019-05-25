@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "http-serve": "^1.0.1",
-    "prettier": "git+https://github.com/RedHatter/prettier.git",
+    "prettier": "git+https://github.com/RedHatter/prettier.git#sort-css",
     "prettier-plugin-svelte": "^0.5.1",
     "rollup": "^1.12.3",
     "rollup-plugin-node-resolve": "^5.0.0",
