@@ -16,14 +16,14 @@
 </script>
 
 <style>
-  div {
+  li {
     display: flex;
     margin-left: 12px;
   }
 
-  span {
+  pre {
     flex-grow: 1;
-    white-space: pre;
+    margin: 0;
   }
 
   .string {
@@ -43,13 +43,13 @@
   }
 </style>
 
-<div>
+<li>
    {key}:&nbsp;
-  <span
+  <pre
     class={typeof value}
     contenteditable
     bind:this={valueElement}
     on:focus={e => select(e.target)}
     on:keydown={e => e.key == 'Enter' && e.target.blur()}
     on:blur />
-</div>
+</li>

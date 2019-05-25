@@ -25,7 +25,7 @@
 </script>
 
 <style>
-  div {
+  li {
     position: relative;
   }
 
@@ -39,7 +39,7 @@
   }
 </style>
 
-<div
+<li
   on:mouseover|stopPropagation={e => ($hoveredNode = id)}
   on:click|stopPropagation={e => {
     $selectedNode = id
@@ -59,8 +59,10 @@
     {#if $selectedNode == id}
       <span style={`left: ${depth * 12 + 2}px`} />
     {/if}
-    {#each children as node (node.id)}
-      <svelte:self {...node} depth={depth + 1} />
-    {/each}
+    <ul>
+      {#each children as node (node.id)}
+        <svelte:self {...node} depth={depth + 1} />
+      {/each}
+    </ul>
   </svelte:component>
-</div>
+</li>

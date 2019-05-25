@@ -32,11 +32,13 @@
 {#if $selectedCtx}
   <div>
     <h1>State</h1>
-    {#each Object.entries($selectedCtx.properties.ctx) as [key, value] (key)}
-      <Editable
-        {key}
-        {value}
-        on:blur={e => setState(key, e.target.textContent)} />
-    {/each}
+    <ul>
+      {#each Object.entries($selectedCtx.properties.ctx) as [key, value] (key)}
+        <Editable
+          {key}
+          {value}
+          on:blur={e => setState(key, e.target.textContent)} />
+      {/each}
+    </ul>
   </div>
 {/if}
