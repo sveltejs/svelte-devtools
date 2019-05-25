@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "http-serve test/public -p 8940 & web-ext run --bc -s dest -u http://127.0.0.1:8940 -u about:debugging && kill $!",
     "build": "$npm_execpath run build:format && rollup -c",
-    "build:format": "node --experimental-modules ./scripts/format.mjs"
+    "build:format": "node --experimental-modules ./scripts/format.mjs",
+    "package": "$npm_execpath run build && web-ext build -s dest",
+    "release": ". credentials && web-ext sign -s dest --api-key=$key --api-secret=$secret"
   },
   "devDependencies": {
     "http-serve": "^1.0.1",
@@ -16,7 +18,7 @@
     "rollup": "^1.12.3",
     "rollup-plugin-node-resolve": "^5.0.0",
     "rollup-plugin-svelte": "^5.0.3",
-    "svelte": "^3.4.2",
+    "svelte": "/home/stibbons/svelte",
     "tiny-glob": "^0.2.6",
     "web-ext": "^3.0.0"
   }
