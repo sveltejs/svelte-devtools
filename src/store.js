@@ -13,6 +13,15 @@ port.postMessage({
 })
 port.onMessage.addListener(msg => {
   switch (msg.type) {
+    case 'init': {
+      selectedCtx.set(null)
+      selectedNode.set(null)
+      hoveredNode.set(null)
+      rootNodes.set([])
+
+      break
+    }
+
     case 'addNode': {
       msg.node.children = []
 
@@ -47,7 +56,9 @@ port.onMessage.addListener(msg => {
       const node = nodeMap.get(msg.node.id)
       Object.assign(node, msg.node)
 
-      if (get(selectedCtx).id == msg.node.id) selectedCtx.update(o => o)
+      const selected = get(selectedCtx)
+      if (selected && selected.id == msg.node.id) selectedCtx.update(o => o)
+
       break
     }
   }

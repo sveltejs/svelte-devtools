@@ -28,6 +28,7 @@ function serializeComponent(component) {
 }
 
 const port = browser.runtime.connect()
+port.postMessage({ type: 'init' })
 
 const nodeMap = new Map()
 const ctxMap = new Map()
