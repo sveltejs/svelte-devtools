@@ -15,6 +15,13 @@ export default [{
   },
   plugins: [
     svelte({
+      preprocess: {
+        markup: input => ({
+          code: input.content
+            .replace(/(>|})\s+(?![^]*?<\/(?:script|style)>|[^<]*?>|[^{]*?})/g, '$1')
+            .replace(/(?<!<[^>]*?|{[^}]*?)\s+(<|{)(?![^]*<\/(?:script|style)>)/g, '$1')
+        })
+      },
       css: css => css.write('dest/devtools/styles.css'),
     }),
     resolve()

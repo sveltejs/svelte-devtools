@@ -5,7 +5,9 @@ import prettier from 'prettier'
 import { promises as fs } from 'fs'
 
 async function format(path) {
-  if (path == 'src/Node.svelte') return true // Problem with html entities
+  // Problem with html entities sveltejs/svelte#2714
+  if (path == 'src/nodes/Block.svelte' || path == 'src/nodes/Element.svelte')
+    return true
 
   try {
     const contents = await fs.readFile(path, { encoding: 'utf8' })
@@ -26,7 +28,7 @@ async function format(path) {
     return true
   } catch (err) {
     console.error(`\x1b[31m${path}\x1b[0m`)
-    console.error(err.message)
+    console.error(err)
     return false
   }
 }

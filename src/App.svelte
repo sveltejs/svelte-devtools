@@ -1,12 +1,13 @@
 <script>
-  import { rootNodes } from './store.js'
+  import { hoveredNode, rootNodes } from './store.js'
   import ComponentView from './ComponentView.svelte'
-  import Node from './Node.svelte'
+  import Node from './nodes/Node.svelte'
 </script>
 
 <style>
   div {
     flex-grow: 1;
+    margin-top: 8px;
   }
 
   p {
@@ -18,7 +19,7 @@
 </style>
 
 {#if $rootNodes.length}
-  <div>
+  <div on:mouseleave={e => ($hoveredNode = null)}>
     {#each $rootNodes as node (node.id)}
       <Node {...node} />
     {/each}
@@ -26,7 +27,7 @@
   <ComponentView />
 {:else}
   <p>
-    Refresh the page to connect to
+    Refresh the page to connect to&nbsp;
     <b>svelte</b>
     .
   </p>

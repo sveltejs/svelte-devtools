@@ -36,8 +36,11 @@ let _id = 0
 document.addEventListener('SvelteInsertEachBlock', e => {
   const node = {
     id: _id++,
-    type: 'each',
-    properties: { ctx: JSON.parse(JSON.stringify(e.detail.block)) }
+    type: 'block',
+    properties: {
+      tagName: 'each',
+      ctx: JSON.parse(JSON.stringify(e.detail.block))
+    }
   }
   nodeMap.set(e.detail.block, node)
   ctxMap.set(node.id, e.detail.block)

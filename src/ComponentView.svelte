@@ -1,27 +1,27 @@
 <script>
-  import { selectedComponent } from './store.js'
+  import { selectedCtx } from './store.js'
   import { devtools } from 'browser'
   import StateProperty from './StateProperty.svelte'
 
   function setState(key, value) {
     devtools.inspectedWindow.eval(
-      `setSvelteState(${$selectedComponent.id}, '${key}', ${value})`
+      `setSvelteState(${$selectedCtx.id}, '${key}', ${value})`
     )
   }
 </script>
 
 <style>
   div {
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
     padding: 5px;
     width: 300px;
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
   }
 </style>
 
-{#if $selectedComponent}
+{#if $selectedCtx}
   <div>
     <h1>State</h1>
-    {#each Object.entries($selectedComponent.properties.ctx) as [key, value] (key)}
+    {#each Object.entries($selectedCtx.properties.ctx) as [key, value] (key)}
       <StateProperty
         {key}
         {value}
