@@ -5,9 +5,11 @@
   export let key
   export let value
 
-  async function setState() {
+  async function commit(e) {
+    isEditing = false
+
     const [result, error] = await devtools.inspectedWindow.eval(
-      `setSvelteState(${id}, '${key}', ${valueElement.textContent})`
+      `setSvelteState(${id}, '${key}', ${e.target.value})`
     )
 
     errorMessage =
@@ -16,18 +18,11 @@
         : undefined
   }
 
-  function select(element) {
-    const selection = window.getSelection()
-    selection.removeAllRanges()
-
-    const range = document.createRange()
-    range.selectNodeContents(element)
-    selection.addRange(range)
-  }
-
+  let isEditing = false
   let errorMessage
-  let valueElement
-  $: if (valueElement) valueElement.textContent = JSON.stringify(value)
+  let input
+
+  $: if (input) input.select()
 </script>
 
 <style>
@@ -38,13 +33,21 @@
   }
 
   li[data-tooltip],
-  li[data-tooltip] pre {
+  li[data-tooltip] span {
     color: red;
   }
 
-  pre {
+  span {
     flex-grow: 1;
-    margin: 0;
+    cursor: pointer;
+  }
+
+  input {
+    flex-grow: 1;
+    margin-right: 10px;
+    border: none;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.1);
+    font-size: inherit;
   }
 
   .string {
@@ -64,13 +67,17 @@
   }
 </style>
 
-<li {...{ 'data-error': errorMessage }}>
+<li {...{ 'data-tooltip': errorMessage }}>
    {key}:&nbsp;
-  <pre
-    class={typeof value}
-    contenteditable
-    bind:this={valueElement}
-    on:focus={e => select(e.target)}
-    on:keydown={e => e.key == 'Enter' && e.target.blur()}
-    on:blur={setState} />
+  {#if isEditing}
+    <input
+      bind:this={input}
+      value={JSON.stringify(value)}
+      on:keydown={e => e.key == 'Enter' && commit(e)}
+      on:blur={commit} />
+  {:else}
+    <span class={typeof value} on:click={() => (isEditing = true)}>
+      {JSON.stringify(value)}
+    </span>
+  {/if}
 </li>
