@@ -1,5 +1,5 @@
 <script>
-  import { hoveredNode, rootNodes } from './store.js'
+  import { hoveredNodeId, rootNodes } from './store.js'
   import ComponentView from './ComponentView.svelte'
   import Node from './nodes/Node.svelte'
 </script>
@@ -19,7 +19,7 @@
 </style>
 
 {#if $rootNodes.length}
-  <div on:mouseleave={e => ($hoveredNode = null)}>
+  <div on:mouseleave={e => ($hoveredNodeId = null)}>
     {#each $rootNodes as node (node.id)}
       <Node {node} />
     {/each}

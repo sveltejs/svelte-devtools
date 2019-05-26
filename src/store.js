@@ -1,8 +1,7 @@
 import { writable, get } from 'svelte/store'
 
-export const selectedCtx = writable(null)
-export const selectedNode = writable(null)
-export const hoveredNode = writable(null)
+export const selectedNode = writable({})
+export const hoveredNodeId = writable(null)
 export const rootNodes = writable([])
 const nodeMap = new Map()
 
@@ -14,9 +13,8 @@ port.postMessage({
 port.onMessage.addListener(msg => {
   switch (msg.type) {
     case 'init': {
-      selectedCtx.set(null)
-      selectedNode.set(null)
-      hoveredNode.set(null)
+      selectedNode.set({})
+      hoveredNodeId.set(null)
       rootNodes.set([])
 
       break
@@ -56,8 +54,8 @@ port.onMessage.addListener(msg => {
       const node = nodeMap.get(msg.node.id)
       Object.assign(node, msg.node)
 
-      const selected = get(selectedCtx)
-      if (selected && selected.id == msg.node.id) selectedCtx.update(o => o)
+      const selected = get(selectedNode)
+      if (selected && selected.id == msg.node.id) selectedNode.update(o => o)
 
       break
     }

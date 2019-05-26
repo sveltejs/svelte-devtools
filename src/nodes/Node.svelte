@@ -1,5 +1,5 @@
 <script>
-  import { hoveredNode, selectedNode, selectedCtx } from '../store.js'
+  import { hoveredNodeId, selectedNode } from '../store.js'
   import Element from './Element.svelte'
   import Block from './Block.svelte'
   import Text from './Text.svelte'
@@ -33,23 +33,16 @@
 </style>
 
 <li
-  on:mouseover|stopPropagation={e => ($hoveredNode = node.id)}
-  on:click|stopPropagation={e => {
-    $selectedNode = node.id
-    let _node = node
-    while (_node && _node.properties && !_node.properties.ctx) {
-      _node = _node.parent
-    }
-    $selectedCtx = _node
-  }}>
+  on:mouseover|stopPropagation={e => ($hoveredNodeId = node.id)}
+  on:click|stopPropagation={e => ($selectedNode = node)}>
   <svelte:component
     this={nodeType}
     {...node.properties}
     hasChildren={node.children.length != 0}
-    hover={$hoveredNode == node.id}
-    selected={$selectedNode == node.id}
+    hover={$hoveredNodeId == node.id}
+    selected={$selectedNode.id == node.id}
     style={`padding-left: ${depth * 12}px`}>
-    {#if $selectedNode == node.id}
+    {#if $selectedNode.id == node.id}
       <span style={`left: ${depth * 12 + 2}px`} />
     {/if}
     <ul>

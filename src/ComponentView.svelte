@@ -1,5 +1,6 @@
 <script>
-  import { selectedCtx } from './store.js'
+  import { devtools } from 'browser'
+  import { selectedNode } from './store.js'
   import Editable from './Editable.svelte'
 </script>
 
@@ -19,15 +20,36 @@
     font-weight: bold;
     font-size: 1rem;
   }
+
+  li {
+    margin-left: 12px;
+  }
+
+  span {
+    color: rgb(102, 153, 0);
+  }
 </style>
 
-{#if $selectedCtx}
+{#if $selectedNode}
   <div>
-    <h1>State</h1>
-    <ul>
-      {#each Object.entries($selectedCtx.properties.ctx) as [key, value] (key)}
-        <Editable id={$selectedCtx.id} {key} {value} />
-      {/each}
-    </ul>
+    {#if $selectedNode.type == 'component' || $selectedNode.type == 'block'}
+      <h1>State</h1>
+      <ul>
+        {#each Object.entries($selectedNode.properties.ctx) as [key, value] (key)}
+          <Editable id={$selectedNode.id} {key} {value} />
+        {/each}
+      </ul>
+    {:else if $selectedNode.type == 'element'}
+      <h1>Attributes</h1>
+      <ul>
+        {#each $selectedNode.properties.attributes as { name, value } (name)}
+          <li>
+            {name}:
+            &nbsp;
+            <span>"{value}"</span>
+          </li>
+        {/each}
+      </ul>
+    {/if}
   </div>
 {/if}
