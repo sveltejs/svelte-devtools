@@ -21,6 +21,45 @@
         padding: 0;
         list-style: none;
       }
+
+      [data-tooltip]:hover::after,
+      [data-tooltip]:hover::before {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      [data-tooltip]::after {
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        z-index: 1;
+        display: block;
+        padding: 6px 16px;
+        border-radius: 5px;
+        background-color: rgb(48, 64, 81);
+        color: white;
+        content: attr(data-tooltip);
+        opacity: 0;
+        transition: opacity 0.2s;
+        transform: translateY(100%);
+        pointer-events: none;
+      }
+
+      [data-tooltip]::before {
+        position: absolute;
+        bottom: -2px;
+        left: 30px;
+        display: block;
+        width: 0;
+        height: 0;
+        border-right: 5px solid transparent;
+        border-bottom: 5px solid rgb(48, 64, 81);
+        border-left: 5px solid transparent;
+        content: '';
+        opacity: 0;
+        transition: opacity 0.2s;
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>

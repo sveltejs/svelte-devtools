@@ -37,23 +37,9 @@
     margin-left: 12px;
   }
 
-  li[data-error],
-  li[data-error] pre {
+  li[data-tooltip],
+  li[data-tooltip] pre {
     color: red;
-  }
-
-  li[data-error]:hover::after {
-    position: absolute;
-    top: 2em;
-    left: 0;
-    z-index: 1;
-    display: block;
-    padding: 0 8px;
-    border: 1px solid rgb(224, 224, 226);
-    border-radius: 5px;
-    background-color: white;
-    color: rgb(57, 63, 76);
-    content: attr(data-error);
   }
 
   pre {
