@@ -5,24 +5,51 @@
 </script>
 
 <style>
-  div {
+  .root {
     overflow-y: auto;
-    padding: 8px;
     width: 300px;
     border-left: 1px solid rgb(224, 224, 226);
     color: rgb(57, 63, 76);
     line-height: 2;
   }
 
+  .toolbar {
+    padding: 0 5px;
+    border-bottom: 1px solid rgb(224, 224, 226);
+    background-color: rgb(249, 249, 250);
+    text-align: right;
+  }
+
+  .toolbar button {
+    margin: 1px;
+    padding: 5px;
+    border: none;
+    border-radius: 2px;
+    background-color: transparent;
+    line-height: 0;
+    cursor: pointer;
+  }
+
+  .toolbar button:hover {
+    background-color: rgb(237, 237, 240);
+  }
+
+  .toolbar img {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    opacity: 0.8;
+  }
+
   h1 {
-    margin: 0;
+    margin: 8px 0 0 8px;
     color: rgb(118, 118, 118);
     font-weight: bold;
     font-size: 1rem;
   }
 
   li {
-    margin-left: 12px;
+    margin-left: 20px;
   }
 
   span {
@@ -31,7 +58,13 @@
 </style>
 
 {#if $selectedNode}
-  <div>
+  <div class="root">
+    <div class="toolbar">
+      <button
+        on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}>
+        <img src="/devtools/tool-inspector.svg" alt="Inspect" title="Inspect" />
+      </button>
+    </div>
     {#if $selectedNode.type == 'component' || $selectedNode.type == 'block'}
       <h1>State</h1>
       <ul>
