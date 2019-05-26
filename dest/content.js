@@ -35,13 +35,23 @@ function serializeInternals($$) {
   }
 }
 
-const port = browser.runtime.connect()
 function serializeNode(node) {
   return { id: node.id, type: node.type, properties: node.properties }
 }
 
 const nodeMap = new Map()
 let _id = 0
+
+const port = browser.runtime.connect()
+port.onMessage.addListener(msg => {
+  switch (msg.type) {
+    case 'setSelected':
+      const node = nodeMap.get(msg.node.id)
+      if (node) window.wrappedJSObject.$s = node._real
+
+      break
+  }
+})
 
 document.addEventListener('SvelteInsertEachBlock', e => {
   const node = {

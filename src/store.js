@@ -10,6 +10,15 @@ port.postMessage({
   type: 'init',
   tabId: browser.devtools.inspectedWindow.tabId
 })
+
+selectedNode.subscribe(node =>
+  port.postMessage({
+    type: 'setSelected',
+    tabId: browser.devtools.inspectedWindow.tabId,
+    node
+  })
+)
+
 port.onMessage.addListener(msg => {
   switch (msg.type) {
     case 'init': {
