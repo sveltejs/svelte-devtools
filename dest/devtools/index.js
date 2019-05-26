@@ -1,1 +1,5 @@
-browser.devtools.panels.create('Svelte', 'svelte-logo-black.svg', 'panel.html')
+chrome.devtools.panels.create(
+  'Svelte',
+  '/devtools/svelte-logo-black.svg',
+  '/devtools/panel.html'
+)

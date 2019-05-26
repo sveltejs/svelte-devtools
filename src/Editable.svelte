@@ -1,5 +1,5 @@
 <script>
-  import { devtools } from 'browser'
+  import { devtools } from 'chrome'
 
   export let id
   export let key
@@ -8,14 +8,14 @@
   async function commit(e) {
     isEditing = false
 
-    const [result, error] = await devtools.inspectedWindow.eval(
-      `setSvelteState(${id}, '${key}', ${e.target.value})`
+    devtools.inspectedWindow.eval(
+      `setSvelteState(${id}, '${key}', ${e.target.value})`,
+      (result, error) =>
+        (errorMessage =
+          error && error.isException
+            ? error.value.substring(0, error.value.indexOf('\n'))
+            : undefined)
     )
-
-    errorMessage =
-      error && error.isException
-        ? error.value.substring(0, error.value.indexOf('\n'))
-        : undefined
   }
 
   let isEditing = false

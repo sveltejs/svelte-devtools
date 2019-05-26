@@ -12,5 +12,6 @@
   "background": {
     "scripts": ["background.js"]
   },
-  "devtools_page": "devtools/index.html"
+  "devtools_page": "devtools/index.html",
+  "web_accessible_resources": ["privilegedContent.js"]
 }

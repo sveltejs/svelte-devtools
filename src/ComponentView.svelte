@@ -1,5 +1,5 @@
 <script>
-  import { devtools } from 'browser'
+  import { devtools } from 'chrome'
   import { selectedNode } from './store.js'
   import Editable from './Editable.svelte'
 

@@ -5,17 +5,17 @@ export const hoveredNodeId = writable(null)
 export const rootNodes = writable([])
 const nodeMap = new Map()
 
-const port = browser.runtime.connect()
+const port = chrome.runtime.connect()
 port.postMessage({
   type: 'init',
-  tabId: browser.devtools.inspectedWindow.tabId
+  tabId: chrome.devtools.inspectedWindow.tabId
 })
 
 selectedNode.subscribe(node =>
   port.postMessage({
     type: 'setSelected',
-    tabId: browser.devtools.inspectedWindow.tabId,
-    node
+    tabId: chrome.devtools.inspectedWindow.tabId,
+    nodeId: node.id
   })
 )
 

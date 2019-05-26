@@ -4,13 +4,13 @@ import resolve from 'rollup-plugin-node-resolve'
 
 export default [{
   input: 'src/index.js',
-  external: ['browser'],
+  external: ['chrome'],
   output: {
     file: 'dest/devtools/bundle.js',
     name: 'App',
     format: 'iife',
     globals: {
-      browser: 'browser'
+      chrome: 'chrome'
     }
   },
   plugins: [
