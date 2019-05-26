@@ -59,7 +59,7 @@ function instrument(details) {
       )
       .replace(
         /function update\(\$\$\) {[^]+?}/,
-        '$&\ndocument.dispatchEvent(new CustomEvent("SvelteUpdate", { detail: { ctx: $$$$.ctx } }));'
+        '$&\ndocument.dispatchEvent(new CustomEvent("SvelteUpdate", { detail: { $$$$ } }));'
       )
     filter.write(encoder.encode(str))
     filter.disconnect()

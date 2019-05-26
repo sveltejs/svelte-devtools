@@ -7,7 +7,7 @@
   export let selected
   export let highlighted
   export let tagName
-  export let attributes = {}
+  export let attributes = []
 
   let collapsed
 </script>
@@ -50,7 +50,7 @@
       &nbsp;
       <span class="attr-name">{name}</span>
       =
-      <span class="attr-value">"{value}"</span>
+      <span class="attr-value">{JSON.stringify(value)}</span>
     {/each}
     &gt;
     {#if collapsed}
@@ -68,14 +68,14 @@
     </div>
   {/if}
 {:else}
-  <div class:hover class:selected class:highlighted {style}>
+  <div class:hover class:selected {style}>
     &lt;
     <span>{tagName}</span>
     {#each attributes as { name, value } (name)}
       &nbsp;
       <span class="attr-name">{name}</span>
       =
-      <span class="attr-value">"{value}"</span>
+      <span class="attr-value">{JSON.stringify(value)}</span>
     {/each}
      /&gt;
   </div>

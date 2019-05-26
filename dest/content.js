@@ -23,7 +23,15 @@ function serializeDOM(node) {
 function serializeComponent(component) {
   return {
     tagName: component.tagName,
-    ctx: JSON.parse(JSON.stringify(component.$$.ctx))
+    ...serializeInternals(component.$$)
+  }
+}
+
+function serializeInternals($$) {
+  const ctx = JSON.parse(JSON.stringify($$.ctx))
+  return {
+    attributes: $$.props.map(name => ({ name, value: ctx[name] })),
+    ctx
   }
 }
 
@@ -118,8 +126,8 @@ document.addEventListener('SvelteRemoveNode', e => {
 })
 
 document.addEventListener('SvelteUpdate', e => {
-  const node = nodeMap.get(e.detail.ctx)
-  node.properties.ctx = JSON.parse(JSON.stringify(e.detail.ctx))
+  const node = nodeMap.get(e.detail.$$.ctx)
+  Object.assign(node.properties, serializeInternals(e.detail.$$))
   port.postMessage({
     type: 'updateNode',
     node
