@@ -36,9 +36,11 @@ function serializeInternals($$) {
 }
 
 const port = browser.runtime.connect()
+function serializeNode(node) {
+  return { id: node.id, type: node.type, properties: node.properties }
+}
 
 const nodeMap = new Map()
-const ctxMap = new Map()
 let _id = 0
 
 document.addEventListener('SvelteInsertEachBlock', e => {
@@ -48,12 +50,15 @@ document.addEventListener('SvelteInsertEachBlock', e => {
     properties: {
       tagName: 'each',
       ctx: JSON.parse(JSON.stringify(e.detail.block))
-    }
+    },
+    _ctx: e.detail.block,
+    _real: e.detail.block
   }
+  nodeMap.set(node.id, node)
   nodeMap.set(e.detail.block, node)
-  ctxMap.set(node.id, e.detail.block)
+
   let target = nodeMap.get(e.detail.target)
-  if (!target || ctxMap.get(target.id) != e.detail.ctx) {
+  if (!target || target._ctx != e.detail.ctx) {
     target = nodeMap.get(e.detail.ctx)
   }
 
@@ -62,7 +67,7 @@ document.addEventListener('SvelteInsertEachBlock', e => {
     target: target ? target.id : null,
     anchor: anchor ? anchor.id : null,
     type: 'addNode',
-    node
+    node: serializeNode(node)
   })
 })
 
@@ -75,12 +80,15 @@ document.addEventListener('SvelteInsertHTMLElement', e => {
         : e.detail.node.nodeValue
         ? 'text'
         : 'anchor',
-    properties: serializeDOM(e.detail.node)
+    properties: serializeDOM(e.detail.node),
+    _ctx: e.detail.ctx,
+    _real: e.detail.node
   }
+  nodeMap.set(node.id, node)
   nodeMap.set(e.detail.node, node)
-  ctxMap.set(node.id, e.detail.ctx)
+
   let target = nodeMap.get(e.detail.target)
-  if (!target || ctxMap.get(target.id) != e.detail.ctx) {
+  if (!target || target._ctx != e.detail.ctx) {
     target = nodeMap.get(e.detail.ctx)
   }
 
@@ -89,7 +97,7 @@ document.addEventListener('SvelteInsertHTMLElement', e => {
     target: target ? target.id : null,
     anchor: anchor ? anchor.id : null,
     type: 'addNode',
-    node
+    node: serializeNode(node)
   })
 })
 
@@ -97,13 +105,15 @@ document.addEventListener('SvelteInsertComponent', e => {
   const node = {
     id: _id++,
     type: 'component',
-    properties: serializeComponent(e.detail.component)
+    properties: serializeComponent(e.detail.component),
+    _ctx: e.detail.component.$$.ctx,
+    _real: e.detail.component
   }
+  nodeMap.set(node.id, node)
   nodeMap.set(e.detail.component.$$.ctx, node)
-  nodeMap.set(node.id, e.detail.component)
-  ctxMap.set(node.id, e.detail.component.$$.ctx)
+
   let target = nodeMap.get(e.detail.target)
-  if (!target || ctxMap.get(target.id) != e.detail.ctx) {
+  if (!target || target._ctx != e.detail.ctx) {
     target = nodeMap.get(e.detail.ctx)
   }
 
@@ -112,7 +122,7 @@ document.addEventListener('SvelteInsertComponent', e => {
     target: target ? target.id : null,
     anchor: anchor ? anchor.id : null,
     type: 'addNode',
-    node
+    node: serializeNode(node)
   })
 })
 
@@ -121,7 +131,7 @@ document.addEventListener('SvelteRemoveNode', e => {
   nodeMap.delete(e.detail.node)
   port.postMessage({
     type: 'removeNode',
-    node
+    node: serializeNode(node)
   })
 })
 
@@ -130,13 +140,13 @@ document.addEventListener('SvelteUpdate', e => {
   Object.assign(node.properties, serializeInternals(e.detail.$$))
   port.postMessage({
     type: 'updateNode',
-    node
+    node: serializeNode(node)
   })
 })
 
 exportFunction(
   (id, key, value) => {
-    const component = nodeMap.get(id).wrappedJSObject
+    const component = nodeMap.get(id)._real.wrappedJSObject
     component.$$.ctx[key] = value
     window.wrappedJSObject.make_dirty(component, key)
   },
