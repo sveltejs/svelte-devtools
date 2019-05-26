@@ -2,15 +2,27 @@
   import { devtools } from 'browser'
   import { selectedNode } from './store.js'
   import Editable from './Editable.svelte'
+
+  let isResizing = false
+  let width = 300
 </script>
 
 <style>
   .root {
+    position: relative;
     overflow-y: auto;
-    width: 300px;
     border-left: 1px solid rgb(224, 224, 226);
     color: rgb(57, 63, 76);
     line-height: 2;
+  }
+
+  .resize {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5px;
+    cursor: ew-resize;
   }
 
   .toolbar {
@@ -57,8 +69,14 @@
   }
 </style>
 
+<svelte:window
+  on:mousemove={e => isResizing && (width = window.innerWidth - e.x)}
+  on:mouseup={e => (isResizing = false)}
+/>
+
 {#if $selectedNode}
-  <div class="root">
+  <div class="root" style={`width: ${width}px`}>
+    <div class="resize" on:mousedown={e => (isResizing = true)} />
     <div class="toolbar">
       <button
         on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}
