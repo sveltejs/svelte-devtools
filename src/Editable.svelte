@@ -68,13 +68,14 @@
 </style>
 
 <li {...{ 'data-tooltip': errorMessage }}>
-   {key}:&nbsp;
+  {key}:&nbsp;
   {#if isEditing}
     <input
       bind:this={input}
       value={JSON.stringify(value)}
       on:keydown={e => e.key == 'Enter' && commit(e)}
-      on:blur={commit} />
+      on:blur={commit}
+    />
   {:else}
     <span class={typeof value} on:click={() => (isEditing = true)}>
       {JSON.stringify(value)}

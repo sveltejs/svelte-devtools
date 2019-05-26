@@ -9,4 +9,4 @@
   }
 </style>
 
-<div {style}> {nodeValue} </div>
+<div {style}>{nodeValue}</div>

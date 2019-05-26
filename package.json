@@ -14,11 +14,11 @@
   "devDependencies": {
     "http-serve": "^1.0.1",
     "prettier": "git+https://github.com/RedHatter/prettier.git#sort-css",
-    "prettier-plugin-svelte": "^0.5.1",
+    "prettier-plugin-svelte": "git+https://github.com/UnwrittenFun/prettier-plugin-svelte.git",
     "rollup": "^1.12.3",
     "rollup-plugin-node-resolve": "^5.0.0",
     "rollup-plugin-svelte": "^5.0.3",
-    "svelte": "/home/stibbons/svelte",
+    "svelte": "^3.4.3",
     "tiny-glob": "^0.2.6",
     "web-ext": "^3.0.0"
   }

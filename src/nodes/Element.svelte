@@ -58,9 +58,7 @@
       <span>{tagName}</span>
       &gt;
     {/if}
-    {#if selected}
-      &nbsp== $s
-    {/if}
+    {#if selected}&nbsp== $s{/if}
   </div>
   {#if !collapsed}
     <slot />
@@ -81,8 +79,6 @@
       <span class="attr-value">{JSON.stringify(value)}</span>
     {/each}
      /&gt;
-    {#if selected}
-      &nbsp== $s
-    {/if}
+    {#if selected}&nbsp== $s{/if}
   </div>
 {/if}

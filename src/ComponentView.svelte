@@ -61,7 +61,8 @@
   <div class="root">
     <div class="toolbar">
       <button
-        on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}>
+        on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}
+      >
         <img src="/devtools/tool-inspector.svg" alt="Inspect" title="Inspect" />
       </button>
     </div>
@@ -77,8 +78,7 @@
       <ul>
         {#each $selectedNode.properties.attributes as { name, value } (name)}
           <li>
-            {name}:
-            &nbsp;
+            {name}: &nbsp;
             <span>"{value}"</span>
           </li>
         {/each}

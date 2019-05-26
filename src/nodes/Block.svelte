@@ -37,16 +37,12 @@
 <div class="tag-open tag-name" class:hover class:selected {style}>
   <Collapse {selected} bind:collapsed />
   &lbrace;#{tagName}&rbrace;
-  {#if collapsed}
-    &lbrace;/{tagName}&rbrace;
-  {/if}
-  {#if selected}
-    &nbsp== $s
-  {/if}
+  {#if collapsed}&lbrace;/{tagName}&rbrace;{/if}
+  {#if selected}&nbsp== $s{/if}
 </div>
 {#if !collapsed}
   <slot />
   <div class="tag-close tag-name" class:hover {style}>
-  &lbrace;/{tagName}&rbrace;
+    &lbrace;/{tagName}&rbrace;
   </div>
 {/if}
