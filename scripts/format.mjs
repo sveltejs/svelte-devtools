@@ -6,7 +6,7 @@ import { promises as fs } from 'fs'
 
 async function format(path) {
   // Problem with html entities sveltejs/svelte#2714
-  if (path == 'src/nodes/Block.svelte' || path == 'src/nodes/Element.svelte')
+  if (path == 'src/nodes/Block.svelte' || path == 'src/nodes/Element.svelte' || path == 'src/nodes/Node.svelte' || path == 'src/nodes/Editable.svelte')
     return true
 
   try {

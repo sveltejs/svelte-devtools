@@ -5,23 +5,16 @@
   import Text from './Text.svelte'
   import Anchor from './Anchor.svelte'
 
-  export let type
-  export let id
-  export let properties
-  export let parent
-  export let children
-
+  export let node
   export let depth = 1
 
-  const nodeTypes = {
+  $: nodeType = {
     element: Element,
     component: Element,
     block: Block,
     text: Text,
     anchor: Anchor
-  }
-
-  let hover = false
+  }[node.type]
 </script>
 
 <style>
@@ -40,28 +33,28 @@
 </style>
 
 <li
-  on:mouseover|stopPropagation={e => ($hoveredNode = id)}
+  on:mouseover|stopPropagation={e => ($hoveredNode = node.id)}
   on:click|stopPropagation={e => {
-    $selectedNode = id
-    let node = { id, type, properties, parent }
-    while (node && node.properties && !node.properties.ctx) {
-      node = node.parent
+    $selectedNode = node.id
+    let _node = node
+    while (_node && _node.properties && !_node.properties.ctx) {
+      _node = _node.parent
     }
-    $selectedCtx = node
+    $selectedCtx = _node
   }}>
   <svelte:component
-    this={nodeTypes[type]}
-    {...properties}
-    hasChildren={children.length != 0}
-    hover={$hoveredNode == id}
-    selected={$selectedNode == id}
+    this={nodeType}
+    {...node.properties}
+    hasChildren={node.children.length != 0}
+    hover={$hoveredNode == node.id}
+    selected={$selectedNode == node.id}
     style={`padding-left: ${depth * 12}px`}>
-    {#if $selectedNode == id}
+    {#if $selectedNode == node.id}
       <span style={`left: ${depth * 12 + 2}px`} />
     {/if}
     <ul>
-      {#each children as node (node.id)}
-        <svelte:self {...node} depth={depth + 1} />
+      {#each node.children as node (node.id)}
+        <svelte:self {node} depth={depth + 1} />
       {/each}
     </ul>
   </svelte:component>

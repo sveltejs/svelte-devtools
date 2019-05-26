@@ -21,7 +21,7 @@
 {#if $rootNodes.length}
   <div on:mouseleave={e => ($hoveredNode = null)}>
     {#each $rootNodes as node (node.id)}
-      <Node {...node} />
+      <Node {node} />
     {/each}
   </div>
   <ComponentView />
