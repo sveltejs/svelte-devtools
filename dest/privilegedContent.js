@@ -1,13 +1,24 @@
 ;(function() {
+  function unsafe_set(id, key, value) {
+    let component = nodeMap.get(id)._real
+    if (component.wrappedJSObject) component = component.wrappedJSObject
+    component.$$.ctx.$$devtools_unsafe_set(key, value)
+    ;(window.wrappedJSObject || window).make_dirty(component, key)
+  }
+
   // Runs directly on page in chrome and as as content script in firefox
   try {
     const port = browser.runtime.connect()
     port.onMessage.addListener(handleMessage)
     window.postMessage = port.postMessage
+    exportFunction(unsafe_set, window, {
+      defineAs: '__svelte_devtools_unsafe_set'
+    })
   } catch (err) {
     if (!(err instanceof ReferenceError)) throw err
 
     window.addEventListener('message', e => handleMessage(e.data), false)
+    window.__svelte_devtools_unsafe_set = unsafe_set
   }
 
   function serializeDOM(node) {
@@ -172,23 +183,6 @@
 
         break
     }
-  }
-
-  function setSvelteState(id, key, value) {
-    let component = nodeMap.get(id)._real
-    if (component.wrappedJSObject) component = component.wrappedJSObject
-    component.$$.ctx[key] = value
-    ;(window.wrappedJSObject || window).make_dirty(component, key)
-  }
-
-  try {
-    exportFunction(setSvelteState, window, {
-      defineAs: 'setSvelteState'
-    })
-  } catch (err) {
-    if (!(err instanceof ReferenceError)) throw err
-
-    window.setSvelteState = setSvelteState
   }
 
   window.postMessage({ type: 'loadInline' })

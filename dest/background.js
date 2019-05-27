@@ -6,8 +6,24 @@ function instrument(str) {
   return (
     str
       .replace(
-        /class\s+(\w+?)\s+extends\s+SvelteComponent\s+{\n\s*constructor\(options\)\s+{\n\s*super\(\);/g,
-        "$&\nthis.tagName = '$1';"
+        /(?:return\s*{\s*((?:\w+,?\s*?)+)\s*};\s*}\s*)?class\s+(\w+?)\s+extends\s+SvelteComponent\s+{\s*constructor\(options\)\s+{\s*super\(\);/g,
+        (_, $1, $2) => {
+          const ctx = $1.split(',').map(o => o.trim())
+          return `return {
+        ${$1},$$devtools_unsafe_set: ($$key, $$value) => {
+          ${ctx
+            .map(
+              o => `if ($$key == '${o}') $$invalidate('${o}', ${o} = $$value);`
+            )
+            .join('\n')}
+        }
+      };
+    }
+    class ${$2} extends SvelteComponent {
+      constructor(options) {
+        super()
+        this.tagName = '${$2}'`
+        }
       )
       .replace(
         /(append|insert|mount_component|each_blocks(?:_\d+)?\[i\]\.m)\((.+?)\);/g,
@@ -45,10 +61,6 @@ function instrument(str) {
       .replace(
         /function create_each_block(?:_\d+?)?(?:\$\d+?)?\(ctx\) {[^]+?d\(detaching\) {/g,
         '$&\ndocument.dispatchEvent(new CustomEvent("SvelteRemoveNode", { detail: { node: ctx } }));'
-      )
-      .replace(
-        'function make_dirty(component, key) {',
-        'window.make_dirty = $&'
       )
       .replace(
         /function update\(\$\$\) {[^]+?}/,

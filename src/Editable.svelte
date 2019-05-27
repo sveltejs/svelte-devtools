@@ -9,7 +9,7 @@
     isEditing = false
 
     devtools.inspectedWindow.eval(
-      `setSvelteState(${id}, '${key}', ${e.target.value})`,
+      `__svelte_devtools_unsafe_set(${id}, '${key}', ${e.target.value})`,
       (result, error) =>
         (errorMessage =
           error && error.isException
