@@ -5,37 +5,34 @@
 
 <style>
   span {
+    position: relative;
     display: inline-block;
-    overflow: hidden;
-    margin-right: 3px;
-    width: 6px;
-    height: 14px;
-    vertical-align: middle;
-    font-size: 0.5rem;
+    width: 15px;
+    height: 100%;
+    vertical-align: bottom;
     cursor: pointer;
-    transition: transform 0.3s;
-    transform: rotate(90deg);
   }
 
   span::after {
     position: absolute;
-    top: 25%;
-    right: 50%;
-    bottom: 25%;
-    left: -50%;
-    display: block;
-    border-radius: 1px;
-    background-color: rgba(135, 135, 137, 0.9);
+    bottom: 5px;
+    left: 4px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid rgba(135, 135, 137, 0.9);
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
     content: '';
-    transform: rotate(45deg);
+    transition: transform 0.3s;
+    transform: rotate(0deg);
   }
 
   span.selected::after {
-    background-color: #ffffff;
+    border-top-color: #ffffff;
   }
 
-  span.collapsed {
-    transform: rotate(0deg);
+  span.collapsed::after {
+    transform: rotate(-90deg);
   }
 </style>
 

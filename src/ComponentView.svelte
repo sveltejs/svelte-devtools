@@ -11,9 +11,7 @@
   .root {
     position: relative;
     overflow-y: auto;
-    border-left: 1px solid rgb(224, 224, 226);
     color: rgb(57, 63, 76);
-    line-height: 2;
   }
 
   .resize {
@@ -22,7 +20,12 @@
     bottom: 0;
     left: 0;
     width: 5px;
+    border-left: 1px solid rgb(224, 224, 226);
     cursor: ew-resize;
+  }
+
+  .resize:hover {
+    border-color: rgb(177, 177, 179);
   }
 
   .toolbar {

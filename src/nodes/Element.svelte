@@ -15,6 +15,7 @@
 <style>
   div {
     height: 16px;
+    line-height: 16px;
   }
 
   span {
@@ -26,18 +27,13 @@
   }
 
   .attr-value {
+    display: inline-block;
+    overflow: hidden;
+    max-width: 200px;
     color: rgb(0, 62, 170);
-  }
-
-  .selected,
-  .selected span,
-  .hover.selected {
-    background-color: rgb(0, 116, 232);
-    color: #ffffff;
-  }
-
-  .hover {
-    background-color: #f0f9fe;
+    vertical-align: bottom;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 </style>
 
@@ -54,11 +50,10 @@
     {/each}
     &gt;
     {#if collapsed}
-      &lt;/
+      ...&lt;/
       <span>{tagName}</span>
       &gt;
     {/if}
-    {#if selected}&nbsp== $s{/if}
   </div>
   {#if !collapsed}
     <slot />
@@ -78,7 +73,6 @@
       =
       <span class="attr-value">{JSON.stringify(value)}</span>
     {/each}
-     /&gt;
-    {#if selected}&nbsp== $s{/if}
+     &nbsp;/&gt;
   </div>
 {/if}

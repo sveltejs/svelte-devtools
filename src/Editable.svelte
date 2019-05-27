@@ -29,7 +29,8 @@
   li {
     position: relative;
     display: flex;
-    margin-left: 12px;
+    margin: 0 8px 0 12px;
+    padding: 4px 0;
   }
 
   li[data-tooltip],

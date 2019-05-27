@@ -12,21 +12,7 @@
 <style>
   div {
     height: 16px;
-  }
-
-  span {
-    color: rgb(0, 116, 232);
-  }
-
-  .selected,
-  .selected span,
-  .hover.selected {
-    background-color: rgb(0, 116, 232);
-    color: #ffffff;
-  }
-
-  .hover {
-    background-color: #f0f9fe;
+    line-height: 16px;
   }
 
   div {
@@ -37,8 +23,7 @@
 <div class="tag-open tag-name" class:hover class:selected {style}>
   <Collapse {selected} bind:collapsed />
   &lbrace;#{tagName}&rbrace;
-  {#if collapsed}&lbrace;/{tagName}&rbrace;{/if}
-  {#if selected}&nbsp== $s{/if}
+  {#if collapsed}...&lbrace;/{tagName}&rbrace;{/if}
 </div>
 {#if !collapsed}
   <slot />

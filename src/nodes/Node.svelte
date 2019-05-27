@@ -30,6 +30,21 @@
     width: 2px;
     background-color: #e0e0e2;
   }
+
+  li :global(.selected),
+  li :global(.selected *),
+  li :global(.hover.selected) {
+    background-color: rgb(0, 116, 232);
+    color: #ffffff;
+  }
+
+  li :global(> .selected::after) {
+    content: ' == $s';
+  }
+
+  li :global(.hover) {
+    background-color: #f0f9fe;
+  }
 </style>
 
 <li
