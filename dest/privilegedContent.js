@@ -53,7 +53,11 @@
   function serializeInternals($$) {
     const ctx = JSON.parse(JSON.stringify($$.ctx))
     return {
-      attributes: $$.props.map(name => ({ name, value: ctx[name] })),
+      attributes: $$.props.map(name => {
+        const value = ctx[name]
+        delete ctx[name]
+        return { name, value }
+      }),
       ctx
     }
   }

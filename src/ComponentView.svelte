@@ -5,6 +5,11 @@
 
   let isResizing = false
   let width = 300
+
+  $: ctx =
+    $selectedNode.properties &&
+      ? Object.entries($selectedNode.properties.ctx)
+      : []
 </script>
 
 <style>
@@ -63,12 +68,21 @@
     font-size: 1rem;
   }
 
+  h1.state-header {
+    margin-top: 20px;
+  }
+
   li {
-    margin-left: 20px;
+    margin-left: 12px;
   }
 
   span {
     color: rgb(102, 153, 0);
+  }
+
+  .empty {
+    margin: 8px 0 0 12px;
+    color: rgb(118, 118, 118);
   }
 </style>
 
@@ -88,22 +102,40 @@
       </button>
     </div>
     {#if $selectedNode.type == 'component' || $selectedNode.type == 'block'}
-      <h1>State</h1>
-      <ul>
-        {#each Object.entries($selectedNode.properties.ctx) as [key, value] (key)}
-          <Editable id={$selectedNode.id} {key} {value} />
-        {/each}
-      </ul>
+      <h1>Props</h1>
+      {#if $selectedNode.properties.attributes.length}
+        <ul>
+          {#each $selectedNode.properties.attributes as { name, value } (name)}
+            <Editable id={$selectedNode.id} key={name} {value} />
+          {/each}
+        </ul>
+      {:else}
+        <div class="empty">No props</div>
+      {/if}
+      <h1 class="state-header">State</h1>
+      {#if ctx.length}
+        <ul>
+          {#each ctx as [key, value] (key)}
+            <Editable id={$selectedNode.id} {key} {value} />
+          {/each}
+        </ul>
+      {:else}
+        <div class="empty">No internal state</div>
+      {/if}
     {:else if $selectedNode.type == 'element'}
       <h1>Attributes</h1>
-      <ul>
-        {#each $selectedNode.properties.attributes as { name, value } (name)}
-          <li>
-            {name}: &nbsp;
-            <span>"{value}"</span>
-          </li>
-        {/each}
-      </ul>
+      {#if $selectedNode.properties.attributes.length}
+        <ul>
+          {#each $selectedNode.properties.attributes as { name, value } (name)}
+            <li>
+              {name}: &nbsp;
+              <span>"{value}"</span>
+            </li>
+          {/each}
+        </ul>
+      {:else}
+        <div class="empty">No attributes</div>
+      {/if}
     {/if}
   </div>
 {/if}
