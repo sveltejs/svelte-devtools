@@ -10,7 +10,7 @@ function instrument(str) {
         "$&\nthis.tagName = '$1';"
       )
       .replace(
-        /(append|insert|mount_component|each_blocks\[i\]\.m)\((.+?)\);/g,
+        /(append|insert|mount_component|each_blocks(?:_\d+)?\[i\]\.m)\((.+?)\);/g,
         '$1($2, ctx);'
       )
       // Hack since firefox doesn't support lookbehinds
@@ -31,8 +31,8 @@ function instrument(str) {
         'function mount_component(component, target, anchor, ctx) {\ndocument.dispatchEvent(new CustomEvent("SvelteInsertComponent", { detail: { target, component, anchor, ctx } }));'
       )
       .replace(
-        /(function create_each_block(?:_\d+)?\(ctx\) {[^]+?m\(target, anchor)\) {/g,
-        '$1, parentCtx) {\ndocument.dispatchEvent(new CustomEvent("SvelteInsertEachBlock", { detail: { target, anchor, ctx: parentCtx, block: ctx } }));'
+        /(function create_each_(block(?:_\d+?)?(?:\$\d+?)?)\(ctx\) {[^]+?m\(target, anchor)\) {/g,
+        '$1, parentCtx) {\ndocument.dispatchEvent(new CustomEvent("SvelteInsertEachBlock", { detail: { target, anchor, ctx: parentCtx, blockCtx: ctx, block: "$2" } }));'
       )
       .replace(
         'function detach(node) {',
@@ -43,7 +43,7 @@ function instrument(str) {
         '$&\nif (detaching) document.dispatchEvent(new CustomEvent("SvelteRemoveNode", { detail: { node: component.$$$$.ctx } }));'
       )
       .replace(
-        /function create_each_block(?:_\d+)?\(ctx\) {[^]+?d\(detaching\) {/g,
+        /function create_each_block(?:_\d+?)?(?:\$\d+?)?\(ctx\) {[^]+?d\(detaching\) {/g,
         '$&\ndocument.dispatchEvent(new CustomEvent("SvelteRemoveNode", { detail: { node: ctx } }));'
       )
       .replace(
