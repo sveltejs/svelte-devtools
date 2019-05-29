@@ -1,193 +1,257 @@
 ;(function() {
-  function unsafe_set(id, key, value) {
-    let component = nodeMap.get(id)._real
-    if (component.wrappedJSObject) component = component.wrappedJSObject
-    component.$$.ctx.$$devtools_unsafe_set(key, value)
-    ;(window.wrappedJSObject || window).make_dirty(component, key)
+  window.__svelte_devtools_unsafe_set = function(id, key, value) {
+    let component = nodeMap.get(id).detail
+    component.$unsafe_set({ [key]: value })
   }
 
-  // Runs directly on page in chrome and as as content script in firefox
-  try {
-    const port = browser.runtime.connect()
-    port.onMessage.addListener(handleMessage)
-    window.postMessage = port.postMessage
-    exportFunction(unsafe_set, window, {
-      defineAs: '__svelte_devtools_unsafe_set'
-    })
-  } catch (err) {
-    if (!(err instanceof ReferenceError)) throw err
-
-    window.addEventListener('message', e => handleMessage(e.data), false)
-    window.__svelte_devtools_unsafe_set = unsafe_set
-  }
-
-  function serializeDOM(node) {
-    const obj = {
-      nodeType: node.nodeType
-    }
-
-    if (node.tagName) obj.tagName = node.tagName.toLowerCase()
-    else if (node.nodeName) obj.nodeName = node.nodeName
-
-    if (node.nodeValue) obj.nodeValue = node.nodeValue
-
-    if (node.attributes)
-      obj.attributes = Array.from(node.attributes).map(attr => ({
-        name: attr.name,
-        value: attr.value
-      }))
-
-    if (node.childNodes)
-      obj.childNodes = Array.from(node.childNodes).map(serializeDOM)
-
-    return obj
-  }
-
-  function serializeComponent(component) {
-    return {
-      tagName: component.tagName,
-      ...serializeInternals(component.$$)
-    }
-  }
-
-  function serializeInternals($$) {
-    const ctx = JSON.parse(JSON.stringify($$.ctx))
-    return {
-      attributes: $$.props.map(name => {
-        const value = ctx[name]
-        delete ctx[name]
-        return { name, value }
-      }),
-      ctx
-    }
-  }
-
-  function serializeNode(node) {
-    return { id: node.id, type: node.type, properties: node.properties }
-  }
-
-  const nodeMap = new Map()
-  let _id = 0
-
-  document.addEventListener('SvelteInsertEachBlock', e => {
-    let node = nodeMap.get(e.detail.block)
-
-    if (node) {
-      node._real.push(e.detail.blockCtx)
-      nodeMap.set(e.detail.blockCtx, node)
-      return
-    }
-
-    node = {
-      id: _id++,
-      type: 'block',
-      properties: {
-        tagName: 'each',
-        ctx: JSON.parse(JSON.stringify(e.detail.block))
-      },
-      _ctx: null,
-      _real: [e.detail.blockCtx]
-    }
-    nodeMap.set(node.id, node)
-    nodeMap.set(e.detail.block, node)
-    nodeMap.set(e.detail.blockCtx, node)
-
-    let target = nodeMap.get(e.detail.target)
-    if (!target || target._ctx != e.detail.ctx) {
-      target = nodeMap.get(e.detail.ctx)
-    }
-
-    const anchor = nodeMap.get(e.detail.anchor)
-    window.postMessage({
-      target: target ? target.id : null,
-      anchor: anchor ? anchor.id : null,
-      type: 'addNode',
-      node: serializeNode(node)
-    })
-  })
-
-  document.addEventListener('SvelteInsertHTMLElement', e => {
-    const node = {
-      id: _id++,
-      type:
-        e.detail.node.nodeType == 1
-          ? 'element'
-          : e.detail.node.nodeValue
-          ? 'text'
-          : 'anchor',
-      properties: serializeDOM(e.detail.node),
-      _ctx: e.detail.ctx,
-      _real: e.detail.node
-    }
-    nodeMap.set(node.id, node)
-    nodeMap.set(e.detail.node, node)
-
-    let target = nodeMap.get(e.detail.target)
-    if (!target || target._ctx != e.detail.ctx) {
-      target = nodeMap.get(e.detail.ctx)
-    }
-
-    const anchor = nodeMap.get(e.detail.anchor)
-    window.postMessage({
-      target: target ? target.id : null,
-      anchor: anchor ? anchor.id : null,
-      type: 'addNode',
-      node: serializeNode(node)
-    })
-  })
-
-  document.addEventListener('SvelteInsertComponent', e => {
-    const node = {
-      id: _id++,
-      type: 'component',
-      properties: serializeComponent(e.detail.component),
-      _ctx: e.detail.component.$$.ctx,
-      _real: e.detail.component
-    }
-    nodeMap.set(node.id, node)
-    nodeMap.set(e.detail.component.$$.ctx, node)
-
-    let target = nodeMap.get(e.detail.target)
-    if (!target || target._ctx != e.detail.ctx) {
-      target = nodeMap.get(e.detail.ctx)
-    }
-
-    const anchor = nodeMap.get(e.detail.anchor)
-    window.postMessage({
-      target: target ? target.id : null,
-      anchor: anchor ? anchor.id : null,
-      type: 'addNode',
-      node: serializeNode(node)
-    })
-  })
-
-  document.addEventListener('SvelteRemoveNode', e => {
-    const node = nodeMap.get(e.detail.node)
-    nodeMap.delete(e.detail.node)
-    window.postMessage({
-      type: 'removeNode',
-      node: serializeNode(node)
-    })
-  })
-
-  document.addEventListener('SvelteUpdate', e => {
-    const node = nodeMap.get(e.detail.$$.ctx)
-    Object.assign(node.properties, serializeInternals(e.detail.$$))
-    window.postMessage({
-      type: 'updateNode',
-      node: serializeNode(node)
-    })
-  })
+  window.addEventListener('message', e => handleMessage(e.data), false)
 
   function handleMessage(msg) {
     switch (msg.type) {
       case 'setSelected':
         const node = nodeMap.get(msg.nodeId)
-        if (node) (window.wrappedJSObject || window).$s = node._real
+        if (node) window.$s = node.detail
 
         break
     }
   }
+
+  function serializeNode(node) {
+    const serialized = {
+      id: node.id,
+      type: node.type,
+      tagName: node.tagName
+    }
+    switch (node.type) {
+      case 'component':
+        const ctx = JSON.parse(JSON.stringify(node.detail.$$.ctx))
+        serialized.detail = {
+          attributes: node.detail.$$.props.reduce((o, name) => {
+            const value = ctx[name]
+            if (value === undefined) return o
+
+            delete ctx[name]
+            o.push({ name, value, isBound: name in node.detail.$$.bound })
+            return o
+          }, []),
+          ctx
+        }
+        break
+      case 'element':
+        serialized.detail = {
+          attributes: Array.from(node.detail.attributes).map(attr => ({
+            name: attr.name,
+            value: attr.value
+          }))
+        }
+
+        break
+      case 'text':
+        serialized.detail = {
+          nodeValue: node.detail.nodeValue
+        }
+        break
+      case 'block':
+        serialized.detail = {
+          ctx: JSON.parse(JSON.stringify(node.detail.ctx)),
+          source: node.detail.source
+        }
+    }
+    return serialized
+  }
+
+  const nodeMap = new Map()
+  let _id = 0
+  let currentComponent
+
+  function addNode(node, target, anchor) {
+    nodeMap.set(node.id, node)
+    nodeMap.set(node.detail, node)
+
+    let targetNode = nodeMap.get(target)
+    if (!targetNode || targetNode.parentComponent != node.parentComponent) {
+      targetNode = node.parentComponent
+    }
+
+    const anchorNode = nodeMap.get(anchor)
+    window.postMessage({
+      target: targetNode ? targetNode.id : null,
+      anchor: anchorNode ? anchorNode.id : null,
+      type: 'addNode',
+      node: serializeNode(node)
+    })
+  }
+
+  function onElementAdded(element, target, anchor) {
+    if (!element._appendChild) {
+      element._appendChild = element.appendChild
+      element.appendChild = appendChild
+    }
+
+    if (!element._insertBefore) {
+      element._insertBefore = element.insertBefore
+      element.insertBefore = insertBefore
+    }
+
+    if (!element._removeChild) {
+      element._removeChild = element.removeChild
+      element.removeChild = removeChild
+    }
+
+    addNode(
+      {
+        id: _id++,
+        type:
+          element.nodeType == 1
+            ? 'element'
+            : element.nodeValue && element.nodeValue != ' '
+            ? 'text'
+            : 'anchor',
+        detail: element,
+        tagName: element.nodeName.toLowerCase(),
+        parentComponent: currentComponent
+      },
+      target,
+      anchor
+    )
+
+    for (const child of element.childNodes) {
+      if (!nodeMap.has(child)) onElementAdded(child, element)
+    }
+  }
+
+  function appendChild(child) {
+    onElementAdded(child, this)
+    this._appendChild(child)
+  }
+
+  function insertBefore(child, reference) {
+    onElementAdded(child, this, reference)
+    this._insertBefore(child, reference)
+  }
+
+  function removeChild(child) {
+    const node = nodeMap.get(child)
+    nodeMap.delete(node.id)
+    nodeMap.delete(node)
+    window.postMessage({
+      type: 'removeNode',
+      node: serializeNode(node)
+    })
+    this._removeChild(child)
+  }
+
+  document.addEventListener('SvelteRegisterComponent', e => {
+    const mountFn = e.detail.component.$$.fragment.m
+    const patchFn = e.detail.component.$$.fragment.p
+    const detachFn = e.detail.component.$$.fragment.d
+    e.detail.component.$$.fragment.m = (target, anchor) => {
+      const node = {
+        id: _id++,
+        type: 'component',
+        detail: e.detail.component,
+        tagName: e.detail.tagName,
+        parentComponent: currentComponent
+      }
+      addNode(node, target, anchor)
+      currentComponent = node
+
+      if (!target._appendChild) {
+        target._appendChild = target.appendChild
+        target.appendChild = appendChild
+      }
+
+      if (!target._insertBefore) {
+        target._insertBefore = target.insertBefore
+        target.insertBefore = insertBefore
+      }
+
+      if (!target._removeChild) {
+        target._removeChild = target.removeChild
+        target.removeChild = removeChild
+      }
+
+      mountFn(target, anchor)
+
+      currentComponent = currentComponent.parentComponent
+    }
+
+    e.detail.component.$$.fragment.p = (changed, ctx) => {
+      const parentComponent = currentComponent
+      currentComponent = nodeMap.get(e.detail.component)
+
+      window.postMessage({
+        type: 'updateNode',
+        node: serializeNode(currentComponent)
+      })
+
+      patchFn(changed, ctx)
+      currentComponent = parentComponent
+    }
+
+    e.detail.component.$$.fragment.d = detaching => {
+      const node = nodeMap.get(e.detail.component)
+      nodeMap.delete(node.id)
+      nodeMap.delete(e.detail.component)
+      window.postMessage({
+        type: 'removeNode',
+        node: serializeNode(node)
+      })
+      detachFn(detaching)
+    }
+  })
+
+  document.addEventListener('SvelteRegisterEachBlock', e => {
+    const mountFn = e.detail.block.m
+    const patchFn = e.detail.block.p
+    const detachFn = e.detail.block.d
+    e.detail.block.m = (target, anchor) => {
+      let node = nodeMap.get(e.detail.blockId)
+      if (!node) {
+        node = {
+          id: _id++,
+          type: 'block',
+          detail: {
+            ctx: e.detail.ctx,
+            source: e.detail.source
+          },
+          tagName: 'each',
+          parentComponent: currentComponent
+        }
+        nodeMap.set(e.detail.blockId, node)
+        addNode(node, target, anchor)
+      }
+      currentComponent = node
+
+      mountFn(target, anchor)
+      currentComponent = currentComponent.parentComponent
+    }
+
+    e.detail.block.p = (changed, ctx) => {
+      const parentComponent = currentComponent
+      currentComponent = nodeMap.get(e.detail.blockId)
+
+      window.postMessage({
+        type: 'updateNode',
+        node: serializeNode(currentComponent)
+      })
+
+      patchFn(changed, ctx)
+      currentComponent = parentComponent
+    }
+
+    e.detail.block.d = detaching => {
+      const node = nodeMap.get(e.detail.blockId)
+      nodeMap.delete(node.id)
+      nodeMap.delete(node.detail)
+      nodeMap.delete(e.detail.blockId)
+      window.postMessage({
+        type: 'removeNode',
+        node: serializeNode(node)
+      })
+      detachFn(detaching)
+    }
+  })
 
   window.postMessage({ type: 'loadInline' })
 })()

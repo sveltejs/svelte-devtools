@@ -53,7 +53,8 @@
 >
   <svelte:component
     this={nodeType}
-    {...node.properties}
+    tagName={node.tagName}
+    {...node.detail}
     hasChildren={node.children.length != 0}
     hover={$hoveredNodeId == node.id}
     selected={$selectedNode.id == node.id}

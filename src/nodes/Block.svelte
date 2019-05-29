@@ -5,6 +5,7 @@
   export let hover
   export let selected
   export let tagName
+  export let source
 
   let collapsed
 </script>
@@ -22,7 +23,7 @@
 
 <div class="tag-open tag-name" class:hover class:selected {style}>
   <Collapse {selected} bind:collapsed />
-  &lbrace;#{tagName}&rbrace;
+  {#if source}{source}{:else}&lbrace;#{tagName}&rbrace;{/if}
   {#if collapsed}...&lbrace;/{tagName}&rbrace;{/if}
 </div>
 {#if !collapsed}

@@ -7,8 +7,8 @@
   let width = 300
 
   $: ctx =
-    $selectedNode.properties &&
-      ? Object.entries($selectedNode.properties.ctx)
+    $selectedNode.detail && $selectedNode.detail.ctx
+      ? Object.entries($selectedNode.detail.ctx)
       : []
 </script>
 
@@ -101,11 +101,11 @@
         <img src="/devtools/tool-inspector.svg" alt="Inspect" title="Inspect" />
       </button>
     </div>
-    {#if $selectedNode.type == 'component' || $selectedNode.type == 'block'}
+    {#if $selectedNode.type == 'component'}
       <h1>Props</h1>
-      {#if $selectedNode.properties.attributes.length}
+      {#if $selectedNode.detail.attributes.length}
         <ul>
-          {#each $selectedNode.properties.attributes as { name, value } (name)}
+          {#each $selectedNode.detail.attributes as { name, value } (name)}
             <Editable id={$selectedNode.id} key={name} {value} />
           {/each}
         </ul>
@@ -122,11 +122,25 @@
       {:else}
         <div class="empty">No internal state</div>
       {/if}
+    {:else if $selectedNode.type == 'block'}
+      <h1>State</h1>
+      {#if ctx.length}
+        <ul>
+          {#each ctx as [name, value] (name)}
+            <li>
+              {name}: &nbsp;
+              <span>"{value}"</span>
+            </li>
+          {/each}
+        </ul>
+      {:else}
+        <div class="empty">No internal state</div>
+      {/if}
     {:else if $selectedNode.type == 'element'}
       <h1>Attributes</h1>
-      {#if $selectedNode.properties.attributes.length}
+      {#if $selectedNode.detail.attributes.length}
         <ul>
-          {#each $selectedNode.properties.attributes as { name, value } (name)}
+          {#each $selectedNode.detail.attributes as { name, value } (name)}
             <li>
               {name}: &nbsp;
               <span>"{value}"</span>

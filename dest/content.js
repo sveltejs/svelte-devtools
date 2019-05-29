@@ -7,7 +7,7 @@
   port.onMessage.addListener(window.postMessage)
   window.addEventListener(
     'message',
-    e => e.source == window && port.postMessage(event.data),
+    e => e.source == window && port.postMessage(e.data),
     false
   )
 })()
