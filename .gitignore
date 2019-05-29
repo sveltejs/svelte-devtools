@@ -3,3 +3,6 @@ dest/devtools/styles.css
 dest/devtools/styles.css.map
 dest/devtools/bundle.js
 credentials
+test/public/bundle.js
+test/public/styles.css
+test/public/styles.css.map

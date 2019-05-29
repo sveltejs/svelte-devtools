@@ -5,6 +5,9 @@ import prettier from 'prettier'
 import { promises as fs } from 'fs'
 
 async function format(path) {
+  if (path == 'dest/devtools/bundle.js' || path == 'test/public/bundle.js')
+    return true
+
   try {
     const contents = await fs.readFile(path, { encoding: 'utf8' })
     const formatted = prettier.format(contents, {
