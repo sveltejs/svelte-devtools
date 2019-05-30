@@ -4,6 +4,7 @@
   export let id
   export let key
   export let value
+  export let readOnly
 
   async function commit(e) {
     isEditing = false
@@ -38,7 +39,7 @@
     color: red;
   }
 
-  span {
+  span:not(.readOnly) {
     flex-grow: 1;
     cursor: pointer;
   }
@@ -78,7 +79,11 @@
       on:blur={commit}
     />
   {:else}
-    <span class={typeof value} on:click={() => (isEditing = true)}>
+    <span
+      class={typeof value}
+      class:readOnly
+      on:click={() => (isEditing = !readOnly)}
+    >
       {JSON.stringify(value)}
     </span>
   {/if}

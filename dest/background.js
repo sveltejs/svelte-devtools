@@ -119,6 +119,7 @@ function interceptRequest(details) {
   filter.ondata = event => {
     const str = decoder.decode(event.data, { stream: true })
     const instrumented = instrument(str)
+    console.log(instrumented)
     if (!instrumented) {
       filter.write(event.data)
       filter.disconnect()

@@ -26,21 +26,21 @@
       case 'component':
         const ctx = JSON.parse(JSON.stringify(node.detail.$$.ctx))
         serialized.detail = {
-          attributes: node.detail.$$.props.reduce((o, name) => {
-            const value = ctx[name]
+          attributes: node.detail.$$.props.reduce((o, key) => {
+            const value = ctx[key]
             if (value === undefined) return o
 
-            delete ctx[name]
-            o.push({ name, value, isBound: name in node.detail.$$.bound })
+            delete ctx[key]
+            o.push({ key, value, isBound: key in node.detail.$$.bound })
             return o
           }, []),
-          ctx
+          ctx: Object.entries(ctx).map(([key, value]) => ({ key, value }))
         }
         break
       case 'element':
         serialized.detail = {
           attributes: Array.from(node.detail.attributes).map(attr => ({
-            name: attr.name,
+            key: attr.name,
             value: attr.value
           }))
         }
@@ -53,7 +53,9 @@
         break
       case 'block':
         serialized.detail = {
-          ctx: JSON.parse(JSON.stringify(node.detail.ctx)),
+          ctx: Object.entries(JSON.parse(JSON.stringify(node.detail.ctx))).map(
+            ([key, value]) => ({ key, value })
+          ),
           source: node.detail.source
         }
     }
@@ -142,6 +144,15 @@
   }
 
   document.addEventListener('SvelteRegisterComponent', e => {
+    Promise.resolve().then(() => {
+      if (!Object.keys(e.detail.component.$$.bound).length) return
+
+      window.postMessage({
+        type: 'updateNode',
+        node: serializeNode(nodeMap.get(e.detail.component))
+      })
+    })
+
     const mountFn = e.detail.component.$$.fragment.m
     const patchFn = e.detail.component.$$.fragment.p
     const detachFn = e.detail.component.$$.fragment.d
