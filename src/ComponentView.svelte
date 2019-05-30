@@ -1,15 +1,10 @@
 <script>
   import { devtools } from 'chrome'
   import { selectedNode } from './store.js'
-  import Editable from './Editable.svelte'
+  import EditableList from './EditableList.svelte'
 
   let isResizing = false
   let width = 300
-
-  $: ctx =
-    $selectedNode.detail && $selectedNode.detail.ctx
-      ? Object.entries($selectedNode.detail.ctx)
-      : []
 </script>
 
 <style>
@@ -79,11 +74,6 @@
   span {
     color: rgb(102, 153, 0);
   }
-
-  .empty {
-    margin: 8px 0 0 12px;
-    color: rgb(118, 118, 118);
-  }
 </style>
 
 <svelte:window
@@ -103,53 +93,26 @@
     </div>
     {#if $selectedNode.type == 'component'}
       <h1>Props</h1>
-      {#if $selectedNode.detail.attributes.length}
-        <ul>
-          {#each $selectedNode.detail.attributes as { name, value } (name)}
-            <Editable id={$selectedNode.id} key={name} {value} />
-          {/each}
-        </ul>
-      {:else}
-        <div class="empty">No props</div>
-      {/if}
+      <EditableList
+        id={$selectedNode.id}
+        entries={$selectedNode.detail.attributes}
+      />
       <h1 class="state-header">State</h1>
-      {#if ctx.length}
-        <ul>
-          {#each ctx as [key, value] (key)}
-            <Editable id={$selectedNode.id} {key} {value} />
-          {/each}
-        </ul>
-      {:else}
-        <div class="empty">No internal state</div>
-      {/if}
+      <EditableList id={$selectedNode.id} entries={$selectedNode.detail.ctx} />
     {:else if $selectedNode.type == 'block'}
       <h1>State</h1>
-      {#if ctx.length}
-        <ul>
-          {#each ctx as [name, value] (name)}
-            <li>
-              {name}: &nbsp;
-              <span>"{value}"</span>
-            </li>
-          {/each}
-        </ul>
-      {:else}
-        <div class="empty">No internal state</div>
-      {/if}
+      <EditableList
+        readOnly
+        id={$selectedNode.id}
+        entries={$selectedNode.detail.ctx}
+      />
     {:else if $selectedNode.type == 'element'}
       <h1>Attributes</h1>
-      {#if $selectedNode.detail.attributes.length}
-        <ul>
-          {#each $selectedNode.detail.attributes as { name, value } (name)}
-            <li>
-              {name}: &nbsp;
-              <span>"{value}"</span>
-            </li>
-          {/each}
-        </ul>
-      {:else}
-        <div class="empty">No attributes</div>
-      {/if}
+      <EditableList
+        readOnly
+        id={$selectedNode.id}
+        entries={$selectedNode.detail.attributes}
+      />
     {/if}
   </div>
 {/if}

@@ -2,6 +2,7 @@
   import BasicTree from './BasicTree/BasicTree.svelte'
   import Detach from './Detach/Detach.svelte'
   import Blocks from './Blocks.svelte'
+  import Bind from './Bind/Bind.svelte'
 </script>
 
 <style>
@@ -33,4 +34,5 @@
   <BasicTree />
   <Detach />
   <Blocks />
+  <Bind />
 </div>

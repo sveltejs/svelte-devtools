@@ -1,5 +1,8 @@
 <script>
   let valueList = ['a', 'b', 'c']
+
+  let counter = 0
+  setInterval(() => (counter += 1), 5000)
 </script>
 
 <div>

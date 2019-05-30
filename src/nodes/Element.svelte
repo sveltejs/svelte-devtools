@@ -1,5 +1,6 @@
 <script>
   import Collapse from './Collapse.svelte'
+  import Attributes from './Attributes.svelte'
 
   export let style
   export let hasChildren
@@ -21,20 +22,6 @@
   span {
     color: rgb(0, 116, 232);
   }
-
-  .attr-name {
-    color: rgb(221, 0, 169);
-  }
-
-  .attr-value {
-    display: inline-block;
-    overflow: hidden;
-    max-width: 200px;
-    color: rgb(0, 62, 170);
-    vertical-align: bottom;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
 </style>
 
 {#if hasChildren}
@@ -42,12 +29,7 @@
     <Collapse {selected} bind:collapsed />
     &lt;
     <span>{tagName}</span>
-    {#each attributes as { name, value } (name)}
-      &nbsp;
-      <span class="attr-name">{name}</span>
-      =
-      <span class="attr-value">{JSON.stringify(value)}</span>
-    {/each}
+    <Attributes values={attributes} />
     &gt;
     {#if collapsed}
       ...&lt;/
@@ -67,12 +49,7 @@
   <div class:hover class:selected {style}>
     &lt;
     <span>{tagName}</span>
-    {#each attributes as { name, value } (name)}
-      &nbsp;
-      <span class="attr-name">{name}</span>
-      =
-      <span class="attr-value">{JSON.stringify(value)}</span>
-    {/each}
-     &nbsp;/&gt;
+    <Attributes values={attributes} />
+    &nbsp;/&gt;
   </div>
 {/if}
