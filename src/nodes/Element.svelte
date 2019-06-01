@@ -9,8 +9,7 @@
   export let highlighted
   export let tagName
   export let attributes = []
-
-  let collapsed
+  export let collapsed
 </script>
 
 <style>

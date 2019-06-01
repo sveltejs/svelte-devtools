@@ -4,6 +4,12 @@
     component.$unsafe_set({ [key]: value })
   }
 
+  window.__svelte_devtools_select_element = function(element) {
+    let node = nodeMap.get(element)
+    if (node)
+      window.postMessage({ type: 'setSelected', node: serializeNode(node) })
+  }
+
   window.addEventListener('message', e => handleMessage(e.data), false)
 
   function handleMessage(msg) {

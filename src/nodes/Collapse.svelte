@@ -1,6 +1,6 @@
 <script>
   export let selected = false
-  export let collapsed = false
+  export let collapsed
 </script>
 
 <style>

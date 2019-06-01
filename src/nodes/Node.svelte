@@ -54,6 +54,7 @@
   <svelte:component
     this={nodeType}
     tagName={node.tagName}
+    bind:collapsed={node.collapsed}
     {...node.detail}
     hasChildren={node.children.length != 0}
     hover={$hoveredNodeId == node.id}
