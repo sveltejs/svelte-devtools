@@ -138,11 +138,11 @@
   const observer = new MutationObserver(list =>
     list.forEach(mutation => {
       const node = nodeMap.get(mutation.target)
-      if (node)
-        window.postMessage({
-          type: 'updateNode',
-          node: serializeNode(node)
-        })
+      if (node) if (node.type == 'anchor') node.type = 'text'
+      window.postMessage({
+        type: 'updateNode',
+        node: serializeNode(node)
+      })
     })
   )
 
