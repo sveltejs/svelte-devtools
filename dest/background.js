@@ -21,7 +21,7 @@ function instrument(str) {
         ${post}`
     )
     .replace(
-      /(\/\/.+?({(?:#|:).+})?\s+function\s+create_((?:each|if|else)_block(?:_\d+?)?(?:\$\d+?)?)\s*\(\s*ctx\s*\)\s*{[^]+?)return\s+({[^]+?}\s*;)\s*}/g,
+      /(\/\/.+?({(?:#|:).+})?\s+function\s+create_((?:each|if|else|pending|then|catch)_block(?:_\d+?)?(?:\$\d+?)?)\s*\(\s*ctx\s*\)\s*{[^]+?)return\s+({[^]+?}\s*;)\s*}/g,
       (_, fn, source, blockId, block) => `${fn}
         const block = ${block}
         document.dispatchEvent(new CustomEvent("SvelteRegisterBlock", { detail: { block, blockId: '${blockId}', source: "${

@@ -221,12 +221,14 @@
     }
   })
 
+  let lastPromiseParent = null
   document.addEventListener('SvelteRegisterBlock', e => {
     const mountFn = e.detail.block.m
     const patchFn = e.detail.block.p
     const detachFn = e.detail.block.d
     const blockId = e.detail.blockId
     e.detail.block.m = (target, anchor) => {
+      const tagName = blockId.substring(0, blockId.indexOf('_'))
       let node = nodeMap.get(blockId)
       if (!node) {
         node = {
@@ -236,8 +238,11 @@
             ctx: e.detail.ctx,
             source: e.detail.source
           },
-          tagName: blockId.substring(0, blockId.indexOf('_')),
-          parentComponent: currentComponent
+          tagName: tagName == 'pending' ? 'await' : tagName,
+          parentComponent:
+            tagName == 'then' || tagName == 'catch'
+              ? currentComponent || lastPromiseParent
+              : currentComponent
         }
         nodeMap.set(blockId, node)
         addNode(node, target, anchor)
@@ -263,6 +268,8 @@
 
     e.detail.block.d = detaching => {
       const node = nodeMap.get(blockId)
+      if (node.tagName == 'await') lastPromiseParent = node.parentComponent
+
       nodeMap.delete(node.id)
       nodeMap.delete(node.detail)
       nodeMap.delete(blockId)
