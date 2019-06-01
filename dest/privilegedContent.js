@@ -91,20 +91,7 @@
   }
 
   function onElementAdded(element, target, anchor) {
-    if (!element._appendChild) {
-      element._appendChild = element.appendChild
-      element.appendChild = appendChild
-    }
-
-    if (!element._insertBefore) {
-      element._insertBefore = element.insertBefore
-      element.insertBefore = insertBefore
-    }
-
-    if (!element._removeChild) {
-      element._removeChild = element.removeChild
-      element.removeChild = removeChild
-    }
+    instrumentElement(element)
 
     addNode(
       {
@@ -149,6 +136,36 @@
     this._removeChild(child)
   }
 
+  const observer = new MutationObserver(list =>
+    list.forEach(mutation => {
+      const node = nodeMap.get(mutation.target)
+      if (node)
+        window.postMessage({
+          type: 'updateNode',
+          node: serializeNode(node)
+        })
+    })
+  )
+
+  function instrumentElement(element) {
+    if (!element._appendChild) {
+      element._appendChild = element.appendChild
+      element.appendChild = appendChild
+    }
+
+    if (!element._insertBefore) {
+      element._insertBefore = element.insertBefore
+      element.insertBefore = insertBefore
+    }
+
+    if (!element._removeChild) {
+      element._removeChild = element.removeChild
+      element.removeChild = removeChild
+    }
+
+    observer.observe(element, { characterData: true })
+  }
+
   document.addEventListener('SvelteRegisterComponent', e => {
     Promise.resolve().then(() => {
       if (!Object.keys(e.detail.component.$$.bound).length) return
@@ -172,21 +189,7 @@
       }
       addNode(node, target, anchor)
       currentComponent = node
-
-      if (!target._appendChild) {
-        target._appendChild = target.appendChild
-        target.appendChild = appendChild
-      }
-
-      if (!target._insertBefore) {
-        target._insertBefore = target.insertBefore
-        target.insertBefore = insertBefore
-      }
-
-      if (!target._removeChild) {
-        target._removeChild = target.removeChild
-        target.removeChild = removeChild
-      }
+      instrumentElement(target)
 
       mountFn(target, anchor)
 
@@ -239,7 +242,6 @@
         nodeMap.set(blockId, node)
         addNode(node, target, anchor)
       }
-      console.log('block', node)
       currentComponent = node
 
       mountFn(target, anchor)
