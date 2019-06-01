@@ -31,6 +31,7 @@ port.onMessage.addListener(msg => {
 
     case 'addNode': {
       msg.node.children = []
+      msg.node.collapsed = true
 
       const targetNode = nodeMap.get(msg.target)
       nodeMap.set(msg.node.id, msg.node)
@@ -66,6 +67,13 @@ port.onMessage.addListener(msg => {
       const selected = get(selectedNode)
       if (selected && selected.id == msg.node.id) selectedNode.update(o => o)
 
+      break
+    }
+
+    case 'setSelected': {
+      let node = nodeMap.get(msg.node.id)
+      selectedNode.set(node)
+      while ((node = node.parent)) node.collapsed = false
       break
     }
   }

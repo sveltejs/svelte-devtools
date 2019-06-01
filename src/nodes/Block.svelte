@@ -6,8 +6,7 @@
   export let selected
   export let tagName
   export let source
-
-  let collapsed
+  export let collapsed
 </script>
 
 <style>
