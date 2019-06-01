@@ -5,7 +5,7 @@
 </script>
 
 <style>
-  div {
+  ul {
     flex-grow: 1;
     margin-top: 8px;
   }
@@ -19,11 +19,11 @@
 </style>
 
 {#if $rootNodes.length}
-  <div on:mouseleave={e => ($hoveredNodeId = null)}>
+  <ul on:mouseleave={e => ($hoveredNodeId = null)}>
     {#each $rootNodes as node (node.id)}
       <Node {node} />
     {/each}
-  </div>
+  </ul>
   <ComponentView />
 {:else}
   <p>

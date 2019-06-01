@@ -80,6 +80,7 @@ async function loadInlineScripts() {
           const newTag = document.createElement('script')
           newTag.text = "${script.source
             .replace(/"/g, '\\"')
+            .replace(/\\n/g, '\\\\n')
             .replace(/\n/g, '\\n')}"
           if (tag == null)
             document.head.append(newTag)
