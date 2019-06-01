@@ -21,13 +21,12 @@ function instrument(str) {
         ${post}`
     )
     .replace(
-      /(\/\/.+?({#each.+})\s+function\s+create_each_(block(?:_\d+?)?(?:\$\d+?)?)\(\s*ctx\s*\)\s*{[^]+?)return\s+({[^]+?}\s*;)\s*}/,
+      /(\/\/.+?({(?:#|:).+})?\s+function\s+create_((?:each|if|else)_block(?:_\d+?)?(?:\$\d+?)?)\s*\(\s*ctx\s*\)\s*{[^]+?)return\s+({[^]+?}\s*;)\s*}/g,
       (_, fn, source, blockId, block) => `${fn}
         const block = ${block}
-        document.dispatchEvent(new CustomEvent("SvelteRegisterEachBlock", { detail: { block, blockId: '${blockId}', source: "${source.replace(
-        /"/g,
-        '\\"'
-      )}", ctx } }))
+        document.dispatchEvent(new CustomEvent("SvelteRegisterBlock", { detail: { block, blockId: '${blockId}', source: "${
+        source ? source.replace(/"/g, '\\"') : ''
+      }", ctx } }))
         return block
       }`
     )

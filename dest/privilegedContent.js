@@ -212,12 +212,13 @@
     }
   })
 
-  document.addEventListener('SvelteRegisterEachBlock', e => {
+  document.addEventListener('SvelteRegisterBlock', e => {
     const mountFn = e.detail.block.m
     const patchFn = e.detail.block.p
     const detachFn = e.detail.block.d
+    const blockId = e.detail.blockId
     e.detail.block.m = (target, anchor) => {
-      let node = nodeMap.get(e.detail.blockId)
+      let node = nodeMap.get(blockId)
       if (!node) {
         node = {
           id: _id++,
@@ -226,12 +227,13 @@
             ctx: e.detail.ctx,
             source: e.detail.source
           },
-          tagName: 'each',
+          tagName: blockId.substring(0, blockId.indexOf('_')),
           parentComponent: currentComponent
         }
-        nodeMap.set(e.detail.blockId, node)
+        nodeMap.set(blockId, node)
         addNode(node, target, anchor)
       }
+      console.log('block', node)
       currentComponent = node
 
       mountFn(target, anchor)
@@ -240,7 +242,7 @@
 
     e.detail.block.p = (changed, ctx) => {
       const parentComponent = currentComponent
-      currentComponent = nodeMap.get(e.detail.blockId)
+      currentComponent = nodeMap.get(blockId)
 
       window.postMessage({
         type: 'updateNode',
@@ -252,10 +254,10 @@
     }
 
     e.detail.block.d = detaching => {
-      const node = nodeMap.get(e.detail.blockId)
+      const node = nodeMap.get(blockId)
       nodeMap.delete(node.id)
       nodeMap.delete(node.detail)
-      nodeMap.delete(e.detail.blockId)
+      nodeMap.delete(blockId)
       window.postMessage({
         type: 'removeNode',
         node: serializeNode(node)
