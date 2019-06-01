@@ -75,7 +75,7 @@ port.onMessage.addListener(msg => {
       break
     }
 
-    case 'setSelected': {
+    case 'inspect': {
       let node = nodeMap.get(msg.node.id)
       selectedNode.set(node)
       while ((node = node.parent)) node.collapsed = false
