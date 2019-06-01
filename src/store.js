@@ -41,8 +41,13 @@ port.onMessage.addListener(msg => {
       }
 
       msg.node.parent = targetNode
+
+      let index = -1
       if (msg.anchor) {
-        const index = targetNode.children.findIndex(o => o.id == msg.anchor)
+        index = targetNode.children.findIndex(o => o.id == msg.anchor)
+      }
+
+      if (index != -1) {
         targetNode.children.splice(index, 0, msg.node)
       } else {
         targetNode.children.push(msg.node)
