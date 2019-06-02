@@ -6,6 +6,7 @@
 
 <style>
   ul {
+    overflow: auto;
     flex-grow: 1;
     margin-top: 8px;
   }
