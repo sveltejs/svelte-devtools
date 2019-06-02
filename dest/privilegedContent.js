@@ -172,30 +172,32 @@
     })
   )
 
-  document._createElement = document.createElement
-  document.createElement = type => {
-    if (svelteDepth < 1) return document._createElement(type)
+  if (!document._createElement) {
+    document._createElement = document.createElement
+    document.createElement = type => {
+      if (svelteDepth < 1) return document._createElement(type)
 
-    const element = document._createElement(type)
+      const element = document._createElement(type)
 
-    element._addEventListener = element.addEventListener
-    element.addEventListener = addEventListener
+      element._addEventListener = element.addEventListener
+      element.addEventListener = addEventListener
 
-    element._removeEventListener = element.removeEventListener
-    element.removeEventListener = removeEventListener
+      element._removeEventListener = element.removeEventListener
+      element.removeEventListener = removeEventListener
 
-    element._appendChild = element.appendChild
-    element.appendChild = appendChild
+      element._appendChild = element.appendChild
+      element.appendChild = appendChild
 
-    element._insertBefore = element.insertBefore
-    element.insertBefore = insertBefore
+      element._insertBefore = element.insertBefore
+      element.insertBefore = insertBefore
 
-    element._removeChild = element.removeChild
-    element.removeChild = removeChild
+      element._removeChild = element.removeChild
+      element.removeChild = removeChild
 
-    observer.observe(element, { characterData: true })
+      observer.observe(element, { characterData: true })
 
-    return element
+      return element
+    }
   }
 
   document.addEventListener('SvelteRegisterComponent', e => {
