@@ -1,9 +1,11 @@
 <script>
-  export let values
+  export let attributes
+  export let listeners
 </script>
 
 <style>
   .attr-name {
+    position: relative;
     color: rgb(221, 0, 169);
   }
 
@@ -18,7 +20,7 @@
   }
 </style>
 
-{#each values as { key, value, isBound } (key)}
+{#each attributes as { key, value, isBound } (key)}
   &nbsp;
   <span class="attr-name">
     {#if isBound}bind:{/if}
@@ -26,4 +28,9 @@
   </span>
   =
   <span class="attr-value">{JSON.stringify(value)}</span>
+{/each}
+
+{#each listeners as { type, handler } (type)}
+  &nbsp;
+  <span class="attr-name" data-tooltip={handler}>on:{type}</span>
 {/each}

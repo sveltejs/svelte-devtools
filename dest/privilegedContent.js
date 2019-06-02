@@ -39,6 +39,11 @@
             o.push({ key, value, isBound: key in node.detail.$$.bound })
             return o
           }, []),
+          listeners: Object.entries(node.detail.$$.callbacks).reduce(
+            (list, [type, value]) =>
+              list.concat(value.map(o => ({ type, handler: o.toString() }))),
+            []
+          ),
           ctx: Object.entries(ctx).map(([key, value]) => ({ key, value }))
         }
         break
@@ -47,7 +52,13 @@
           attributes: Array.from(node.detail.attributes).map(attr => ({
             key: attr.name,
             value: attr.value
-          }))
+          })),
+          listeners: node.detail._listeners
+            ? node.detail._listeners.map(o => ({
+                type: o.type,
+                handler: o.handler.toString()
+              }))
+            : []
         }
 
         break
@@ -69,6 +80,7 @@
 
   const nodeMap = new Map()
   let _id = 0
+  let svelteDepth = 0
   let currentComponent
 
   function addNode(node, target, anchor) {
@@ -90,8 +102,6 @@
   }
 
   function onElementAdded(element, target, anchor) {
-    instrumentElement(element)
-
     addNode(
       {
         id: _id++,
@@ -112,6 +122,22 @@
     for (const child of element.childNodes) {
       if (!nodeMap.has(child)) onElementAdded(child, element)
     }
+  }
+
+  function addEventListener(type, handler, options) {
+    if (!this._listeners) this._listeners = []
+    this._listeners.push({ type, handler })
+    this._addEventListener(type, handler, options)
+  }
+
+  function removeEventListener(type, handler, options) {
+    if (this._listeners) {
+      const index = this._listeners.findIndex(
+        o => o.type == type && o.handler == handler
+      )
+      if (index != -1) this._listeners.splice(index, 1)
+    }
+    this._removeEventListener(type, handler, options)
   }
 
   function appendChild(child) {
@@ -146,23 +172,30 @@
     })
   )
 
-  function instrumentElement(element) {
-    if (!element._appendChild) {
-      element._appendChild = element.appendChild
-      element.appendChild = appendChild
-    }
+  document._createElement = document.createElement
+  document.createElement = type => {
+    if (svelteDepth < 1) return document._createElement(type)
 
-    if (!element._insertBefore) {
-      element._insertBefore = element.insertBefore
-      element.insertBefore = insertBefore
-    }
+    const element = document._createElement(type)
 
-    if (!element._removeChild) {
-      element._removeChild = element.removeChild
-      element.removeChild = removeChild
-    }
+    element._addEventListener = element.addEventListener
+    element.addEventListener = addEventListener
+
+    element._removeEventListener = element.removeEventListener
+    element.removeEventListener = removeEventListener
+
+    element._appendChild = element.appendChild
+    element.appendChild = appendChild
+
+    element._insertBefore = element.insertBefore
+    element.insertBefore = insertBefore
+
+    element._removeChild = element.removeChild
+    element.removeChild = removeChild
 
     observer.observe(element, { characterData: true })
+
+    return element
   }
 
   document.addEventListener('SvelteRegisterComponent', e => {
@@ -175,10 +208,17 @@
       })
     })
 
+    const createFn = e.detail.component.$$.fragment.c
     const mountFn = e.detail.component.$$.fragment.m
     const patchFn = e.detail.component.$$.fragment.p
     const detachFn = e.detail.component.$$.fragment.d
+    e.detail.component.$$.fragment.c = () => {
+      svelteDepth++
+      createFn()
+      svelteDepth--
+    }
     e.detail.component.$$.fragment.m = (target, anchor) => {
+      svelteDepth++
       const node = {
         id: _id++,
         type: 'component',
@@ -188,14 +228,15 @@
       }
       addNode(node, target, anchor)
       currentComponent = node
-      instrumentElement(target)
 
       mountFn(target, anchor)
 
       currentComponent = currentComponent.parentComponent
+      svelteDepth--
     }
 
     e.detail.component.$$.fragment.p = (changed, ctx) => {
+      svelteDepth++
       const parentComponent = currentComponent
       currentComponent = nodeMap.get(e.detail.component)
 
@@ -206,9 +247,11 @@
 
       patchFn(changed, ctx)
       currentComponent = parentComponent
+      svelteDepth--
     }
 
     e.detail.component.$$.fragment.d = detaching => {
+      svelteDepth++
       const node = nodeMap.get(e.detail.component)
       nodeMap.delete(node.id)
       nodeMap.delete(e.detail.component)
@@ -217,6 +260,7 @@
         node: serializeNode(node)
       })
       detachFn(detaching)
+      svelteDepth--
     }
   })
 

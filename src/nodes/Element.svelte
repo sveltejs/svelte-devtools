@@ -9,6 +9,7 @@
   export let highlighted
   export let tagName
   export let attributes = []
+  export let listeners = []
   export let collapsed
 </script>
 
@@ -28,7 +29,7 @@
     <Collapse {selected} bind:collapsed />
     &lt;
     <span>{tagName}</span>
-    <Attributes values={attributes} />
+    <Attributes {attributes} {listeners} />
     &gt;
     {#if collapsed}
       ...&lt;/
@@ -48,7 +49,7 @@
   <div class:hover class:selected {style}>
     &lt;
     <span>{tagName}</span>
-    <Attributes values={attributes} />
+    <Attributes {attributes} {listeners} />
     &nbsp;/&gt;
   </div>
 {/if}
