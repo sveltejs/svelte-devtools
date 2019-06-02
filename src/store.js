@@ -1,5 +1,12 @@
 import { writable, get } from 'svelte/store'
 
+export const visibility = writable({
+  component: true,
+  element: true,
+  block: true,
+  text: true,
+  anchor: false
+})
 export const selectedNode = writable({})
 export const hoveredNodeId = writable(null)
 export const rootNodes = writable([])

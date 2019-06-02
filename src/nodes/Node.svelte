@@ -1,5 +1,5 @@
 <script>
-  import { hoveredNodeId, selectedNode } from '../store.js'
+  import { visibility, hoveredNodeId, selectedNode } from '../store.js'
   import Element from './Element.svelte'
   import Block from './Block.svelte'
   import Text from './Text.svelte'
@@ -47,27 +47,33 @@
   }
 </style>
 
-<li
-  on:mouseover|stopPropagation={e => ($hoveredNodeId = node.id)}
-  on:click|stopPropagation={e => ($selectedNode = node)}
->
-  <svelte:component
-    this={nodeType}
-    tagName={node.tagName}
-    bind:collapsed={node.collapsed}
-    {...node.detail}
-    hasChildren={node.children.length != 0}
-    hover={$hoveredNodeId == node.id}
-    selected={$selectedNode.id == node.id}
-    style={`padding-left: ${depth * 12}px`}
+{#if $visibility[node.type]}
+  <li
+    on:mouseover|stopPropagation={e => ($hoveredNodeId = node.id)}
+    on:click|stopPropagation={e => ($selectedNode = node)}
   >
-    {#if $selectedNode.id == node.id}
-      <span style={`left: ${depth * 12 + 2}px`} />
-    {/if}
-    <ul>
-      {#each node.children as node (node.id)}
-        <svelte:self {node} depth={depth + 1} />
-      {/each}
-    </ul>
-  </svelte:component>
-</li>
+    <svelte:component
+      this={nodeType}
+      tagName={node.tagName}
+      bind:collapsed={node.collapsed}
+      {...node.detail}
+      hasChildren={node.children.length != 0}
+      hover={$hoveredNodeId == node.id}
+      selected={$selectedNode.id == node.id}
+      style={`padding-left: ${depth * 12}px`}
+    >
+      {#if $selectedNode.id == node.id}
+        <span style={`left: ${depth * 12 + 2}px`} />
+      {/if}
+      <ul>
+        {#each node.children as node (node.id)}
+          <svelte:self {node} depth={depth + 1} />
+        {/each}
+      </ul>
+    </svelte:component>
+  </li>
+{:else}
+  {#each node.children as node (node.id)}
+    <svelte:self {node} {depth} />
+  {/each}
+{/if}
