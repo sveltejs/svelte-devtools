@@ -2,6 +2,7 @@
   import { devtools } from 'chrome'
   import { selectedNode } from './store.js'
   import EditableList from './EditableList.svelte'
+  import VisibilityButton from './VisibilityButton.svelte'
 
   let isResizing = false
   let width = 300
@@ -35,7 +36,7 @@
     text-align: right;
   }
 
-  .toolbar button {
+  .toolbar :global(button) {
     margin: 1px;
     padding: 5px;
     border: none;
@@ -45,11 +46,11 @@
     cursor: pointer;
   }
 
-  .toolbar button:hover {
+  .toolbar :global(button:hover) {
     background-color: rgb(237, 237, 240);
   }
 
-  .toolbar img {
+  .toolbar :global(img) {
     width: 16px;
     height: 16px;
     vertical-align: middle;
@@ -85,6 +86,7 @@
   <div class="root" style={`width: ${width}px`}>
     <div class="resize" on:mousedown={e => (isResizing = true)} />
     <div class="toolbar">
+      <VisibilityButton />
       <button
         on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}
       >
