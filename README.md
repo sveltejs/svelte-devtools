@@ -2,6 +2,8 @@
 
 Svelte DevTools extends the Firefox and Chrome developer tools with the ability to inspect Svelte component hierarchies and modify component state.
 
+![0.1.1 Screenshot](https://raw.githubusercontent.com/RedHatter/svelte-devtools/master/screenshot.png "0.1.1 Screenshot")
+
 ## Limitations
 
 Svelte DevTools works by intercepting and instrumenting the generated svelte bundle. This means that **minification or any other modifications to the generated bundle may prevent Svelte DevTools from working.**
