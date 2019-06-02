@@ -3,6 +3,7 @@
   import Detach from './Detach/Detach.svelte'
   import Blocks from './Blocks.svelte'
   import Bind from './Bind/Bind.svelte'
+  import Events from './Events/Events.svelte'
 </script>
 
 <style>
@@ -35,4 +36,5 @@
   <Detach />
   <Blocks />
   <Bind />
+  <Events />
 </div>
