@@ -25,7 +25,11 @@
 </style>
 
 {#if hasChildren}
-  <div class:hover class:selected {style}>
+  <div
+    class:hover
+    class:selected
+    {style}
+    on:dblclick={e => (collapsed = !collapsed)}>
     <Collapse {selected} bind:collapsed />
     &lt;
     <span>{tagName}</span>
