@@ -8,5 +8,10 @@
     <li>Element attributes, component properties and state</li>
     <li>Text nodes / anchors</li>
   </ol>
-  <Component string="value" number={0} array={[]} object={{}} />
+  <Component
+    object={{ one: {}, two: 'a', three: [0, NaN], four: null, five: undefined }}
+    string="value"
+    number={0}
+    boolean="false"
+    array={[]} />
 </div>

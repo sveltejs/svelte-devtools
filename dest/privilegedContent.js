@@ -21,6 +21,24 @@
     }
   }
 
+  function clone(value, seen = new Map()) {
+    if (Array.isArray(value)) return value.map(o => clone(o, seen))
+    else if (typeof value == 'object' && value != null) {
+      if (seen.has(value)) return {}
+
+      const o = {}
+      seen.set(value, o)
+
+      for (const [key, v] of Object.entries(value)) {
+        if (typeof v == 'function') continue
+
+        o[key] = clone(v, seen)
+      }
+
+      return o
+    } else return value
+  }
+
   function serializeNode(node) {
     const serialized = {
       id: node.id,
@@ -29,7 +47,7 @@
     }
     switch (node.type) {
       case 'component':
-        const ctx = JSON.parse(JSON.stringify(node.detail.$$.ctx))
+        const ctx = clone(node.detail.$$.ctx)
         serialized.detail = {
           attributes: node.detail.$$.props.reduce((o, key) => {
             const value = ctx[key]
@@ -69,9 +87,10 @@
         break
       case 'block':
         serialized.detail = {
-          ctx: Object.entries(JSON.parse(JSON.stringify(node.detail.ctx))).map(
-            ([key, value]) => ({ key, value })
-          ),
+          ctx: Object.entries(clone(node.detail.ctx)).map(([key, value]) => ({
+            key,
+            value
+          })),
           source: node.detail.source
         }
     }

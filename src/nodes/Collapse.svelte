@@ -1,6 +1,8 @@
 <script>
   export let selected = false
   export let collapsed
+  let className
+  export { className as class }
 </script>
 
 <style>
@@ -36,4 +38,8 @@
   }
 </style>
 
-<span class:selected class:collapsed on:click={e => (collapsed = !collapsed)} />
+<span
+  class={className}
+  class:selected
+  class:collapsed
+  on:click={e => (collapsed = !collapsed)} />

@@ -1,7 +1,7 @@
 <script>
   import { devtools } from 'chrome'
   import { selectedNode } from './store.js'
-  import EditableList from './EditableList.svelte'
+  import PropertyList from './PropertyList.svelte'
   import VisibilityButton from './VisibilityButton.svelte'
 
   let isResizing = false
@@ -56,25 +56,6 @@
     vertical-align: middle;
     opacity: 0.8;
   }
-
-  h1 {
-    margin: 8px 0 0 8px;
-    color: rgb(118, 118, 118);
-    font-weight: bold;
-    font-size: 1rem;
-  }
-
-  h1.state-header {
-    margin-top: 20px;
-  }
-
-  li {
-    margin-left: 12px;
-  }
-
-  span {
-    color: rgb(102, 153, 0);
-  }
 </style>
 
 <svelte:window
@@ -94,27 +75,26 @@
       </button>
     </div>
     {#if $selectedNode.type == 'component'}
-      <h1>Props</h1>
-      <EditableList
+      <PropertyList
         id={$selectedNode.id}
-        entries={$selectedNode.detail.attributes}
-      />
-      <h1 class="state-header">State</h1>
-      <EditableList id={$selectedNode.id} entries={$selectedNode.detail.ctx} />
+        header="Props"
+        entries={$selectedNode.detail.attributes} />
+      <PropertyList
+        id={$selectedNode.id}
+        header="State"
+        entries={$selectedNode.detail.ctx} />
     {:else if $selectedNode.type == 'block'}
-      <h1>State</h1>
-      <EditableList
+      <PropertyList
         readOnly
         id={$selectedNode.id}
-        entries={$selectedNode.detail.ctx}
-      />
+        header="State"
+        entries={$selectedNode.detail.ctx} />
     {:else if $selectedNode.type == 'element'}
-      <h1>Attributes</h1>
-      <EditableList
+      <PropertyList
         readOnly
         id={$selectedNode.id}
-        entries={$selectedNode.detail.attributes}
-      />
+        header="Attributes"
+        entries={$selectedNode.detail.attributes} />
     {/if}
   </div>
 {/if}
