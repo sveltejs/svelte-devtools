@@ -60,8 +60,7 @@
 
 <svelte:window
   on:mousemove={e => isResizing && (width = window.innerWidth - e.x)}
-  on:mouseup={e => (isResizing = false)}
-/>
+  on:mouseup={e => (isResizing = false)} />
 
 {#if $selectedNode}
   <div class="root" style={`width: ${width}px`}>
@@ -69,8 +68,7 @@
     <div class="toolbar">
       <VisibilityButton />
       <button
-        on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}
-      >
+        on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}>
         <img src="/devtools/tool-inspector.svg" alt="Inspect" title="Inspect" />
       </button>
     </div>

@@ -86,32 +86,27 @@
       <span />
       <li
         class:checked={$visibility.component}
-        on:click={e => ($visibility.component = !$visibility.component)}
-      >
+        on:click={e => ($visibility.component = !$visibility.component)}>
         Components
       </li>
       <li
         class:checked={$visibility.element}
-        on:click={e => ($visibility.element = !$visibility.element)}
-      >
+        on:click={e => ($visibility.element = !$visibility.element)}>
         Elements
       </li>
       <li
         class:checked={$visibility.block}
-        on:click={e => ($visibility.block = !$visibility.block)}
-      >
+        on:click={e => ($visibility.block = !$visibility.block)}>
         Blocks
       </li>
       <li
         class:checked={$visibility.anchor}
-        on:click={e => ($visibility.anchor = !$visibility.anchor)}
-      >
+        on:click={e => ($visibility.anchor = !$visibility.anchor)}>
         Anchors
       </li>
       <li
         class:checked={$visibility.text}
-        on:click={e => ($visibility.text = !$visibility.text)}
-      >
+        on:click={e => ($visibility.text = !$visibility.text)}>
         Text
       </li>
     </ul>
