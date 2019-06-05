@@ -69,9 +69,11 @@
     margin-left: -15px;
   }
 
-  li[data-tooltip],
-  li[data-tooltip] :global(span) {
-    color: red;
+  .error {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 1rem;
   }
 </style>
 
@@ -127,5 +129,8 @@
       {key}:&nbsp;
       <span class="object">Object &lbrace; &rbrace;</span>
     {/if}
+  {/if}
+  {#if errorMessage}
+    <span class="error">!</span>
   {/if}
 </li>
