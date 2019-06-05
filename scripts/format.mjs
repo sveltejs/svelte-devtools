@@ -27,7 +27,7 @@ async function format(path) {
     return true
   } catch (err) {
     console.error(`\x1b[31m${path}\x1b[0m`)
-    console.error(err)
+    console.error(err.message)
     return false
   }
 }
