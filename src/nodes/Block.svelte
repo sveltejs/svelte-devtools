@@ -23,7 +23,7 @@
 <div class="tag-open tag-name" class:hover class:selected {style}>
   <Collapse {selected} bind:collapsed />
   {#if source}{source}{:else}&lbrace;#{tagName}&rbrace;{/if}
-  {#if collapsed}...&lbrace;/{tagName}&rbrace;{/if}
+  {#if collapsed}&mldr;&lbrace;/{tagName}&rbrace;{/if}
 </div>
 {#if !collapsed}
   <slot />

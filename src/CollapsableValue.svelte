@@ -113,7 +113,7 @@
     {#if Object.entries(value).length}
       <Collapse class="collapse" {collapsed} />
       {key}:&nbsp;
-      <span class="object">Object &lbrace;...&rbrace;</span>
+      <span class="object">Object &lbrace;&mldr;&rbrace;</span>
       {#if !collapsed}
         <ul>
           {#each Object.entries(value) as [key, v] (key)}

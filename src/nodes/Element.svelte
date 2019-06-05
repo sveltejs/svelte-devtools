@@ -70,7 +70,7 @@
     <!--use attributes-->
     &gt;
     {#if collapsed}
-      ...&lt;/
+      &mldr;&lt;/
       <span class="tag-name">{tagName}</span>
       &gt;
     {/if}
