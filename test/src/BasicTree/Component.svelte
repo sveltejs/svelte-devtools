@@ -5,7 +5,7 @@
   export let object
 
   let value = 0
-  setTimeout(() => (value = 1), 0)
+  Promise.resolve().then(() => (value = 1), 0)
 </script>
 
 <div>

@@ -2,7 +2,7 @@
   let valueList = ['a', 'b', 'c']
 
   let value = 0
-  setTimeout(() => (value = 1), 0)
+  Promise.resolve().then(() => (value = 1), 0)
 
   let promise = new Promise((resolve, reject) =>
     setTimeout(() => resolve(5), 2000)
