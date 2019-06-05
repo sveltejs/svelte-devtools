@@ -39,6 +39,7 @@
   .toolbar :global(button) {
     margin: 1px;
     padding: 5px;
+    outline: none;
     border: none;
     border-radius: 2px;
     background-color: transparent;
@@ -48,6 +49,10 @@
 
   .toolbar :global(button:hover) {
     background-color: rgb(237, 237, 240);
+  }
+
+  .toolbar :global(button:active) {
+    opacity: 0.8;
   }
 
   .toolbar :global(img) {
