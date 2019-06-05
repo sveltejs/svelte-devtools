@@ -30,6 +30,29 @@ function instrument(str) {
         return block
       }`
     )
+    .replace(
+      /(.+listen\s*\(\s*(\w+)\s*,\s*("\w+")\s*,\s*(stop_propagation\s*\()?\s*(prevent_default\s*\()?)(.+?)(\)?\s*\)?\s*,?\s*(?:{(.+?)}|(true))\s*\)\s*;)/g,
+      (
+        _,
+        left,
+        element,
+        type,
+        stopPropagation,
+        preventDefault,
+        handler,
+        right,
+        options,
+        capture
+      ) =>
+        `const ___handler = ${handler}
+        ${left}___handler${right}
+        document.dispatchEvent(new CustomEvent("SvelteAddEventListener", { detail: { type: ${type}, element: ${element}, handler: ___handler, options: {
+          ${capture ? 'capture: true,' : ''}
+          ${stopPropagation ? 'stopPropagation: true,' : ''}
+          ${preventDefault ? 'preventDefault: true,' : ''}
+          ${options || ''}
+        }}}))`
+    )
 }
 
 const toolsPorts = new Map()

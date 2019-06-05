@@ -49,9 +49,12 @@
   <span class="attr-value">{JSON.stringify(value)}</span>
 {/each}
 
-{#each listeners as { type, handler } (type)}
+{#each listeners as { type, handler, options } (type)}
   &nbsp;
-  <span class="attr-name" data-tooltip={handler}>on:{type}</span>
+  <span class="attr-name" data-tooltip={handler}>
+    on:{type}
+    {#if options}|{options.join('|')}{/if}
+  </span>
 {/each}
 <!--end-->
 

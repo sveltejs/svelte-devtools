@@ -73,7 +73,7 @@
           })),
           listeners: node.detail._listeners
             ? node.detail._listeners.map(o => ({
-                type: o.type,
+                ...o,
                 handler: o.handler.toString()
               }))
             : []
@@ -143,12 +143,6 @@
     }
   }
 
-  function addEventListener(type, handler, options) {
-    if (!this._listeners) this._listeners = []
-    this._listeners.push({ type, handler })
-    this._addEventListener(type, handler, options)
-  }
-
   function removeEventListener(type, handler, options) {
     if (this._listeners) {
       const index = this._listeners.findIndex(
@@ -197,9 +191,6 @@
       if (svelteDepth < 1) return document._createElement(type)
 
       const element = document._createElement(type)
-
-      element._addEventListener = element.addEventListener
-      element.addEventListener = addEventListener
 
       element._removeEventListener = element.removeEventListener
       element.removeEventListener = removeEventListener
@@ -343,6 +334,15 @@
       })
       detachFn(detaching)
     }
+  })
+
+  document.addEventListener('SvelteAddEventListener', e => {
+    if (!e.detail.element._listeners) e.detail.element._listeners = []
+    e.detail.element._listeners.push({
+      type: e.detail.type,
+      handler: e.detail.handler,
+      options: Array.from(Object.keys(e.detail.options))
+    })
   })
 
   window.postMessage({ type: 'loadInline' })
