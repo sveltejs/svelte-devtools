@@ -55,6 +55,12 @@
     opacity: 0.8;
   }
 
+  .toolbar :global(button:disabled) {
+    background-color: transparent;
+    opacity: 0.2;
+    cursor: default;
+  }
+
   .toolbar :global(img) {
     width: 16px;
     height: 16px;
@@ -67,37 +73,36 @@
   on:mousemove={e => isResizing && (width = window.innerWidth - e.x)}
   on:mouseup={e => (isResizing = false)} />
 
-{#if $selectedNode}
-  <div class="root" style={`width: ${width}px`}>
-    <div class="resize" on:mousedown={e => (isResizing = true)} />
-    <div class="toolbar">
-      <VisibilityButton />
-      <button
-        on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}>
-        <img src="/devtools/tool-inspector.svg" alt="Inspect" title="Inspect" />
-      </button>
-    </div>
-    {#if $selectedNode.type == 'component'}
-      <PropertyList
-        id={$selectedNode.id}
-        header="Props"
-        entries={$selectedNode.detail.attributes} />
-      <PropertyList
-        id={$selectedNode.id}
-        header="State"
-        entries={$selectedNode.detail.ctx} />
-    {:else if $selectedNode.type == 'block'}
-      <PropertyList
-        readOnly
-        id={$selectedNode.id}
-        header="State"
-        entries={$selectedNode.detail.ctx} />
-    {:else if $selectedNode.type == 'element'}
-      <PropertyList
-        readOnly
-        id={$selectedNode.id}
-        header="Attributes"
-        entries={$selectedNode.detail.attributes} />
-    {/if}
+<div class="root" style={`width: ${width}px`}>
+  <div class="resize" on:mousedown={e => (isResizing = true)} />
+  <div class="toolbar">
+    <VisibilityButton />
+    <button
+      disabled={$selectedNode.id === undefined}
+      on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}>
+      <img src="/devtools/tool-inspector.svg" alt="Inspect" title="Inspect" />
+    </button>
   </div>
-{/if}
+  {#if $selectedNode.type == 'component'}
+    <PropertyList
+      id={$selectedNode.id}
+      header="Props"
+      entries={$selectedNode.detail.attributes} />
+    <PropertyList
+      id={$selectedNode.id}
+      header="State"
+      entries={$selectedNode.detail.ctx} />
+  {:else if $selectedNode.type == 'block'}
+    <PropertyList
+      readOnly
+      id={$selectedNode.id}
+      header="State"
+      entries={$selectedNode.detail.ctx} />
+  {:else if $selectedNode.type == 'element'}
+    <PropertyList
+      readOnly
+      id={$selectedNode.id}
+      header="Attributes"
+      entries={$selectedNode.detail.attributes} />
+  {/if}
+</div>
