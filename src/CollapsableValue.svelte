@@ -110,7 +110,7 @@
       <span class="object">Array []</span>
     {/if}
   {:else if type == 'object'}
-    {#if Object.entries(value).length}
+    {#if Object.keys(value).length}
       <Collapse class="collapse" {collapsed} />
       {key}:&nbsp;
       <span class="object">Object &lbrace;&mldr;&rbrace;</span>

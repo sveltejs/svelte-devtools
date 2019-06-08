@@ -15,7 +15,7 @@
     object={{ one: {}, two: 'a', three: [0, NaN], four: null, five: undefined }}
     string="value"
     number={0}
-    boolean="false"
+    boolean={false}
     array={[]} />
   <span {title} />
 </div>

@@ -165,6 +165,8 @@
 
   function removeChild(child) {
     const node = nodeMap.get(child)
+    if (!node) return
+
     nodeMap.delete(node.id)
     nodeMap.delete(node)
     window.postMessage({
@@ -326,15 +328,19 @@
 
     e.detail.block.d = detaching => {
       const node = nodeMap.get(blockId)
-      if (node.tagName == 'await') lastPromiseParent = node.parentComponent
 
-      nodeMap.delete(node.id)
-      nodeMap.delete(node.detail)
-      nodeMap.delete(blockId)
-      window.postMessage({
-        type: 'removeNode',
-        node: serializeNode(node)
-      })
+      if (node) {
+        if (node.tagName == 'await') lastPromiseParent = node.parentComponent
+
+        nodeMap.delete(node.id)
+        nodeMap.delete(node.detail)
+        nodeMap.delete(blockId)
+        window.postMessage({
+          type: 'removeNode',
+          node: serializeNode(node)
+        })
+      }
+
       detachFn(detaching)
     }
   })

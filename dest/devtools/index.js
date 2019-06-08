@@ -5,7 +5,7 @@ chrome.devtools.panels.create(
   panel =>
     panel.onShown.addListener(() =>
       chrome.devtools.inspectedWindow.eval(
-        'window.__svelte_devtools_select_element($0)',
+        'if (window.__svelte_devtools_select_element) window.__svelte_devtools_select_element($0)',
         (result, err) => err && console.error(err)
       )
     )

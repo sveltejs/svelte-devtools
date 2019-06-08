@@ -3,6 +3,7 @@
   export let number
   export let array
   export let object
+  export let boolean
 
   let value = 0
   Promise.resolve().then(() => (value = 1), 0)
