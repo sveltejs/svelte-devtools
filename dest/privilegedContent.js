@@ -177,7 +177,10 @@
   const observer = new MutationObserver(list =>
     list.forEach(mutation => {
       const node = nodeMap.get(mutation.target)
-      if (node) if (node.type == 'anchor') node.type = 'text'
+      if (!node) return
+
+      if (node.type == 'anchor') node.type = 'text'
+
       window.postMessage({
         type: 'updateNode',
         node: serializeNode(node)
@@ -204,7 +207,7 @@
       element._removeChild = element.removeChild
       element.removeChild = removeChild
 
-      observer.observe(element, { characterData: true })
+      observer.observe(element, { characterData: true, attributes: true })
 
       return element
     }

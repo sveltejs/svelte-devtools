@@ -1,5 +1,8 @@
 <script>
   import Component from './Component.svelte'
+
+  let title = 'one'
+  Promise.resolve().then(() => (title = 'two'))
 </script>
 
 <div>
@@ -14,4 +17,5 @@
     number={0}
     boolean="false"
     array={[]} />
+  <span {title} />
 </div>
