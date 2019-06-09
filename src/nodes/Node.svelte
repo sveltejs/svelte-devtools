@@ -8,6 +8,16 @@
   export let node
   export let depth = 1
 
+  let _timeout = null
+  node.invalidate = () => {
+    if (_timeout) return
+
+    _timeout = setTimeout(() => {
+      _timeout = null
+      node = node
+    }, 100)
+  }
+
   $: nodeType = {
     element: Element,
     component: Element,
