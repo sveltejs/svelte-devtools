@@ -25,6 +25,13 @@
     text: Text,
     anchor: Anchor
   }[node.type]
+
+  let lastLength = node.children.length
+  let flash = false
+  $: {
+    flash = flash || node.children.length != lastLength
+    lastLength = node.children.length
+  }
 </script>
 
 <style>
@@ -39,6 +46,17 @@
     z-index: 1;
     width: 2px;
     background-color: #e0e0e2;
+  }
+
+  li.flash :global(> :first-child),
+  li.flash :global(> :first-child *) {
+    animation: flash 0.8s ease-in-out;
+  }
+
+  @keyframes flash {
+    10% {
+      background-color: rgb(250, 217, 242);
+    }
   }
 
   li :global(.selected),
@@ -59,6 +77,8 @@
 
 {#if $visibility[node.type]}
   <li
+    class:flash
+    on:animationend={e => (flash = false)}
     on:mouseover|stopPropagation={e => ($hoveredNodeId = node.id)}
     on:click|stopPropagation={e => ($selectedNode = node)}>
     <svelte:component
