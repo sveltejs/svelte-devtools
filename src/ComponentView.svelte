@@ -2,7 +2,7 @@
   import { devtools } from 'chrome'
   import { selectedNode } from './store.js'
   import PropertyList from './PropertyList.svelte'
-  import VisibilityButton from './VisibilityButton.svelte'
+  import Toolbar from './Toolbar.svelte'
 
   let isResizing = false
   let width = 300
@@ -28,45 +28,6 @@
   .resize:hover {
     border-color: rgb(177, 177, 179);
   }
-
-  .toolbar {
-    padding: 0 5px;
-    border-bottom: 1px solid rgb(224, 224, 226);
-    background-color: rgb(249, 249, 250);
-    text-align: right;
-  }
-
-  .toolbar :global(button) {
-    margin: 1px;
-    padding: 5px;
-    outline: none;
-    border: none;
-    border-radius: 2px;
-    background-color: transparent;
-    line-height: 0;
-    cursor: pointer;
-  }
-
-  .toolbar :global(button:hover) {
-    background-color: rgb(237, 237, 240);
-  }
-
-  .toolbar :global(button:active) {
-    opacity: 0.8;
-  }
-
-  .toolbar :global(button:disabled) {
-    background-color: transparent;
-    opacity: 0.2;
-    cursor: default;
-  }
-
-  .toolbar :global(img) {
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
-    opacity: 0.8;
-  }
 </style>
 
 <svelte:window
@@ -75,14 +36,13 @@
 
 <div class="root" style={`width: ${width}px`}>
   <div class="resize" on:mousedown={e => (isResizing = true)} />
-  <div class="toolbar">
-    <VisibilityButton />
+  <Toolbar>
     <button
       disabled={$selectedNode.id === undefined}
       on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}>
       <img src="/devtools/tool-inspector.svg" alt="Inspect" title="Inspect" />
     </button>
-  </div>
+  </Toolbar>
   {#if $selectedNode.type == 'component'}
     <PropertyList
       id={$selectedNode.id}

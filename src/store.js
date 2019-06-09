@@ -1,4 +1,4 @@
-import { writable, get } from 'svelte/store'
+import { writable, get, derived } from 'svelte/store'
 
 export const visibility = writable({
   component: true,
@@ -10,6 +10,17 @@ export const visibility = writable({
 export const selectedNode = writable({})
 export const hoveredNodeId = writable(null)
 export const rootNodes = writable([])
+export const searchValue = writable('')
+export const searchResult = derived(searchValue, value =>
+  value.length < 2
+    ? null
+    : Array.from(nodeMap.values()).filter(
+        node =>
+          node.tagName.includes(value) ||
+          (node.detail && JSON.stringify(node.detail).includes(value))
+      )
+)
+
 const nodeMap = new Map()
 
 const port = chrome.runtime.connect()
