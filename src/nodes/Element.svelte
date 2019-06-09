@@ -10,6 +10,23 @@
   export let attributes = []
   export let listeners = []
   export let collapsed
+
+  let _attributes
+  let cache = {}
+  $: {
+    let localCache = {}
+    _attributes = attributes.map(o => {
+      const value = JSON.stringify(o.value)
+      localCache[o.key] = value
+
+      return {
+        ...o,
+        value,
+        flash: !!_attributes && value != cache[o.key]
+      }
+    })
+    cache = localCache
+  }
 </script>
 
 <style>
@@ -38,14 +55,16 @@
 </style>
 
 <!--block attributes-->
-{#each attributes as { key, value, isBound } (key)}
+{#each _attributes as { key, value, isBound, flash } (key)}
   &nbsp;
-  <span class="attr-name">
-    {#if isBound}bind:{/if}
-    {key}
+  <span class:flash>
+    <span class="attr-name">
+      {#if isBound}bind:{/if}
+      {key}
+    </span>
+    =
+    <span class="attr-value">{value}</span>
   </span>
-  =
-  <span class="attr-value">{JSON.stringify(value)}</span>
 {/each}
 
 {#each listeners as { type, handler, options } (type)}

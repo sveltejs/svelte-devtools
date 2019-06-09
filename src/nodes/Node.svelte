@@ -49,7 +49,9 @@
   }
 
   li.flash :global(> :first-child),
-  li.flash :global(> :first-child *) {
+  li.flash :global(> :first-child *),
+  li :global(.flash),
+  li :global(.flash *) {
     animation: flash 0.8s ease-in-out;
   }
 
