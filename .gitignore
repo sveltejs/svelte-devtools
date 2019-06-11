@@ -1,7 +1,9 @@
+.cache
 node_modules
 dest/devtools/styles.css
 dest/devtools/styles.css.map
 dest/devtools/bundle.js
+dest/icon-*.png
 credentials
 test/public/bundle.js
 test/public/styles.css
