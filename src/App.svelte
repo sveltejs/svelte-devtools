@@ -8,6 +8,7 @@
   import ComponentView from './ComponentView.svelte'
   import Toolbar from './Toolbar.svelte'
   import VisibilityButton from './VisibilityButton.svelte'
+  import Breadcrumbs from './Breadcrumbs.svelte'
   import Node from './nodes/Node.svelte'
 </script>
 
@@ -80,6 +81,7 @@
           <Node {node} />
         {/each}
       </ul>
+      <Breadcrumbs />
     {/if}
   </div>
   <ComponentView />
