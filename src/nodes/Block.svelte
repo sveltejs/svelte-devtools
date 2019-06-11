@@ -20,7 +20,12 @@
   }
 </style>
 
-<div class="tag-open tag-name" class:hover class:selected {style}>
+<div
+  class="tag-open tag-name"
+  class:hover
+  class:selected
+  {style}
+  on:dblclick={e => (collapsed = !collapsed)}>
   <Collapse {selected} bind:collapsed />
   {#if source}{source}{:else}&lbrace;#{tagName}&rbrace;{/if}
   {#if collapsed}&mldr;&lbrace;/{tagName}&rbrace;{/if}
