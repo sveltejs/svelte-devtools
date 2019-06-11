@@ -39,7 +39,8 @@ export default [{
   },
   plugins: [
     svelte({
-      css: css => css.write('test/public/styles.css'),
+      dev: true,
+      css: css => css.write('test/public/styles.css')
     }),
     resolve()
   ]

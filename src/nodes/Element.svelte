@@ -67,11 +67,11 @@
   </span>
 {/each}
 
-{#each listeners as { type, handler, options } (type)}
+{#each listeners as { event, handler, modifiers }}
   &nbsp;
   <span class="attr-name" data-tooltip={handler}>
-    on:{type}
-    {#if options}|{options.join('|')}{/if}
+    on:{event}
+    {#if modifiers}|{modifiers.join('|')}{/if}
   </span>
 {/each}
 <!--end-->
