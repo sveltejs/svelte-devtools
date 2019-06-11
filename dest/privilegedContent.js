@@ -23,6 +23,8 @@
 
   function clone(value, seen = new Map()) {
     if (Array.isArray(value)) return value.map(o => clone(o, seen))
+    else if (typeof value == 'function')
+      return { __isFunction: true, source: value.toString(), name: value.name }
     else if (typeof value == 'object' && value != null) {
       if (seen.has(value)) return {}
 
@@ -30,8 +32,6 @@
       seen.set(value, o)
 
       for (const [key, v] of Object.entries(value)) {
-        if (typeof v == 'function') continue
-
         o[key] = clone(v, seen)
       }
 

@@ -49,6 +49,7 @@
     padding: 4px 0 4px 15px;
   }
 
+  .function,
   .object {
     color: rgb(0, 116, 232);
   }
@@ -110,7 +111,12 @@
       <span class="object">Array []</span>
     {/if}
   {:else if type == 'object'}
-    {#if Object.keys(value).length}
+    {#if value.__isFunction}
+      {key}:&nbsp;
+      <span class="function" data-tooltip={value.source}>
+        function&nbsp;{value.name || ''}&nbsp;()
+      </span>
+    {:else if Object.keys(value).length}
       <Collapse class="collapse" {collapsed} />
       {key}:&nbsp;
       <span class="object">Object &lbrace;&hellip;&rbrace;</span>
