@@ -88,7 +88,7 @@
     <!--use attributes-->
     &gt;
     {#if collapsed}
-      &mldr;&lt;/
+      &hellip;&lt;/
       <span class="tag-name">{tagName}</span>
       &gt;
     {/if}

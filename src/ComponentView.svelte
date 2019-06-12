@@ -12,6 +12,7 @@
   .root {
     position: relative;
     overflow-y: auto;
+    flex: 0 0 auto;
     color: rgb(57, 63, 76);
   }
 

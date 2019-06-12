@@ -13,10 +13,11 @@
 </script>
 
 <style>
-  .root {
+  .node-tree {
     display: flex;
+    overflow: hidden;
+    flex: 1 1 0;
     flex-direction: column;
-    flex-grow: 1;
   }
 
   input {
@@ -60,7 +61,7 @@
 </style>
 
 {#if $rootNodes.length}
-  <div class="root">
+  <div class="node-tree">
     <Toolbar>
       <input placeholder="Search Tree" bind:value={$searchValue} />
       <VisibilityButton />

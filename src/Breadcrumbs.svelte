@@ -1,18 +1,32 @@
 <script>
+  import { tick } from 'svelte'
   import { selectedNode } from './store.js'
 
+  let root
   let breadcrumbList = []
-  $: {
-    let node = $selectedNode
+  let shorttend
 
-    if (!breadcrumbList.find(o => o.id == node.id)) {
-      breadcrumbList = []
-      while (node && node.tagName) {
-        breadcrumbList.unshift(node)
-        node = node.parent
-      }
+  async function setSelectedBreadcrumb(node) {
+    if (breadcrumbList.find(o => o.id == node.id)) return
+
+    breadcrumbList = []
+    while (node && node.tagName) {
+      breadcrumbList.unshift(node)
+      node = node.parent
+    }
+
+    shorttend = false
+
+    await tick()
+    while (root && root.scrollWidth > root.clientWidth) {
+      breadcrumbList.shift()
+      shorttend = true
+      breadcrumbList = breadcrumbList
+      await tick()
     }
   }
+
+  $: setSelectedBreadcrumb($selectedNode)
 </script>
 
 <style>
@@ -38,6 +52,14 @@
     opacity: 0.8;
   }
 
+  li:last-child {
+    padding-right: 10px;
+  }
+
+  li:last-child div {
+    display: none;
+  }
+
   div {
     position: relative;
     margin-left: 10px;
@@ -60,14 +82,16 @@
     border-left: 2px solid #ffffff;
     content: '';
   }
-
-  li:last-child div {
-    display: none;
-  }
 </style>
 
 {#if breadcrumbList.length > 1}
-  <ul>
+  <ul bind:this={root}>
+    {#if shorttend}
+      <li>
+        &hellip;
+        <div />
+      </li>
+    {/if}
     {#each breadcrumbList as node}
       <li
         on:click={e => ($selectedNode = node)}

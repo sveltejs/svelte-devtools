@@ -28,7 +28,7 @@
   on:dblclick={e => (collapsed = !collapsed)}>
   <Collapse {selected} bind:collapsed />
   {#if source}{source}{:else}&lbrace;#{tagName}&rbrace;{/if}
-  {#if collapsed}&mldr;&lbrace;/{tagName}&rbrace;{/if}
+  {#if collapsed}&hellip;&lbrace;/{tagName}&rbrace;{/if}
 </div>
 {#if !collapsed}
   <slot />
