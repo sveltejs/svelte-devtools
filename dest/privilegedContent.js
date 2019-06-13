@@ -255,18 +255,6 @@
     }
   })
 
-  const observer = new MutationObserver(list =>
-    list.forEach(mutation => {
-      const node = nodeMap.get(mutation.target)
-      if (!node) return
-
-      window.postMessage({
-        type: 'updateNode',
-        node: serializeNode(node)
-      })
-    })
-  )
-
   function insert(element, target, anchor) {
     const node = {
       id: _id++,
@@ -290,7 +278,6 @@
 
   document.addEventListener('SvelteDOMInsert', e => {
     const { node: element, target, anchor } = e.detail
-    observer.observe(element, { attributes: true })
 
     insert(element, target, anchor)
   })
@@ -330,9 +317,7 @@
     node.__listeners.splice(index, 1)
   })
 
-  document.addEventListener('SvelteDOMSetData', e => {
-    const { node: element, data } = e.detail
-
+  function updateElement(element) {
     const node = nodeMap.get(element)
     if (!node) return
 
@@ -342,7 +327,20 @@
       type: 'updateNode',
       node: serializeNode(node)
     })
-  })
+  }
+
+  document.addEventListener('SvelteDOMSetData', e =>
+    updateElement(e.detail.node)
+  )
+  document.addEventListener('SvelteDOMSetProperty', e =>
+    updateElement(e.detail.node)
+  )
+  document.addEventListener('SvelteDOMSetAttribute', e =>
+    updateElement(e.detail.node)
+  )
+  document.addEventListener('SvelteDOMRemoveAttribute', e =>
+    updateElement(e.detail.node)
+  )
 
   window.postMessage({ type: 'loadInline' })
 })()
