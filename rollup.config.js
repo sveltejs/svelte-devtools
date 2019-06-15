@@ -31,6 +31,13 @@ export default [{
     resolve()
   ]
 }, {
+  input: 'src/client/index.js',
+  output: {
+    file: 'dest/privilegedContent.js',
+    name: 'SvelteDevtools',
+    format: 'iife'
+  }
+}, {
   input: 'test/src/index.js',
   output: {
     file: 'test/public/bundle.js',
