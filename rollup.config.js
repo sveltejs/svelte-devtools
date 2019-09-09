@@ -36,7 +36,8 @@ export default [{
     file: 'dest/privilegedContent.js',
     name: 'SvelteDevtools',
     format: 'iife'
-  }
+  },
+  plugins: [ resolve() ]
 }, {
   input: 'test/src/index.js',
   output: {
