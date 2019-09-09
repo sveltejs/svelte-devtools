@@ -10,7 +10,7 @@
   let errorMessages = {}
   function change(key, value) {
     devtools.inspectedWindow.eval(
-      `__svelte_devtools_unsafe_set(${id}, '${key}', ${value})`,
+      `__svelte_devtools_inject_state(${id}, '${key}', ${value})`,
       (result, error) =>
         (errorMessages[key] =
           error && error.isException

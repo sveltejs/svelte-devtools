@@ -1,8 +1,8 @@
 import { getNode, addNodeListener } from 'svelte-listener'
 
-window.__svelte_devtools_unsafe_set = function(id, key, value) {
+window.__svelte_devtools_inject_state = function(id, key, value) {
   let component = getNode(id).detail
-  component.$unsafe_set({ [key]: value })
+  component.$inject_state({ [key]: value })
 }
 
 window.__svelte_devtools_select_element = function(element) {
