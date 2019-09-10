@@ -35,7 +35,18 @@ export default [{
   output: {
     file: 'dest/privilegedContent.js',
     name: 'SvelteDevtools',
-    format: 'iife'
+    format: 'iife',
+    banner: `const tag = document.createElement('script')
+tag.text = \``,
+    footer: `\`
+document.children[0].append(tag)
+const port = chrome.runtime.connect()
+port.onMessage.addListener(window.postMessage.bind(window))
+window.addEventListener(
+  'message',
+  e => e.source == window && port.postMessage(e.data),
+  false
+)`
   },
   plugins: [ resolve() ]
 }, {

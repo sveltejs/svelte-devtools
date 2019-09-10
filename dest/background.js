@@ -19,8 +19,6 @@ function handleToolsMessage(msg, port) {
 }
 
 function handlePageMessage(msg, port) {
-  if (msg.type == 'loadInline') loadInlineScripts()
-
   const tools = toolsPorts.get(port.sender.tab.id)
   if (tools) tools.postMessage(msg)
 }
@@ -30,55 +28,9 @@ function attachScript(tabId, changed) {
 
   toolsPorts.get(tabId).postMessage({ type: 'init' })
   chrome.tabs.executeScript(tabId, {
-    file: '/content.js',
+    file: '/privilegedContent.js',
     runAt: 'document_start'
   })
-}
-
-let inlineScripts = []
-async function loadInlineScripts() {
-  inlineScripts.forEach(o =>
-    o.then(script => {
-      chrome.tabs.executeScript(script.tabId, {
-        code: `
-          const tag = Array.from(document.scripts)
-            .find(o => o.src == "${script.url}")
-          const newTag = document.createElement('script')
-          newTag.text = "${script.source
-            .replace(/"/g, '\\"')
-            .replace(/\\n/g, '\\\\n')
-            .replace(/\n/g, '\\n')}"
-          if (tag == null)
-            document.head.append(newTag)
-          else
-            tag.parentNode.replaceChild(newTag, tag)
-        `,
-        runAt: 'document_start'
-      })
-    })
-  )
-  inlineScripts = []
-}
-
-function queueInlineScript(tabId, url) {
-  inlineScripts.push(
-    fetch(url)
-      .then(o => o.text())
-      .then(source => ({ tabId, url, source }))
-  )
-}
-
-function interceptRequest(details) {
-  if (details.method != 'GET' || details.frameId != 0) return
-
-  // Chrome doesn't have response filters. Queue script to be inlined after
-  // content script is executed instead
-  if (!chrome.webRequest.filterResponseData) {
-    queueInlineScript(details.tabId, details.url)
-    return { cancel: true }
-  }
-
-  return {}
 }
 
 function setup(tabId, port) {
@@ -87,13 +39,7 @@ function setup(tabId, port) {
     toolsPorts.delete(tabId)
     pagePorts.delete(tabId)
     chrome.tabs.onUpdated.removeListener(attachScript)
-    chrome.webRequest.onBeforeRequest.removeListener(interceptRequest)
   })
 
   chrome.tabs.onUpdated.addListener(attachScript)
-  chrome.webRequest.onBeforeRequest.addListener(
-    interceptRequest,
-    { urls: ['*://*/*'], types: ['script'], tabId },
-    ['blocking']
-  )
 }
