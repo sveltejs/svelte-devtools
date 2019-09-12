@@ -4,6 +4,7 @@ export const visibility = writable({
   component: true,
   element: true,
   block: true,
+  slot: true,
   text: true,
   anchor: false
 })

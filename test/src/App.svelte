@@ -4,6 +4,7 @@
   import Blocks from './Blocks.svelte'
   import Bind from './Bind/Bind.svelte'
   import Events from './Events/Events.svelte'
+  import Slots from './Slots/Slots.svelte'
 </script>
 
 <style>
@@ -37,4 +38,5 @@
   <Blocks />
   <Bind />
   <Events />
+  <Slots />
 </div>

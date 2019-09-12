@@ -100,6 +100,11 @@
         Blocks
       </li>
       <li
+        class:checked={$visibility.slot}
+        on:click={e => ($visibility.slot = !$visibility.slot)}>
+        Slots
+      </li>
+      <li
         class:checked={$visibility.anchor}
         on:click={e => ($visibility.anchor = !$visibility.anchor)}>
         Anchors

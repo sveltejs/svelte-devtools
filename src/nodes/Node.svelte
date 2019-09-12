@@ -2,6 +2,7 @@
   import { visibility, hoveredNodeId, selectedNode } from '../store.js'
   import Element from './Element.svelte'
   import Block from './Block.svelte'
+  import Slot from './Slot.svelte'
   import Text from './Text.svelte'
   import Anchor from './Anchor.svelte'
 
@@ -25,6 +26,7 @@
     element: Element,
     component: Element,
     block: Block,
+    slot: Slot,
     text: Text,
     anchor: Anchor
   }[node.type]
