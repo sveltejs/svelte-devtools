@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "http-serve test/public -p 8940 & web-ext run --bc -s dest -u http://127.0.0.1:8940 -u about:debugging && kill $!",
     "build": "$npm_execpath run build:format && rollup -c && $npm_execpath run build:icon",
-    "build:icon": "for size in 16 24 48 96 128; do if [ src/svelte-logo.svg -nt dest/icon-$size.png ]; then inkscape src/svelte-logo.svg -z -e dest/icon-$size.png -w $size; fi; done",
+    "build:icon": "for size in 16 24 48 96 128; do if [ ! -e dest/icon-$size.png -o src/svelte-logo.svg -nt dest/icon-$size.png ]; then inkscape src/svelte-logo.svg -G -o dest/icon-$size.png -w $size; fi; done",
     "build:format": "node --experimental-modules ./scripts/format.mjs",
     "package": "$npm_execpath run build && web-ext build -s dest",
     "release": ". ./credentials && web-ext sign -s dest --api-key=$key --api-secret=$secret"
