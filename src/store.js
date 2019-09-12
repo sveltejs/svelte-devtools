@@ -30,6 +30,13 @@ port.postMessage({
   tabId: chrome.devtools.inspectedWindow.tabId
 })
 
+export function reload() {
+  port.postMessage({
+    type: 'reload',
+    tabId: chrome.devtools.inspectedWindow.tabId
+  })
+}
+
 selectedNode.subscribe(node =>
   port.postMessage({
     type: 'setSelected',

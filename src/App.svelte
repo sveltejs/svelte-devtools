@@ -9,6 +9,7 @@
   import Toolbar from './Toolbar.svelte'
   import VisibilityButton from './VisibilityButton.svelte'
   import Breadcrumbs from './Breadcrumbs.svelte'
+  import ConnectMessage from './ConnectMessage.svelte'
   import Node from './nodes/Node.svelte'
 </script>
 
@@ -51,13 +52,6 @@
     margin-top: 40%;
     text-align: center;
   }
-
-  p {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
 </style>
 
 {#if $rootNodes.length}
@@ -87,9 +81,5 @@
   </div>
   <ComponentView />
 {:else}
-  <p>
-    Refresh the page to connect to&nbsp;
-    <b>svelte</b>
-    .
-  </p>
+  <ConnectMessage />
 {/if}

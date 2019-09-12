@@ -12,10 +12,18 @@ chrome.runtime.onConnect.addListener(port => {
 })
 
 function handleToolsMessage(msg, port) {
-  if (msg.type == 'init') setup(msg.tabId, port)
-
-  const page = pagePorts.get(msg.tabId)
-  if (page) page.postMessage(msg)
+  switch (msg.type) {
+    case 'init':
+      setup(msg.tabId, port)
+      break
+    case 'reload':
+      chrome.tabs.reload(msg.tabId, { bypassCache: true })
+      break
+    default:
+      const page = pagePorts.get(msg.tabId)
+      if (page) page.postMessage(msg)
+      break
+  }
 }
 
 function handlePageMessage(msg, port) {
