@@ -3,6 +3,7 @@
   import Element from './Element.svelte'
   import Block from './Block.svelte'
   import Slot from './Slot.svelte'
+  import Iteration from './Iteration.svelte'
   import Text from './Text.svelte'
   import Anchor from './Anchor.svelte'
 
@@ -27,6 +28,7 @@
     component: Element,
     block: Block,
     slot: Slot,
+    iteration: Iteration,
     text: Text,
     anchor: Anchor
   }[node.type]
@@ -103,8 +105,10 @@
         <span style={`left: ${depth * 12 + 2}px`} />
       {/if}
       <ul>
-        {#each node.children as node (node.id)}
-          <svelte:self {node} depth={depth + 1} />
+        {#each node.children as child (child.id)}
+          <svelte:self
+            node={child}
+            depth={node.type == 'iteration' ? depth : depth + 1} />
         {/each}
       </ul>
     </svelte:component>

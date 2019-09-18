@@ -53,7 +53,7 @@
       id={$selectedNode.id}
       header="State"
       entries={$selectedNode.detail.ctx} />
-  {:else if $selectedNode.type == 'block'}
+  {:else if $selectedNode.type == 'block' || $selectedNode.type == 'iteration'}
     <PropertyList
       readOnly
       id={$selectedNode.id}

@@ -99,6 +99,7 @@ function serializeNode(node) {
       break
     }
 
+    case 'iteration':
     case 'block': {
       const { ctx, source } = node.detail
       serialized.detail = {
