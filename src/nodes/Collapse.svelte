@@ -9,8 +9,8 @@
   span {
     position: relative;
     display: inline-block;
+    align-self: stretch;
     width: 15px;
-    height: 100%;
     vertical-align: bottom;
     cursor: pointer;
   }
