@@ -10,7 +10,7 @@
     "96": "icon-96.png",
     "128": "icon-128.png"
   },
-  "permissions": ["tabs", "webRequest", "webRequestBlocking", "<all_urls>"],
+  "permissions": ["tabs", "<all_urls>"],
   "background": {
     "scripts": ["background.js"]
   },

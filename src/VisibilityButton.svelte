@@ -7,6 +7,12 @@
 <style>
   button {
     position: relative;
+    z-index: 1;
+    color: rgb(35, 38, 39);
+  }
+
+  button:active {
+    color: rgb(35, 38, 39);
   }
 
   div {
@@ -15,7 +21,6 @@
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 1;
     cursor: default;
   }
 
@@ -23,7 +28,6 @@
     position: absolute;
     top: 32px;
     right: -20px;
-    z-index: 2;
     padding: 6px 0;
     border: 1px solid rgb(224, 224, 226);
     border-radius: 2px;

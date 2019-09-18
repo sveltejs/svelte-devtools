@@ -16,7 +16,6 @@
 <style>
   .node-tree {
     display: flex;
-    overflow: hidden;
     flex: 1 1 0;
     flex-direction: column;
   }
@@ -57,7 +56,10 @@
 {#if $rootNodes.length}
   <div class="node-tree">
     <Toolbar>
-      <input placeholder="Search Tree" bind:value={$searchValue} />
+      <input
+        type="search"
+        placeholder="Search Tree"
+        bind:value={$searchValue} />
       <VisibilityButton />
     </Toolbar>
     {#if $searchResult}
