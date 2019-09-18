@@ -1,6 +1,6 @@
 <script>
   import { tick } from 'svelte'
-  import { selectedNode } from './store.js'
+  import { selectedNode, hoveredNodeId } from './store.js'
 
   let root
   let breadcrumbList = []
@@ -95,6 +95,7 @@
     {#each breadcrumbList as node}
       <li
         on:click={e => ($selectedNode = node)}
+        on:mouseover={e => ($hoveredNodeId = node.id)}
         class:selected={node.id == $selectedNode.id}>
         {node.tagName}
         <div />
