@@ -1,14 +1,16 @@
 # Svelte DevTools
 
-Svelte DevTools extends the Firefox and Chrome developer tools with the ability to inspect Svelte component hierarchies and modify component state.
+Svelte Devtools is a Firefox and Chrome extension for the Svelte javascript framework. It allows you to inspect the Svelte state and component hierarchies in the Developer Tools.
+
+After installing you will see a new tab in Developer Tools. This tab displays a tree of Svelte components, HTMLx blocks, and DOM elements that were rendered on the page. By selecting one of the nodes in the tree, you can inspect and edit its current state in the panel to the right.
 
 **Requires svelte version 3.12.0 or above**
 
-![0.1.1 Screenshot](https://raw.githubusercontent.com/RedHatter/svelte-devtools/master/screenshot.png "0.1.1 Screenshot")
+![0.1.1 Screenshot](https://raw.githubusercontent.com/RedHatter/svelte-devtools/master/screenshot.png "0.2.0 Screenshot")
 
 ## Installation
 
-Svelte DevTools is still in beta and has yet to be published to the respective extension stores. However pre-packaged archives can be downloaded from the releases page.
+Svelte DevTools has been submitted to the respective extension stores but is still under review. However pre-packaged archives can be downloaded from the releases page.
 
 ### Firefox
 
