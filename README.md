@@ -10,11 +10,9 @@ After installing you will see a new tab in Developer Tools. This tab displays a 
 
 ## Installation
 
-Svelte DevTools has been submitted to the respective extension stores but is still under review. However pre-packaged archives can be downloaded from the releases page.
-
 ### Firefox
 
-Download the `xpi` archive from the release page and simply open the file in firefox to install.
+Install from the [firefox addon page](https://addons.mozilla.org/en-US/firefox/addon/svelte-devtools/).
 
 #### From source
 
@@ -32,6 +30,8 @@ This should generate a zip file under `web-ext-artifacts`.
 2. Open `about:debugging` in firefox. Click "Load Temporary Add-on" and choose the generated zip file.
 
 ### Chrome
+
+Svelte DevTools is still under review for chrome. However pre-packaged archives can be downloaded from the releases page.
 
 1. Download the `zip` archive from the release page and unpack it.
 2. Open chrome and navigate to `chrome://extensions/`.
