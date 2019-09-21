@@ -27,7 +27,9 @@
     height: 22px;
     border: 1px solid rgb(224, 224, 226);
     border-radius: 2px;
-    background: 6px center / 12px no-repeat url('/devtools/search.svg') #ffffff;
+    background: 6px center / 12px no-repeat url('/devtools/search.svg')
+      transparent;
+    color: inherit;
     font-size: inherit;
   }
 
@@ -50,6 +52,11 @@
   .root div {
     margin-top: 40%;
     text-align: center;
+  }
+
+  :global(.dark) input,
+  :global(.dark) .results :global(> li) {
+    border-color: rgb(60, 60, 61);
   }
 </style>
 

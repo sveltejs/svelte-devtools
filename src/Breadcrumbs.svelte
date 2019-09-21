@@ -82,6 +82,14 @@
     border-left: 2px solid #ffffff;
     content: '';
   }
+
+  :global(.dark) ul {
+    border-top-color: rgb(60, 60, 61);
+  }
+
+  :global(.dark) div::after {
+    border-left-color: rgba(135, 135, 137, 0.9);
+  }
 </style>
 
 {#if breadcrumbList.length > 1}

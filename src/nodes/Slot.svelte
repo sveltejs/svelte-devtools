@@ -18,6 +18,10 @@
   div {
     color: rgb(0, 116, 232);
   }
+
+  :global(.dark) div {
+    color: rgb(117, 191, 255);
+  }
 </style>
 
 <div

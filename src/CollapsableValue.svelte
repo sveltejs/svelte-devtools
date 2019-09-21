@@ -76,6 +76,15 @@
     right: 0;
     font-size: 1rem;
   }
+
+  :global(.dark) .function,
+  :global(.dark) .object {
+    color: rgb(117, 191, 255);
+  }
+
+  :global(.dark) li :global(.string) {
+    color: rgb(255, 125, 233);
+  }
 </style>
 
 <li

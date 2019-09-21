@@ -52,6 +52,18 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  :global(.dark) .tag-name {
+    color: rgb(117, 191, 255);
+  }
+
+  :global(.dark) .attr-name {
+    color: rgb(255, 125, 233);
+  }
+
+  :global(.dark) .attr-value {
+    color: rgb(185, 142, 255);
+  }
 </style>
 
 <!--block attributes-->

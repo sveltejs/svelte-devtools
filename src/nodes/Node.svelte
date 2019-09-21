@@ -84,6 +84,18 @@
   li :global(.hover) {
     background-color: #f0f9fe;
   }
+
+  :global(.dark) span,
+  :global(.dark) li :global(.selected),
+  :global(.dark) li :global(.selected *),
+  :global(.dark) li :global(.hover.selected) {
+    background-color: rgb(32, 78, 138);
+    color: #ffffff;
+  }
+
+  :global(.dark) li :global(.hover) {
+    background-color: rgb(53, 59, 72);
+  }
 </style>
 
 {#if $visibility[node.type]}
@@ -102,7 +114,7 @@
       selected={$selectedNode.id == node.id}
       style={`padding-left: ${depth * 12}px`}>
       {#if $selectedNode.id == node.id}
-        <span style={`left: ${depth * 12 + 2}px`} />
+        <span style={`left: ${depth * 12 + 6}px`} />
       {/if}
       <ul>
         {#each node.children as child (child.id)}

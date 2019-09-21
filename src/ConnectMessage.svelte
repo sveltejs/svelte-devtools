@@ -33,6 +33,10 @@
   li {
     margin-bottom: 8px;
   }
+
+  :global(.dark) .button {
+    color: rgb(117, 191, 255);
+  }
 </style>
 
 <div class="root">

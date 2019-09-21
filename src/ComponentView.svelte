@@ -3,6 +3,7 @@
   import { selectedNode } from './store.js'
   import PropertyList from './PropertyList.svelte'
   import Toolbar from './Toolbar.svelte'
+  import IconButton from './IconButton.svelte'
 
   let isResizing = false
   let width = 300
@@ -29,6 +30,19 @@
   .resize:hover {
     border-color: rgb(177, 177, 179);
   }
+
+  :global(.dark) .root {
+    background-color: rgb(27, 27, 29);
+    color: rgb(177, 177, 179);
+  }
+
+  :global(.dark) .resize {
+    border-left-color: rgb(60, 60, 61);
+  }
+
+  :global(.dark) .resize:hover {
+    border-left-color: rgb(107, 107, 108);
+  }
 </style>
 
 <svelte:window
@@ -38,11 +52,18 @@
 <div class="root" style={`width: ${width}px`}>
   <div class="resize" on:mousedown={e => (isResizing = true)} />
   <Toolbar>
-    <button
+    <IconButton
       disabled={$selectedNode.id === undefined}
       on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}>
-      <img src="/devtools/tool-inspector.svg" alt="Inspect" title="Inspect" />
-    </button>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+        <path
+          d="M4.5 4a.5.5 0 0 0-.5.5v7c0 .28.22.5.5.5h7a.5.5 0 0 0 .5-.5v-7a.5.5
+          0 0 0-.5-.5h-7zM2 4.5A2.5 2.5 0 0 1 4.5 2h7A2.5 2.5 0 0 1 14 4.5v7a2.5
+          2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 11.5v-7M.5 7.5a.5.5 0 0 0 0
+          1H2v-1H.5zM14 7.5h1.5a.5.5 0 0 1 0 1H14v-1zM8 0c.28 0
+          .5.22.5.5V2h-1V.5c0-.28.22-.5.5-.5zM8.5 14v1.5a.5.5 0 0 1-1 0V14h1z" />
+      </svg>
+    </IconButton>
   </Toolbar>
   {#if $selectedNode.type == 'component'}
     <PropertyList
