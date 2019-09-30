@@ -43,7 +43,7 @@
   <p>
     To connect to&nbsp;
     <b>Svelte</b>
-    &nbsp;proform a hard refresh (ctrl+F5) or&nbsp;
+    &nbsp;perform a hard refresh (ctrl+F5) or&nbsp;
     <span on:click={reload} class="button">click here</span>
     .
   </p>
