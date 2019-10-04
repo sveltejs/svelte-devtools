@@ -1,5 +1,5 @@
 <script>
-  import { rootNodes, selectedNode } from '../store.js'
+  import { rootNodes, selectedNode, searchValue } from '../store.js'
   import Button from './Button.svelte'
 
   function next() {
@@ -15,23 +15,21 @@
   function search(nodeList = $rootNodes) {
     for (const node of nodeList) {
       if (
-        node.tagName.includes(value) ||
-        (node.detail && JSON.stringify(node.detail).includes(value))
+        node.tagName.includes($searchValue) ||
+        (node.detail && JSON.stringify(node.detail).includes($searchValue))
       )
         results.push(node)
       search(node.children)
     }
   }
 
-  let value
   let results
   let resultsPosition
-
   $: {
-    value
+    $searchValue
     results = []
     resultsPosition = -1
-    if (value && value.length > 1) search()
+    if ($searchValue.length > 1) search()
   }
 </script>
 
@@ -95,7 +93,7 @@
       fill-rule="evenodd"
       d="M6 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2A6 6 0 1 0 6 0a6 6 0 0 0 0 12z" />
   </svg>
-  <input placeholder="Search" bind:value />
+  <input placeholder="Search" bind:value={$searchValue} />
   {#if resultsPosition > -1}
     {resultsPosition + 1}&nbsp;of&nbsp;{results.length}&nbsp;
   {/if}

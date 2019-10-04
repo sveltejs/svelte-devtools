@@ -1,5 +1,6 @@
 <script>
   import Collapse from './Collapse.svelte'
+  import SearchTerm from './SearchTerm.svelte'
 
   export let style
   export let hover
@@ -31,12 +32,24 @@
   {style}
   on:dblclick={e => (collapsed = !collapsed)}>
   <Collapse {selected} bind:collapsed />
-  {#if source}{source}{:else}&lbrace;#{tagName}&rbrace;{/if}
-  {#if collapsed}&hellip;&lbrace;/{tagName}&rbrace;{/if}
+  {#if source}
+    {source}
+  {:else}
+    &lbrace;#
+    <SearchTerm text={tagName} />
+    &rbrace;
+  {/if}
+  {#if collapsed}
+    &hellip;&lbrace;/
+    <SearchTerm text={tagName} />
+    &rbrace;
+  {/if}
 </div>
 {#if !collapsed}
   <slot />
   <div class="tag-close tag-name" class:hover {style}>
-    &lbrace;/{tagName}&rbrace;
+    &lbrace;/
+    <SearchTerm text={tagName} />
+    &rbrace;
   </div>
 {/if}

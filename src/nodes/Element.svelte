@@ -1,5 +1,6 @@
 <script>
   import Collapse from './Collapse.svelte'
+  import SearchTerm from './SearchTerm.svelte'
 
   export let style
   export let hasChildren
@@ -72,17 +73,20 @@
   <span class:flash>
     <span class="attr-name">
       {#if isBound}bind:{/if}
-      {key}
+      <SearchTerm text={key} />
     </span>
     =
-    <span class="attr-value">{value}</span>
+    <span class="attr-value">
+      <SearchTerm text={value} />
+    </span>
   </span>
 {/each}
 
 {#each listeners as { event, handler, modifiers }}
   &nbsp;
   <span class="attr-name" data-tooltip={handler}>
-    on:{event}
+    on:
+    <SearchTerm text={event} />
     {#if modifiers}|{modifiers.join('|')}{/if}
   </span>
 {/each}
@@ -96,12 +100,16 @@
     on:dblclick={e => (collapsed = !collapsed)}>
     <Collapse {selected} bind:collapsed />
     &lt;
-    <span class="tag-name">{tagName}</span>
+    <span class="tag-name">
+      <SearchTerm text={tagName} />
+    </span>
     <!--use attributes-->
     &gt;
     {#if collapsed}
       &hellip;&lt;/
-      <span class="tag-name">{tagName}</span>
+      <span class="tag-name">
+        <SearchTerm text={tagName} />
+      </span>
       &gt;
     {/if}
   </div>
@@ -109,14 +117,18 @@
     <slot />
     <div class:hover {style}>
       &lt;/
-      <span class="tag-name">{tagName}</span>
+      <span class="tag-name">
+        <SearchTerm text={tagName} />
+      </span>
       &gt;
     </div>
   {/if}
 {:else}
   <div class:hover class:selected {style}>
     &lt;
-    <span class="tag-name">{tagName}</span>
+    <span class="tag-name">
+      <SearchTerm text={tagName} />
+    </span>
     <!--use attributes-->
     &nbsp;/&gt;
   </div>
