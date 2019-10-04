@@ -1,13 +1,9 @@
 <script>
-  import {
-    searchResult,
-    searchValue,
-    hoveredNodeId,
-    rootNodes
-  } from './store.js'
+  import { hoveredNodeId, rootNodes } from './store.js'
+  import Toolbar from './toolbar/Toolbar.svelte'
+  import Search from './toolbar/Search.svelte'
+  import VisibilityButton from './toolbar/VisibilityButton.svelte'
   import ComponentView from './ComponentView.svelte'
-  import Toolbar from './Toolbar.svelte'
-  import VisibilityButton from './VisibilityButton.svelte'
   import Breadcrumbs from './Breadcrumbs.svelte'
   import ConnectMessage from './ConnectMessage.svelte'
   import Node from './nodes/Node.svelte'
@@ -18,19 +14,6 @@
     display: flex;
     flex: 1 1 0;
     flex-direction: column;
-  }
-
-  input {
-    display: inline-block;
-    margin-right: 5px;
-    padding: 0 10px 0 22px;
-    height: 22px;
-    border: 1px solid rgb(224, 224, 226);
-    border-radius: 2px;
-    background: 6px center / 12px no-repeat url('/devtools/search.svg')
-      transparent;
-    color: inherit;
-    font-size: inherit;
   }
 
   ul {
@@ -63,30 +46,15 @@
 {#if $rootNodes.length}
   <div class="node-tree">
     <Toolbar>
-      <input
-        type="search"
-        placeholder="Search Tree"
-        bind:value={$searchValue} />
+      <Search />
       <VisibilityButton />
     </Toolbar>
-    {#if $searchResult}
-      {#if $searchResult.length}
-        <ul class="results" on:mouseleave={e => ($hoveredNodeId = null)}>
-          {#each $searchResult as node (node.id)}
-            <Node {node} forceCollapsed={true} />
-          {/each}
-        </ul>
-      {:else}
-        <div>No results</div>
-      {/if}
-    {:else}
-      <ul on:mouseleave={e => ($hoveredNodeId = null)}>
-        {#each $rootNodes as node (node.id)}
-          <Node {node} />
-        {/each}
-      </ul>
-      <Breadcrumbs />
-    {/if}
+    <ul on:mouseleave={e => ($hoveredNodeId = null)}>
+      {#each $rootNodes as node (node.id)}
+        <Node {node} />
+      {/each}
+    </ul>
+    <Breadcrumbs />
   </div>
   <ComponentView />
 {:else}

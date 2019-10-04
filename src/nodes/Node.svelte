@@ -9,9 +9,6 @@
 
   export let node
   export let depth = 1
-  export let forceCollapsed
-
-  let _collapsed = forceCollapsed || node.collapsed
 
   let _timeout = null
   node.invalidate = () => {
@@ -39,8 +36,6 @@
     flash = flash || node.children.length != lastLength
     lastLength = node.children.length
   }
-
-  $: if (!forceCollapsed) node.collapsed = _collapsed
 </script>
 
 <style>
@@ -107,7 +102,7 @@
     <svelte:component
       this={nodeType}
       tagName={node.tagName}
-      bind:collapsed={_collapsed}
+      bind:collapsed={node.collapsed}
       {...node.detail}
       hasChildren={node.children.length != 0}
       hover={$hoveredNodeId == node.id}

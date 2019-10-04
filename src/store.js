@@ -13,15 +13,6 @@ export const selectedNode = writable({})
 export const hoveredNodeId = writable(null)
 export const rootNodes = writable([])
 export const searchValue = writable('')
-export const searchResult = derived(searchValue, value =>
-  value.length < 2
-    ? null
-    : Array.from(nodeMap.values()).filter(
-        node =>
-          node.tagName.includes(value) ||
-          (node.detail && JSON.stringify(node.detail).includes(value))
-      )
-)
 
 const nodeMap = new Map()
 
@@ -38,13 +29,24 @@ export function reload() {
   })
 }
 
-selectedNode.subscribe(node =>
+selectedNode.subscribe(node => {
   port.postMessage({
     type: 'setSelected',
     tabId: chrome.devtools.inspectedWindow.tabId,
     nodeId: node.id
   })
-)
+
+  let invalid = null
+  while (node.parent) {
+    node = node.parent
+    if (node.collapsed) {
+      invalid = node
+      node.collapsed = false
+    }
+  }
+
+  if (invalid) invalid.invalidate()
+})
 
 function noop() {}
 
@@ -125,12 +127,6 @@ port.onMessage.addListener(msg => {
     case 'inspect': {
       let node = nodeMap.get(msg.node.id)
       selectedNode.set(node)
-      while (node.parent) {
-        node = node.parent
-        node.collapsed = false
-      }
-
-      node.invalidate()
 
       break
     }

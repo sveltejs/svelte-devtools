@@ -1,6 +1,6 @@
 <script>
-  import IconButton from './IconButton.svelte'
-  import { visibility } from './store.js'
+  import { visibility } from '../store.js'
+  import Button from './Button.svelte'
 
   let isOpen = false
 </script>
@@ -89,7 +89,7 @@
   }
 </style>
 
-<IconButton on:click={e => (isOpen = true)}>
+<Button on:click={e => (isOpen = true)}>
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
     <path
       d="M8 2C4.36364 2 1.25818 4.28067 0 7.5 1.25818 10.71933 4.36364 13 8
@@ -135,4 +135,4 @@
       </li>
     </ul>
   {/if}
-</IconButton>
+</Button>

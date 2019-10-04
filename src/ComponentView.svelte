@@ -1,9 +1,9 @@
 <script>
   import { devtools } from 'chrome'
   import { selectedNode } from './store.js'
+  import Toolbar from './toolbar/Toolbar.svelte'
+  import Button from './toolbar/Button.svelte'
   import PropertyList from './PropertyList.svelte'
-  import Toolbar from './Toolbar.svelte'
-  import IconButton from './IconButton.svelte'
 
   let isResizing = false
   let width = 300
@@ -52,7 +52,7 @@
 <div class="root" style={`width: ${width}px`}>
   <div class="resize" on:mousedown={e => (isResizing = true)} />
   <Toolbar>
-    <IconButton
+    <Button
       disabled={$selectedNode.id === undefined}
       on:click={e => devtools.inspectedWindow.eval('inspect(window.$s)')}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
@@ -63,7 +63,7 @@
           1H2v-1H.5zM14 7.5h1.5a.5.5 0 0 1 0 1H14v-1zM8 0c.28 0
           .5.22.5.5V2h-1V.5c0-.28.22-.5.5-.5zM8.5 14v1.5a.5.5 0 0 1-1 0V14h1z" />
       </svg>
-    </IconButton>
+    </Button>
   </Toolbar>
   {#if $selectedNode.type == 'component'}
     <PropertyList

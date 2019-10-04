@@ -1,5 +1,6 @@
 <script>
   export let disabled
+  export let type = 'button'
 </script>
 
 <style>
@@ -12,6 +13,7 @@
     border: none;
     border-radius: 2px;
     background-color: transparent;
+    color: rgb(12, 12, 13);
     line-height: 0;
     cursor: pointer;
   }
@@ -24,36 +26,28 @@
     color: inherit;
   }
 
-  button:active :global(svg) {
-    fill: rgba(12, 12, 13, 0.8);
+  button:active {
+    color: rgba(12, 12, 13, 0.8);
   }
 
-  button:disabled :global(svg) {
-    fill: rgba(12, 12, 13, 0.2);
-  }
-
-  :global(svg) {
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
-    opacity: 0.8;
-    fill: rgb(12, 12, 13);
+  button:disabled {
+    color: rgba(12, 12, 13, 0.2);
   }
 
   :global(.dark) button:hover {
     background-color: rgb(37, 37, 38);
   }
 
-  :global(.dark) :global(svg) {
-    fill: rgba(249, 249, 250, 0.7);
+  :global(.dark) {
+    color: rgba(249, 249, 250, 0.7);
   }
 
-  :global(.dark) button:active :global(svg) {
-    fill: rgba(249, 249, 250, 0.8);
+  :global(.dark) button:active {
+    color: rgba(249, 249, 250, 0.8);
   }
 
-  :global(.dark) button:disabled :global(svg) {
-    fill: rgba(249, 249, 250, 0.2);
+  :global(.dark) button:disabled {
+    color: rgba(249, 249, 250, 0.2);
   }
 
   :global(.dark) button:disabled,
@@ -61,8 +55,15 @@
     background-color: transparent;
     cursor: default;
   }
+
+  button :global(svg) {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    fill: currentColor;
+  }
 </style>
 
-<button on:click {disabled}>
+<button on:click {disabled} {type}>
   <slot />
 </button>
