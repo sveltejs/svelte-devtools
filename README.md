@@ -9,7 +9,7 @@ After installing you will see a new tab in Developer Tools. This tab displays a 
 
 **Requires svelte version 3.12.0 or above**
 
-![0.1.1 Screenshot](https://raw.githubusercontent.com/RedHatter/svelte-devtools/master/screenshot.png "0.2.0 Screenshot")
+![1.1.0 Screenshot](https://raw.githubusercontent.com/RedHatter/svelte-devtools/master/screenshot.png "1.1.0 Screenshot")
 
 # Build from source
 
