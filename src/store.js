@@ -48,6 +48,14 @@ selectedNode.subscribe(node => {
   if (invalid) invalid.invalidate()
 })
 
+hoveredNodeId.subscribe(nodeId =>
+  port.postMessage({
+    type: 'setHover',
+    tabId: chrome.devtools.inspectedWindow.tabId,
+    nodeId
+  })
+)
+
 function noop() {}
 
 function insertNode(node, target, anchorId) {
