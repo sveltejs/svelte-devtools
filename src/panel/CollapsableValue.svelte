@@ -121,10 +121,12 @@
     {/if}
   {:else if type == 'object'}
     {#if value.__isFunction}
+      <Collapse class="collapse" {collapsed} />
       {key}:&nbsp;
-      <span class="function" data-tooltip={value.source}>
-        function&nbsp;{value.name || ''}&nbsp;()
-      </span>
+      <span class="function">function&nbsp;{value.name || ''}&nbsp;()</span>
+      {#if !collapsed}
+        <pre>{value.source}</pre>
+      {/if}
     {:else if Object.keys(value).length}
       <Collapse class="collapse" {collapsed} />
       {key}:&nbsp;
