@@ -36,6 +36,10 @@
     color: rgb(177, 177, 179);
   }
 
+  :global(.dark.chrome) .root {
+    background-color: rgb(36, 36, 36);
+  }
+
   :global(.dark) .resize {
     border-left-color: rgb(60, 60, 61);
   }

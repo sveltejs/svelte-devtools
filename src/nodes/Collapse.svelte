@@ -17,7 +17,7 @@
 
   span::after {
     position: absolute;
-    bottom: 5px;
+    bottom: 4px;
     left: 4px;
     width: 0;
     height: 0;
@@ -27,6 +27,14 @@
     content: '';
     transition: transform 0.3s;
     transform: rotate(0deg);
+  }
+
+  :global(.node-tree) span::after {
+    bottom: 5px;
+  }
+
+  :global(.chrome .node-tree) span::after {
+    bottom: 6px;
   }
 
   span.selected::after {

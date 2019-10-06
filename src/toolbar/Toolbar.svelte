@@ -12,6 +12,10 @@
     border-bottom-color: rgb(60, 60, 61);
     background-color: rgb(42, 42, 46);
   }
+
+  :global(.dark.chrome) div {
+    background-color: rgb(36, 36, 36);
+  }
 </style>
 
 <div>
