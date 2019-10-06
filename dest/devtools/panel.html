@@ -20,6 +20,19 @@
       body.dark {
         color: rgb(177, 177, 179);
         background-color: rgb(42, 42, 46);
+        scrollbar-color: rgb(115, 115, 115) rgb(60, 60, 61);
+      }
+
+      body.dark ::-webkit-scrollbar {
+        width: 14px;
+        height: 14px;
+        background-color: transparent;
+        box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.5);
+      }
+
+      body.dark ::-webkit-scrollbar-thumb {
+        background-color: rgb(51, 51, 51);
+        box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.5);
       }
 
       ul {

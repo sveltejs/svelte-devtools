@@ -43,6 +43,10 @@
   :global(.dark) .resize:hover {
     border-left-color: rgb(107, 107, 108);
   }
+
+  div :global([data-tooltip]::after) {
+    white-space: pre-wrap;
+  }
 </style>
 
 <svelte:window

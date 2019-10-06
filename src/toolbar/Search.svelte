@@ -61,6 +61,10 @@
     background-color: rgb(224, 224, 226);
   }
 
+  :global(.dark) .separator {
+    background-color: rgb(60, 60, 61);
+  }
+
   .next,
   .prev {
     position: relative;

@@ -34,12 +34,12 @@
     color: rgba(12, 12, 13, 0.2);
   }
 
-  :global(.dark) button:hover {
-    background-color: rgb(37, 37, 38);
+  :global(.dark) button {
+    color: rgba(249, 249, 250, 0.7);
   }
 
-  :global(.dark) {
-    color: rgba(249, 249, 250, 0.7);
+  :global(.dark) button:hover {
+    background-color: rgb(37, 37, 38);
   }
 
   :global(.dark) button:active {

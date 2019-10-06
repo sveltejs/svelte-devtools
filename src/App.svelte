@@ -19,27 +19,12 @@
   ul {
     overflow: auto;
     flex-grow: 1;
-    margin-top: 8px;
-  }
-
-  .results :global(> li) {
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgb(242, 242, 243);
-  }
-
-  .results :global(> li:last-child) {
-    border-bottom: none;
+    padding-top: 8px;
   }
 
   .root div {
     margin-top: 40%;
     text-align: center;
-  }
-
-  :global(.dark) input,
-  :global(.dark) .results :global(> li) {
-    border-color: rgb(60, 60, 61);
   }
 </style>
 
