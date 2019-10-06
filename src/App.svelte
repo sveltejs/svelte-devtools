@@ -3,7 +3,7 @@
   import Toolbar from './toolbar/Toolbar.svelte'
   import Search from './toolbar/Search.svelte'
   import VisibilityButton from './toolbar/VisibilityButton.svelte'
-  import ComponentView from './ComponentView.svelte'
+  import ComponentView from './panel/ComponentView.svelte'
   import Breadcrumbs from './Breadcrumbs.svelte'
   import ConnectMessage from './ConnectMessage.svelte'
   import Node from './nodes/Node.svelte'

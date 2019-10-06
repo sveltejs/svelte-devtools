@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte'
-  import Collapse from './nodes/Collapse.svelte'
+  import Collapse from '../nodes/Collapse.svelte'
   import Editable from './Editable.svelte'
 
   export let errorMessage

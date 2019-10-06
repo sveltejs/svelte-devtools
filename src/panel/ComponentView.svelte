@@ -1,8 +1,8 @@
 <script>
   import { devtools } from 'chrome'
-  import { selectedNode } from './store.js'
-  import Toolbar from './toolbar/Toolbar.svelte'
-  import Button from './toolbar/Button.svelte'
+  import { selectedNode } from '../store.js'
+  import Toolbar from '../toolbar/Toolbar.svelte'
+  import Button from '../toolbar/Button.svelte'
   import PropertyList from './PropertyList.svelte'
 
   let isResizing = false
