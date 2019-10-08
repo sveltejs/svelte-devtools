@@ -12,6 +12,7 @@
 <style>
   .node-tree {
     display: flex;
+    overflow: hidden;
     flex: 1 1 0;
     flex-direction: column;
   }
