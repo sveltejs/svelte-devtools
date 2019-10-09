@@ -17,7 +17,9 @@
   $: {
     let localCache = {}
     _attributes = attributes.map(o => {
-      const value = JSON.stringify(o.value)
+      const value = o.value.__isFunction
+        ? o.value.name
+        : JSON.stringify(o.value)
       localCache[o.key] = value
 
       return {
