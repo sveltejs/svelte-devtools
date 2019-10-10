@@ -1,4 +1,5 @@
 import { getNode, addNodeListener } from 'svelte-listener'
+import highlight from './highlight.js'
 
 window.__svelte_devtools_inject_state = function(id, key, value) {
   let component = getNode(id).detail
@@ -8,53 +9,6 @@ window.__svelte_devtools_inject_state = function(id, key, value) {
 window.__svelte_devtools_select_element = function(element) {
   let node = getNode(element)
   if (node) window.postMessage({ type: 'inspect', node: serializeNode(node) })
-}
-
-const hoverArea = document.createElement('div')
-hoverArea.style.position = 'fixed'
-hoverArea.style.backgroundColor = 'rgba(0, 136, 204, 0.2)'
-hoverArea.style.zIndex = '2147483647'
-
-const hoverX = document.createElement('div')
-hoverX.style.position = 'fixed'
-hoverX.style.borderStyle = 'dashed'
-hoverX.style.borderColor = 'rgb(0, 136, 204)'
-hoverX.style.borderWidth = '1px 0'
-hoverX.style.zIndex = '2147483647'
-hoverX.style.left = '0'
-hoverX.style.width = '100vw'
-
-const hoverY = document.createElement('div')
-hoverY.style.position = 'fixed'
-hoverY.style.borderStyle = 'dashed'
-hoverY.style.borderColor = 'rgb(0, 136, 204)'
-hoverY.style.borderWidth = '0 1px'
-hoverY.style.zIndex = '2147483647'
-hoverY.style.top = '0'
-hoverY.style.height = '100vh'
-
-function getBoundingRect(node) {
-  if (node.type == 'element') return node.detail.getBoundingClientRect()
-
-  const maxRect = {
-    top: Infinity,
-    left: Infinity,
-    bottom: -Infinity,
-    right: -Infinity
-  }
-
-  for (const child of node.children) {
-    const rect = getBoundingRect(child)
-    if (rect.top < maxRect.top) maxRect.top = rect.top
-    if (rect.left < maxRect.left) maxRect.left = rect.left
-    if (rect.bottom > maxRect.bottom) maxRect.bottom = rect.bottom
-    if (rect.right > maxRect.right) maxRect.right = rect.right
-  }
-
-  maxRect.width = maxRect.right - maxRect.left
-  maxRect.height = maxRect.bottom - maxRect.top
-
-  return maxRect
 }
 
 window.addEventListener('message', e => handleMessage(e.data), false)
@@ -68,28 +22,7 @@ function handleMessage(msg) {
       break
 
     case 'setHover':
-      if (!node) {
-        hoverArea.remove()
-        hoverX.remove()
-        hoverY.remove()
-        break
-      }
-
-      const box = getBoundingRect(node)
-      hoverArea.style.top = box.top + 'px'
-      hoverArea.style.left = box.left + 'px'
-      hoverArea.style.width = box.width + 'px'
-      hoverArea.style.height = box.height + 'px'
-      document.body.append(hoverArea)
-
-      hoverX.style.top = box.top + 'px'
-      hoverX.style.height = box.height - 2 + 'px'
-      document.body.append(hoverX)
-
-      hoverY.style.left = box.left + 'px'
-      hoverY.style.width = box.width - 2 + 'px'
-      document.body.append(hoverY)
-
+      highlight(node)
       break
   }
 }
@@ -211,5 +144,3 @@ addNodeListener({
     })
   }
 })
-
-window.postMessage({ type: 'loadInline' })
