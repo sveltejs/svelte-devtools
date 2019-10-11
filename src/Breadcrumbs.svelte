@@ -1,6 +1,6 @@
 <script>
   import { tick } from 'svelte'
-  import { selectedNode, hoveredNodeId } from './store.js'
+  import { selectedNode, hoveredNodeId, visibility } from './store.js'
 
   let root
   let breadcrumbList = []
@@ -101,13 +101,15 @@
       </li>
     {/if}
     {#each breadcrumbList as node}
-      <li
-        on:click={e => ($selectedNode = node)}
-        on:mouseover={e => ($hoveredNodeId = node.id)}
-        class:selected={node.id == $selectedNode.id}>
-        {node.tagName}
-        <div />
-      </li>
+      {#if $visibility[node.type]}
+        <li
+          on:click={e => ($selectedNode = node)}
+          on:mouseover={e => ($hoveredNodeId = node.id)}
+          class:selected={node.id == $selectedNode.id}>
+          {node.tagName}
+          <div />
+        </li>
+      {/if}
     {/each}
   </ul>
 {/if}
