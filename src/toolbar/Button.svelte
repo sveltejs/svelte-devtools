@@ -1,5 +1,6 @@
 <script>
   export let disabled
+  export let active
   export let type = 'button'
 </script>
 
@@ -16,6 +17,10 @@
     color: rgb(12, 12, 13);
     line-height: 0;
     cursor: pointer;
+  }
+
+  button.active {
+    color: rgb(0, 96, 223);
   }
 
   button:hover {
@@ -36,6 +41,10 @@
 
   :global(.dark) button {
     color: rgba(249, 249, 250, 0.7);
+  }
+
+  :global(.dark) button.active {
+    color: rgb(117, 186, 255);
   }
 
   :global(.dark) button:hover {
@@ -64,6 +73,6 @@
   }
 </style>
 
-<button on:click {disabled} {type}>
+<button on:click {disabled} {type} class:active>
   <slot />
 </button>

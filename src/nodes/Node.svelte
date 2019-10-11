@@ -95,6 +95,7 @@
 
 {#if $visibility[node.type]}
   <li
+    bind:this={node.dom}
     class:flash
     on:animationend={e => (flash = false)}
     on:mouseover|stopPropagation={e => ($hoveredNodeId = node.id)}

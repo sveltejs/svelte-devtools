@@ -2,6 +2,7 @@
   import { hoveredNodeId, rootNodes } from './store.js'
   import Toolbar from './toolbar/Toolbar.svelte'
   import Search from './toolbar/Search.svelte'
+  import PickerButton from './toolbar/PickerButton.svelte'
   import VisibilityButton from './toolbar/VisibilityButton.svelte'
   import ComponentView from './panel/ComponentView.svelte'
   import Breadcrumbs from './Breadcrumbs.svelte'
@@ -32,6 +33,7 @@
 {#if $rootNodes.length}
   <div class="node-tree">
     <Toolbar>
+      <PickerButton />
       <Search />
       <VisibilityButton />
     </Toolbar>

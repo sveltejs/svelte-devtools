@@ -1,5 +1,5 @@
 import { getNode, addNodeListener } from 'svelte-listener'
-import highlight from './highlight.js'
+import { highlight, startPicker, stopPicker } from './highlight.js'
 
 window.__svelte_devtools_inject_state = function(id, key, value) {
   let component = getNode(id).detail
@@ -23,6 +23,14 @@ function handleMessage(msg) {
 
     case 'setHover':
       highlight(node)
+      break
+
+    case 'startPicker':
+      startPicker()
+      break
+
+    case 'stopPicker':
+      stopPicker()
       break
   }
 }

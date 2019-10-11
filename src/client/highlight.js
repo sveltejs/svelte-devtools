@@ -7,7 +7,8 @@ const dom = {
 Object.assign(dom.area.style, {
   position: 'fixed',
   backgroundColor: 'rgba(0, 136, 204, 0.2)',
-  zIndex: '2147483647'
+  zIndex: '2147483647',
+  pointerEvents: 'none'
 })
 
 Object.assign(dom.x.style, {
@@ -17,7 +18,8 @@ Object.assign(dom.x.style, {
   borderWidth: '1px 0',
   zIndex: '2147483647',
   left: '0',
-  width: '100vw'
+  width: '100vw',
+  pointerEvents: 'none'
 })
 
 Object.assign(dom.y.style, {
@@ -27,7 +29,8 @@ Object.assign(dom.y.style, {
   borderWidth: '0 1px',
   zIndex: '2147483647',
   top: '0',
-  height: '100vh'
+  height: '100vh',
+  pointerEvents: 'none'
 })
 
 function getOffset(element) {
@@ -81,7 +84,7 @@ function getBoundingRect(node) {
   return union
 }
 
-export default function(node) {
+export function highlight(node) {
   if (!node) {
     dom.area.remove()
     dom.x.remove()
@@ -109,4 +112,25 @@ export default function(node) {
     width: box.width - 2 + 'px'
   })
   document.body.append(dom.y)
+}
+
+let target = null
+function handleMousemove(e) {
+  target = e.target
+  highlight({ type: 'element', detail: target })
+}
+
+function handleClick() {
+  stopPicker()
+  window.__svelte_devtools_select_element(target)
+}
+
+export function stopPicker() {
+  document.removeEventListener('mousemove', handleMousemove, true)
+  highlight(null)
+}
+
+export function startPicker() {
+  document.addEventListener('mousemove', handleMousemove, true)
+  document.addEventListener('click', handleClick, { capture: true, once: true })
 }

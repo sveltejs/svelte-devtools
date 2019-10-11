@@ -29,6 +29,20 @@ export function reload() {
   })
 }
 
+export function startPicker() {
+  port.postMessage({
+    type: 'startPicker',
+    tabId: chrome.devtools.inspectedWindow.tabId
+  })
+}
+
+export function stopPicker() {
+  port.postMessage({
+    type: 'stopPicker',
+    tabId: chrome.devtools.inspectedWindow.tabId
+  })
+}
+
 selectedNode.subscribe(node => {
   port.postMessage({
     type: 'setSelected',
