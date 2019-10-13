@@ -11,6 +11,8 @@ chrome.runtime.onConnect.addListener(port => {
   }
 })
 
+const profilerEnabledList = []
+
 function handleToolsMessage(msg, port) {
   switch (msg.type) {
     case 'init':
@@ -22,6 +24,16 @@ function handleToolsMessage(msg, port) {
     default:
       const page = pagePorts.get(msg.tabId)
       if (page) page.postMessage(msg)
+      break
+  }
+
+  switch (msg.type) {
+    case 'startProfiler':
+      profilerEnabledList.push(msg.tabId)
+      break
+    case 'startProfiler':
+      const i = profilerEnabledList.indexOf(msg.tabId)
+      if (i != -1) profilerEnabledList.slice(i, 1)
       break
   }
 }
@@ -36,6 +48,10 @@ function attachScript(tabId, changed) {
 
   toolsPorts.get(tabId).postMessage({ type: 'init' })
   chrome.tabs.executeScript(tabId, {
+    code: `const profilerEnabled = ${profilerEnabledList.includes(tabId)}`,
+    runAt: 'document_start'
+  })
+  chrome.tabs.executeScript(tabId, {
     file: '/privilegedContent.js',
     runAt: 'document_start'
   })
@@ -46,6 +62,8 @@ function setup(tabId, port) {
   port.onDisconnect.addListener(() => {
     toolsPorts.delete(tabId)
     pagePorts.delete(tabId)
+    const i = profilerEnabledList.indexOf(msg.tabId)
+    if (i != -1) profilerEnabledList.slice(i, 1)
     chrome.tabs.onUpdated.removeListener(attachScript)
   })
 

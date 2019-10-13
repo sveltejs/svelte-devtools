@@ -1,17 +1,19 @@
 <script>
-  import { hoveredNodeId, rootNodes } from './store.js'
+  import { hoveredNodeId, rootNodes, profilerEnabled } from './store.js'
   import Toolbar from './toolbar/Toolbar.svelte'
   import Search from './toolbar/Search.svelte'
+  import ProfileButton from './toolbar/ProfileButton.svelte'
   import PickerButton from './toolbar/PickerButton.svelte'
   import VisibilityButton from './toolbar/VisibilityButton.svelte'
   import ComponentView from './panel/ComponentView.svelte'
+  import Profiler from './profiler/Profiler.svelte'
   import Breadcrumbs from './Breadcrumbs.svelte'
   import ConnectMessage from './ConnectMessage.svelte'
   import Node from './nodes/Node.svelte'
 </script>
 
 <style>
-  .node-tree {
+  div {
     display: flex;
     overflow: hidden;
     flex: 1 1 0;
@@ -30,9 +32,14 @@
   }
 </style>
 
-{#if $rootNodes.length}
+{#if $profilerEnabled}
+  <div>
+    <Profiler />
+  </div>
+{:else if $rootNodes.length}
   <div class="node-tree">
     <Toolbar>
+      <ProfileButton />
       <PickerButton />
       <Search />
       <VisibilityButton />

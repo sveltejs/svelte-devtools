@@ -39,6 +39,7 @@ export default [{
     banner: `const tag = document.createElement('script')
 tag.text = \``,
     footer: `\`
+if (profilerEnabled) tag.text = tag.text.replace('let profilerEnabled = false;', '\$&\\nstartProfiler();')
 document.children[0].append(tag)
 const port = chrome.runtime.connect()
 port.onMessage.addListener(window.postMessage.bind(window))

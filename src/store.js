@@ -13,6 +13,8 @@ export const selectedNode = writable({})
 export const hoveredNodeId = writable(null)
 export const rootNodes = writable([])
 export const searchValue = writable('')
+export const profilerEnabled = writable(false)
+export const profileFrame = writable({})
 
 const nodeMap = new Map()
 
@@ -70,6 +72,13 @@ hoveredNodeId.subscribe(nodeId =>
   })
 )
 
+profilerEnabled.subscribe(o =>
+  port.postMessage({
+    type: o ? 'startProfiler' : 'stopProfiler',
+    tabId: chrome.devtools.inspectedWindow.tabId
+  })
+)
+
 function noop() {}
 
 function insertNode(node, target, anchorId) {
@@ -85,6 +94,17 @@ function insertNode(node, target, anchorId) {
   }
 
   target.invalidate()
+}
+
+function resolveFrame(frame) {
+  frame.children.forEach(resolveFrame)
+
+  if (!frame.node) return
+
+  frame.node = nodeMap.get(frame.node) || {
+    tagName: 'Unknown',
+    type: 'Unknown'
+  }
 }
 
 port.onMessage.addListener(msg => {
@@ -150,6 +170,12 @@ port.onMessage.addListener(msg => {
       let node = nodeMap.get(msg.node.id)
       selectedNode.set(node)
 
+      break
+    }
+
+    case 'updateProfile': {
+      resolveFrame(msg.frame)
+      profileFrame.set(msg.frame)
       break
     }
   }

@@ -1,4 +1,9 @@
-import { getNode, addNodeListener } from 'svelte-listener'
+import {
+  getNode,
+  addNodeListener,
+  startProfiler,
+  stopProfiler
+} from 'svelte-listener'
 import { highlight, startPicker, stopPicker } from './highlight.js'
 
 window.__svelte_devtools_inject_state = function(id, key, value) {
@@ -31,6 +36,14 @@ function handleMessage(msg) {
 
     case 'stopPicker':
       stopPicker()
+      break
+
+    case 'startProfiler':
+      startProfiler()
+      break
+
+    case 'stopProfiler':
+      stopProfiler()
       break
   }
 }
@@ -149,6 +162,13 @@ addNodeListener({
     window.postMessage({
       type: 'updateNode',
       node: serializeNode(node)
+    })
+  },
+
+  profile(frame) {
+    window.postMessage({
+      type: 'updateProfile',
+      frame
     })
   }
 })
