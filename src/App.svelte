@@ -41,8 +41,8 @@
     <Toolbar>
       <ProfileButton />
       <PickerButton />
-      <Search />
       <VisibilityButton />
+      <Search />
     </Toolbar>
     <ul on:mouseleave={e => ($hoveredNodeId = null)}>
       {#each $rootNodes as node (node.id)}

@@ -18,7 +18,7 @@
   ul {
     position: absolute;
     top: 32px;
-    right: -20px;
+    left: -20px;
     padding: 6px 0;
     border: 1px solid rgb(224, 224, 226);
     border-radius: 2px;
@@ -31,7 +31,7 @@
   span {
     position: absolute;
     top: -10px;
-    right: 20px;
+    left: 20px;
     display: block;
     overflow: hidden;
     width: 23px;

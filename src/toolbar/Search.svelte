@@ -108,5 +108,4 @@
   <Button on:click={prev} disabled={!results.length}>
     <div class="prev" />
   </Button>
-  <div class="separator" />
 </form>
