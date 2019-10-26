@@ -52,6 +52,7 @@ function clone(value, seen = new Map()) {
   if (Array.isArray(value)) return value.map(o => clone(o, seen))
   else if (typeof value == 'function')
     return { __isFunction: true, source: value.toString(), name: value.name }
+  else if (value === window) return null
   else if (typeof value == 'object' && value != null) {
     if (seen.has(value)) return {}
 
