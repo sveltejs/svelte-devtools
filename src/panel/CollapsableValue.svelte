@@ -50,6 +50,7 @@
   }
 
   .function,
+  .symbol,
   .object {
     color: rgb(0, 116, 232);
   }
@@ -78,6 +79,7 @@
   }
 
   :global(.dark) .function,
+  :global(.dark) .symbol,
   :global(.dark) .object {
     color: rgb(117, 191, 255);
   }
@@ -127,6 +129,9 @@
       {#if !collapsed}
         <pre>{value.source}</pre>
       {/if}
+    {:else if value.__isSymbol}
+      {key}:&nbsp;
+      <span class="symbol">{value.name || 'Symbol()'}</span>
     {:else if Object.keys(value).length}
       <Collapse class="collapse" {collapsed} />
       {key}:&nbsp;

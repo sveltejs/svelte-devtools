@@ -64,7 +64,9 @@ function clone(value, seen = new Map()) {
     }
 
     return o
-  } else return value
+  } else if (typeof value == 'symbol')
+    return { __isSymbol: true, name: value.toString() }
+  else return value
 }
 
 function serializeNode(node) {
