@@ -7,7 +7,7 @@
   "scripts": {
     "build": "$npm_execpath run build:format && rollup -c && $npm_execpath run build:icon",
     "build:format": "node --experimental-modules ./scripts/format.mjs",
-    "build:icon": "for size in 16 24 48 96 128; do if [ ! -e dest/icon-$size.png -o src/svelte-logo.svg -nt dest/icon-$size.png ]; then inkscape src/svelte-logo.svg -G -o dest/icon-$size.png -w $size; fi; done",
+    "build:icon": "for size in 16 24 48 96 128; do if [ ! -e dest/icon-$size.png -o src/svelte-logo.svg -nt dest/icon-$size.png ]; then svgexport src/svelte-logo.svg dest/icon-$size.png $size:; fi; done",
     "dev": "http-serve test/public -p 8940 & web-ext run -s dest -u http://127.0.0.1:8940 -u about:debugging && kill $!",
     "package": "$npm_execpath run build && web-ext build -s dest"
   },
@@ -20,6 +20,7 @@
     "rollup-plugin-svelte": "^5.0.3",
     "svelte": "^3.12.0",
     "svelte-listener": "git+https://github.com/RedHatter/svelte-listener.git",
+    "svgexport": "^0.3.2",
     "tiny-glob": "^0.2.6",
     "web-ext": "^3.0.0"
   },

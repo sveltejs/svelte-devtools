@@ -16,8 +16,6 @@ After installing you will see a new tab in Developer Tools. This tab displays a 
 
 ## Building
 
-Note: Requires inkscape to be install in order to rasterize the logo. As a work around you can delete the "icons" key from `/dest/manifest.json`.
- 
 Clone this repository and run the package script.
 ```
 git clone https://github.com/RedHatter/svelte-devtools.git
