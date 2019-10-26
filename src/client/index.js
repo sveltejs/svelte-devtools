@@ -49,24 +49,27 @@ function handleMessage(msg) {
 }
 
 function clone(value, seen = new Map()) {
-  if (Array.isArray(value)) return value.map(o => clone(o, seen))
-  else if (typeof value == 'function')
-    return { __isFunction: true, source: value.toString(), name: value.name }
-  else if (value === window) return null
-  else if (typeof value == 'object' && value != null) {
-    if (seen.has(value)) return {}
+  switch (typeof value) {
+    case 'function':
+      return { __isFunction: true, source: value.toString(), name: value.name }
+    case 'symbol':
+      return { __isSymbol: true, name: value.toString() }
+    case 'object':
+      if (value === window || value === null) return null
+      if (Array.isArray(value)) return value.map(o => clone(o, seen))
+      if (seen.has(value)) return {}
 
-    const o = {}
-    seen.set(value, o)
+      const o = {}
+      seen.set(value, o)
 
-    for (const [key, v] of Object.entries(value)) {
-      o[key] = clone(v, seen)
-    }
+      for (const [key, v] of Object.entries(value)) {
+        o[key] = clone(v, seen)
+      }
 
-    return o
-  } else if (typeof value == 'symbol')
-    return { __isSymbol: true, name: value.toString() }
-  else return value
+      return o
+    default:
+      return value
+  }
 }
 
 function serializeNode(node) {
