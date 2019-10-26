@@ -12,15 +12,31 @@
   export let listeners = []
   export let collapsed
 
+  function stringify(value) {
+    switch (typeof value) {
+      case 'string':
+        return `"${value}"`
+      case 'undefined':
+        return 'undefined'
+      case 'number':
+        return value != value ? 'NaN' : value.toString()
+      case 'object':
+        if (value == null) return 'null'
+        if (Array.isArray(value)) return `[${value.map(stringify).join(', ')}]`
+        if (value.__isFunction) return value.name + '()'
+        if (value.__isSymbol) return value.name
+        return `{${Object.entries(value)
+          .map(([key, value]) => `${key}: ${stringify(value)}`)
+          .join(', ')}}`
+    }
+  }
+
   let _attributes
   let cache = {}
   $: {
     let localCache = {}
     _attributes = attributes.map(o => {
-      const value =
-        o.value.__isFunction || o.value.__isSymbol
-          ? o.value.name
-          : JSON.stringify(o.value)
+      const value = stringify(o.value)
       localCache[o.key] = value
 
       return {
