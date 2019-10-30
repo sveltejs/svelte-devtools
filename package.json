@@ -5,11 +5,11 @@
   "repository": "github:RedHatter/svelte-devtools",
   "license": "MIT",
   "scripts": {
-    "build": "$npm_execpath run build:format && rollup -c && $npm_execpath run build:icon",
+    "build": "npm run build:format && rollup -c && npm run build:icon",
     "build:format": "node --experimental-modules ./scripts/format.mjs",
-    "build:icon": "for size in 16 24 48 96 128; do if [ ! -e dest/icon-$size.png -o src/svelte-logo.svg -nt dest/icon-$size.png ]; then svgexport src/svelte-logo.svg dest/icon-$size.png $size:; fi; done",
+    "build:icon": "svgexport src/svelte-logo.svg dest/icon-16.png 16: && svgexport src/svelte-logo.svg dest/icon-24.png 24: && svgexport src/svelte-logo.svg dest/icon-48.png 48: && svgexport src/svelte-logo.svg dest/icon-96.png 96: && svgexport src/svelte-logo.svg dest/icon-128.png 128:",
     "dev": "http-serve test/public -p 8940 & web-ext run -s dest -u http://127.0.0.1:8940 -u about:debugging && kill $!",
-    "package": "$npm_execpath run build && web-ext build -s dest"
+    "package": "npm run build && web-ext build -s dest"
   },
   "devDependencies": {
     "http-serve": "^1.0.1",
