@@ -1,3 +1,5 @@
+const isChrome = typeof browser == 'undefined'
+
 const toolsPorts = new Map()
 const pagePorts = new Map()
 
@@ -44,7 +46,12 @@ function handlePageMessage(msg, port) {
 }
 
 function attachScript(tabId, changed) {
-  if (!toolsPorts.has(tabId) || changed.status != 'loading') return
+  if (
+    !toolsPorts.has(tabId) ||
+    changed.status != 'loading' ||
+    (!isChrome && !changed.url)
+  )
+    return
 
   toolsPorts.get(tabId).postMessage({ type: 'init' })
   chrome.tabs.executeScript(tabId, {
