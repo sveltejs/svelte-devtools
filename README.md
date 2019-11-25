@@ -12,9 +12,60 @@ After installing you will see a new tab in Developer Tools. This tab displays a 
 
 ![1.1.0 Screenshot](https://raw.githubusercontent.com/RedHatter/svelte-devtools/master/screenshot.png "1.1.0 Screenshot")
 
-# Build from source
+## Enabling dev mode
 
-## Building
+In order for svelte-devtools to comunicate with your application bundle the svelte compiler must have the `dev` option set to `true`.
+
+### Template
+By default the [svelte template](https://github.com/sveltejs/template) will set `dev: true` when running `npm run dev` and `false` otherwise.
+
+### Rollup
+Below is a minimalist rollup config with `dev: true` set.
+```
+// rollup.config.js
+import * as fs from 'fs';
+import svelte from 'rollup-plugin-svelte';
+
+export default {
+  input: 'src/main.js',
+  output: {
+    file: 'public/bundle.js',
+    format: 'iife'
+  },
+  plugins: [
+    svelte({
+      dev: true
+    })
+  ]
+}
+```
+
+### Webpack
+Below is the relvent snipet from a `webpack.config.js` with `dev: true` set.
+```
+  ...
+  module: {
+    rules: [
+      ...
+      {
+        test: /\.(html|svelte)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'svelte-loader',
+          options: {
+            dev: true,
+          },
+        },
+      },
+      ...
+    ]
+  },
+  ...
+```
+
+## Build from source
+
+### Building
 
 Clone this repository and run the package script.
 ```
@@ -25,15 +76,15 @@ npm run package
 ```
 This should build the codebase and output a zip file under `web-ext-artifacts`.
 
-## Installing
+### Installing
 
-### Firefox
+#### Firefox
 
 Unsigned addons can't be install in firefox permanently but addons can be installed temporarily.
 1. Navigate to `about:debugging`.
 2. Click "Load Temporary Add-on" and choose the generated zip file.
 
-### Chrome
+#### Chrome
 
 1. Navigate to `chrome://extensions/`.
 2. Turn on developer mode using the 'Developer mode' switch in the upper right hand corner of the page.
