@@ -41,7 +41,7 @@ export default {
 ```
 
 ### Webpack
-Below is the relvent snipet from a `webpack.config.js` with `dev: true` set.
+Below is the relevant snipet from a `webpack.config.js` with `dev: true` set.
 ```
   ...
   module: {
