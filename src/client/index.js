@@ -86,9 +86,12 @@ function serializeNode(node) {
       }
 
       const internal = node.detail.$$
+      const props = Array.isArray(internal.props)
+        ? internal.props // Svelte < 3.13.0 stored props names as an array
+        : Object.keys(internal.props)
       const ctx = clone(internal.ctx)
       serialized.detail = {
-        attributes: internal.props.reduce((o, key) => {
+        attributes: props.reduce((o, key) => {
           const value = ctx[key]
           if (value === undefined) return o
 
