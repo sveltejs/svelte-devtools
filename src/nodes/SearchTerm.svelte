@@ -3,10 +3,10 @@
 
   export let text
 
-  $: i = text.indexOf($searchValue)
-  $: pre = text.substring(0, i)
-  $: highlight = text.substring(i, i + $searchValue.length)
-  $: post = text.substring(i + $searchValue.length)
+  $: i = text ? text.indexOf($searchValue) : -1
+  $: pre = text ? text.substring(0, i) : ''
+  $: highlight = text ? text.substring(i, i + $searchValue.length) : ''
+  $: post = text ? text.substring(i + $searchValue.length) : ''
 </script>
 
 <style>
