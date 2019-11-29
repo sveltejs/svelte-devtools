@@ -17,10 +17,7 @@ export default [{
     svelte({
       preprocess: {
         markup: input => {
-          const blocks = {}
           const code = input.content
-            .replace(/<!--block\s+(.+?)\s*-->([^]+?)<!--end-->/g, (_, name, block) => (blocks[name] = block, ''))
-            .replace(/<!--use\s+(.+?)\s*?-->/g, (_, name) => blocks[name])
             .replace(/(>|})\s+(?![^]*?<\/(?:script|style)>|[^<]*?>|[^{]*?})/g, '$1')
             .replace(/(?<!<[^>]*?|{[^}]*?)\s+(<|{)(?![^]*<\/(?:script|style)>)/g, '$1')
           return { code }

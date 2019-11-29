@@ -6,7 +6,6 @@
   export let hover
   export let selected
   export let tagName
-  export let source
   export let collapsed
 </script>
 

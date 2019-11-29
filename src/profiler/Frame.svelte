@@ -1,7 +1,6 @@
 <script>
   import Operation from './Operation.svelte'
 
-  export let type
   export let children
   export let duration
 </script>

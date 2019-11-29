@@ -2,7 +2,6 @@
   export let style
   export let hover
   export let selected
-  export let source
 </script>
 
 <style>
