@@ -36,18 +36,20 @@ export default [{
     file: 'dest/privilegedContent.js',
     name: 'SvelteDevtools',
     format: 'iife',
-    banner: `const tag = document.createElement('script')
-tag.text = \``,
+    banner: `if (!window.tag) {
+  window.tag = document.createElement('script')
+  window.tag.text = \``,
     footer: `\`
-if (profilerEnabled) tag.text = tag.text.replace('let profilerEnabled = false;', '\$&\\nstartProfiler();')
-document.children[0].append(tag)
-const port = chrome.runtime.connect()
-port.onMessage.addListener(window.postMessage.bind(window))
-window.addEventListener(
-  'message',
-  e => e.source == window && port.postMessage(e.data),
-  false
-)`
+  if (window.profilerEnabled) window.tag.text = window.tag.text.replace('let profilerEnabled = false;', '\$&\\nstartProfiler();')
+  document.children[0].append(window.tag)
+  const port = chrome.runtime.connect()
+  port.onMessage.addListener(window.postMessage.bind(window))
+  window.addEventListener(
+    'message',
+    e => e.source == window && port.postMessage(e.data),
+    false
+  )
+}`
   },
   plugins: [ resolve() ]
 }, {

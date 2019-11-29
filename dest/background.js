@@ -55,7 +55,7 @@ function attachScript(tabId, changed) {
 
   toolsPorts.get(tabId).postMessage({ type: 'init' })
   chrome.tabs.executeScript(tabId, {
-    code: `const profilerEnabled = ${profilerEnabledList.includes(tabId)}`,
+    code: `window.profilerEnabled = ${profilerEnabledList.includes(tabId)}`,
     runAt: 'document_start'
   })
   chrome.tabs.executeScript(tabId, {
@@ -69,7 +69,7 @@ function setup(tabId, port) {
   port.onDisconnect.addListener(() => {
     toolsPorts.delete(tabId)
     pagePorts.delete(tabId)
-    const i = profilerEnabledList.indexOf(msg.tabId)
+    const i = profilerEnabledList.indexOf(tabId)
     if (i != -1) profilerEnabledList.slice(i, 1)
     chrome.tabs.onUpdated.removeListener(attachScript)
   })
