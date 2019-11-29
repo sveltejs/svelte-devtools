@@ -46,7 +46,9 @@
 
 {#each listeners as { event, handler, modifiers }}
   &nbsp;
-  <span class="attr-name" data-tooltip={handler}>
+  <span
+    class="attr-name"
+    data-tooltip={typeof handler == 'function' ? handler() : handler}>
     on:
     <SearchTerm text={event} />
     {#if modifiers && modifiers.length}|{modifiers.join('|')}{/if}

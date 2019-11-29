@@ -107,6 +107,33 @@ function resolveFrame(frame) {
   }
 }
 
+function resolveEventBubble(node) {
+  if (node.detail.listeners) {
+    for (const listener of node.detail.listeners) {
+      if (!listener.handler.includes('bubble($$self, event)')) continue
+
+      listener.handler = () => {
+        let target = node
+        while ((target = target.parent)) if (target.type == 'component') break
+
+        const listeners = target.detail.listeners
+        if (!listeners) return null
+
+        const parentListener = listeners.find(o => o.event == listener.event)
+        if (!parentListener) return null
+
+        const handler = parentListener.handler
+        if (!handler) return null
+
+        return (
+          '// From parent\n' +
+          (typeof handler == 'function' ? handler() : handler)
+        )
+      }
+    }
+  }
+}
+
 port.onMessage.addListener(msg => {
   switch (msg.type) {
     case 'init': {
@@ -122,6 +149,7 @@ port.onMessage.addListener(msg => {
       node.children = []
       node.collapsed = true
       node.invalidate = noop
+      resolveEventBubble(node)
 
       const targetNode = nodeMap.get(msg.target)
       nodeMap.set(node.id, node)
@@ -157,6 +185,7 @@ port.onMessage.addListener(msg => {
     case 'updateNode': {
       const node = nodeMap.get(msg.node.id)
       Object.assign(node, msg.node)
+      resolveEventBubble(node)
 
       const selected = get(selectedNode)
       if (selected && selected.id == msg.node.id) selectedNode.update(o => o)
