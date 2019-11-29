@@ -49,9 +49,22 @@ function getOffset(element) {
     left: element.offsetLeft - margin.left
   }
 
-  while ((element = element.offsetParent)) {
-    rect.top += element.offsetTop
-    rect.left += element.offsetLeft
+  let parent = element
+  while (
+    (parent =
+      parent.offsetParent || parent.ownerDocument.defaultView.frameElement)
+  ) {
+    rect.top += parent.offsetTop
+    rect.left += parent.offsetLeft
+  }
+
+  parent = element
+  while (
+    (parent =
+      parent.parentElement || parent.ownerDocument.defaultView.frameElement)
+  ) {
+    rect.top -= parent.scrollTop
+    rect.left -= parent.scrollLeft
   }
 
   rect.right = rect.left + rect.width
