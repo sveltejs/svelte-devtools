@@ -108,28 +108,28 @@ function resolveFrame(frame) {
 }
 
 function resolveEventBubble(node) {
-  if (node.detail.listeners) {
-    for (const listener of node.detail.listeners) {
-      if (!listener.handler.includes('bubble($$self, event)')) continue
+  if (!node.detail || !node.detail.listeners) return
 
-      listener.handler = () => {
-        let target = node
-        while ((target = target.parent)) if (target.type == 'component') break
+  for (const listener of node.detail.listeners) {
+    if (!listener.handler.includes('bubble($$self, event)')) continue
 
-        const listeners = target.detail.listeners
-        if (!listeners) return null
+    listener.handler = () => {
+      let target = node
+      while ((target = target.parent)) if (target.type == 'component') break
 
-        const parentListener = listeners.find(o => o.event == listener.event)
-        if (!parentListener) return null
+      const listeners = target.detail.listeners
+      if (!listeners) return null
 
-        const handler = parentListener.handler
-        if (!handler) return null
+      const parentListener = listeners.find(o => o.event == listener.event)
+      if (!parentListener) return null
 
-        return (
-          '// From parent\n' +
-          (typeof handler == 'function' ? handler() : handler)
-        )
-      }
+      const handler = parentListener.handler
+      if (!handler) return null
+
+      return (
+        '// From parent\n' +
+        (typeof handler == 'function' ? handler() : handler)
+      )
     }
   }
 }
