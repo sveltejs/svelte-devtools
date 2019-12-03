@@ -91,18 +91,14 @@ function serializeNode(node) {
         : Object.keys(internal.props)
       const ctx = clone(internal.ctx)
       serialized.detail = {
-        attributes: props.reduce((o, key) => {
-          const value = ctx[key]
-          if (value === undefined) return o
-
+        attributes: props.flatMap(key => {
           delete ctx[key]
-          o.push({ key, value, isBound: key in internal.bound })
-          return o
-        }, []),
-        listeners: Object.entries(internal.callbacks).reduce(
-          (list, [event, value]) =>
-            list.concat(value.map(o => ({ event, handler: o.toString() }))),
-          []
+          return ctx[key] === undefined
+            ? []
+            : { key, value: ctx[key], isBound: key in internal.bound }
+        }),
+        listeners: Object.entries(internal.callbacks).flatMap(
+          ([event, value]) => value.map(o => ({ event, handler: o.toString() }))
         ),
         ctx: Object.entries(ctx).map(([key, value]) => ({ key, value }))
       }
