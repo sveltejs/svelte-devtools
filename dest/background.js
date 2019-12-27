@@ -53,7 +53,6 @@ function attachScript(tabId, changed) {
   )
     return
 
-  toolsPorts.get(tabId).postMessage({ type: 'init' })
   chrome.tabs.executeScript(tabId, {
     code: `window.profilerEnabled = ${profilerEnabledList.includes(tabId)}`,
     runAt: 'document_start'

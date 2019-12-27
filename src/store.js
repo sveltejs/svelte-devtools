@@ -136,7 +136,7 @@ function resolveEventBubble(node) {
 
 port.onMessage.addListener(msg => {
   switch (msg.type) {
-    case 'init': {
+    case 'clear': {
       selectedNode.set({})
       hoveredNodeId.set(null)
       rootNodes.set([])

@@ -46,6 +46,7 @@ export default [{
     e => e.source == window && port.postMessage(e.data),
     false
   )
+  window.addEventListener('unload', () => port.postMessage({ type: 'clear' }))
 }`
   },
   plugins: [ resolve() ]
