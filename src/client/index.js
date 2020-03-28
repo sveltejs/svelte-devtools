@@ -115,10 +115,11 @@ function serializeNode(node) {
 
       serialized.detail = {
         attributes: props.flatMap(key => {
+          const value = ctx[key]
           delete ctx[key]
-          return ctx[key] === undefined
+          return value === undefined
             ? []
-            : { key, value: ctx[key], isBound: key in internal.bound }
+            : { key, value, isBound: key in internal.bound }
         }),
         listeners: Object.entries(internal.callbacks).flatMap(
           ([event, value]) => value.map(o => ({ event, handler: o.toString() }))
