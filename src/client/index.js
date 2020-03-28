@@ -2,7 +2,8 @@ import {
   getNode,
   addNodeListener,
   startProfiler,
-  stopProfiler
+  stopProfiler,
+  getSvelteVersion
 } from 'svelte-listener'
 import { highlight, startPicker, stopPicker } from './highlight.js'
 
@@ -72,6 +73,24 @@ function clone(value, seen = new Map()) {
   }
 }
 
+function gte(major, minor, patch) {
+  const version = (getSvelteVersion() || '0.0.0')
+    .split('.')
+    .map(n => parseInt(n))
+  return (
+    version[0] > major ||
+    (version[0] == major &&
+      (version[1] > minor || (version[1] == minor && version[2] >= patch)))
+  )
+}
+
+let _shouldUseCapture = null
+function shouldUseCapture() {
+  return _shouldUseCapture == null
+    ? (_shouldUseCapture = gte(3, 19, 2))
+    : _shouldUseCapture
+}
+
 function serializeNode(node) {
   const serialized = {
     id: node.id,
@@ -89,7 +108,11 @@ function serializeNode(node) {
       const props = Array.isArray(internal.props)
         ? internal.props // Svelte < 3.13.0 stored props names as an array
         : Object.keys(internal.props)
-      const ctx = clone(internal.ctx)
+      let ctx = clone(
+        shouldUseCapture() ? node.detail.$capture_state() : internal.ctx
+      )
+      if (ctx === undefined) ctx = {}
+
       serialized.detail = {
         attributes: props.flatMap(key => {
           delete ctx[key]
