@@ -42,7 +42,7 @@
       return {
         ...o,
         value,
-        flash: !!_attributes && value != cache[o.key]
+        flash: !!_attributes && value != cache[o.key],
       }
     })
     cache = localCache

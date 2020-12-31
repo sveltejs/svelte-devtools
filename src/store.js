@@ -7,7 +7,7 @@ export const visibility = writable({
   iteration: true,
   slot: true,
   text: true,
-  anchor: false
+  anchor: false,
 })
 export const selectedNode = writable({})
 export const hoveredNodeId = writable(null)
@@ -21,27 +21,27 @@ const nodeMap = new Map()
 const port = chrome.runtime.connect()
 port.postMessage({
   type: 'init',
-  tabId: chrome.devtools.inspectedWindow.tabId
+  tabId: chrome.devtools.inspectedWindow.tabId,
 })
 
 export function reload() {
   port.postMessage({
     type: 'reload',
-    tabId: chrome.devtools.inspectedWindow.tabId
+    tabId: chrome.devtools.inspectedWindow.tabId,
   })
 }
 
 export function startPicker() {
   port.postMessage({
     type: 'startPicker',
-    tabId: chrome.devtools.inspectedWindow.tabId
+    tabId: chrome.devtools.inspectedWindow.tabId,
   })
 }
 
 export function stopPicker() {
   port.postMessage({
     type: 'stopPicker',
-    tabId: chrome.devtools.inspectedWindow.tabId
+    tabId: chrome.devtools.inspectedWindow.tabId,
   })
 }
 
@@ -49,7 +49,7 @@ selectedNode.subscribe(node => {
   port.postMessage({
     type: 'setSelected',
     tabId: chrome.devtools.inspectedWindow.tabId,
-    nodeId: node.id
+    nodeId: node.id,
   })
 
   let invalid = null
@@ -68,14 +68,14 @@ hoveredNodeId.subscribe(nodeId =>
   port.postMessage({
     type: 'setHover',
     tabId: chrome.devtools.inspectedWindow.tabId,
-    nodeId
+    nodeId,
   })
 )
 
 profilerEnabled.subscribe(o =>
   port.postMessage({
     type: o ? 'startProfiler' : 'stopProfiler',
-    tabId: chrome.devtools.inspectedWindow.tabId
+    tabId: chrome.devtools.inspectedWindow.tabId,
   })
 )
 
@@ -103,7 +103,7 @@ function resolveFrame(frame) {
 
   frame.node = nodeMap.get(frame.node) || {
     tagName: 'Unknown',
-    type: 'Unknown'
+    type: 'Unknown',
   }
 }
 

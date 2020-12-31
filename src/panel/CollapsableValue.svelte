@@ -94,12 +94,15 @@
   on:click|stopPropagation={e => (collapsed = !collapsed)}>
   {#if type == 'string'}
     {key}:&nbsp;
+
     <Editable class="string" {readOnly} {value} on:change />
   {:else if value == null || value == undefined || value != value}
     {key}:&nbsp;
+
     <Editable class="null" {readOnly} {value} on:change />
   {:else if type == 'number' || type == 'boolean'}
     {key}:&nbsp;
+
     <Editable class="number" {readOnly} {value} on:change />
   {:else if Array.isArray(value)}
     {#if value.length}
@@ -117,10 +120,7 @@
           {/each}
         </ul>
       {/if}
-    {:else}
-      {key}:&nbsp;
-      <span class="object">Array []</span>
-    {/if}
+    {:else}{key}:&nbsp; <span class="object">Array []</span>{/if}
   {:else if type == 'object'}
     {#if value.__isFunction}
       <Collapse class="collapse" {collapsed} />
@@ -152,7 +152,5 @@
       <span class="object">Object &lbrace; &rbrace;</span>
     {/if}
   {/if}
-  {#if errorMessage}
-    <span class="error">!</span>
-  {/if}
+  {#if errorMessage}<span class="error">!</span>{/if}
 </li>

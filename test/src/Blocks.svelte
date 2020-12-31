@@ -15,9 +15,7 @@
     source line
   </p>
 
-  {#each valueList as value}
-    <span>{value}</span>
-  {/each}
+  {#each valueList as value}<span>{value}</span>{/each}
 
   <div>
     {#if value > 10}
@@ -29,18 +27,22 @@
     {#await promise}
       waiting for the promise to resolve...
     {:then value}
-      Promise resolved to {value}
+      Promise resolved to
+      {value}
     {:catch error}
-      Something went wrong {error.message}
+      Something went wrong
+      {error.message}
     {/await}
   </div>
   <div>
     {#await new Promise(() => {})}
       Pending forever
     {:then value}
-      Something went wrong {value}
+      Something went wrong
+      {value}
     {:catch error}
-      Something went wrong {error.message}
+      Something went wrong
+      {error.message}
     {/await}
   </div>
 
@@ -48,18 +50,22 @@
     {#await Promise.resolve(5)}
       Something went wrong
     {:then value}
-      Promise resolved to {value}
+      Promise resolved to
+      {value}
     {:catch error}
-      Something went wrong {error.message}
+      Something went wrong
+      {error.message}
     {/await}
   </div>
   <div>
     {#await Promise.reject('rejected')}
       Something went wrong
     {:then value}
-      Something went wrong {value}
+      Something went wrong
+      {value}
     {:catch error}
-      Should reject {error}
+      Should reject
+      {error}
     {/await}
   </div>
 </div>

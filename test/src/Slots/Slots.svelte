@@ -4,7 +4,5 @@
 
 <div>
   <p>Render slots.</p>
-  <SlotComponent>
-    <span>Slot content</span>
-  </SlotComponent>
+  <SlotComponent><span>Slot content</span></SlotComponent>
 </div>

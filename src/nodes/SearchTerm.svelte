@@ -18,8 +18,4 @@
 
 {#if i == -1 || $searchValue.length < 2}
   {text}
-{:else}
-  {pre}
-  <span>{highlight}</span>
-  {post}
-{/if}
+{:else}{pre}<span>{highlight}</span>{post}{/if}

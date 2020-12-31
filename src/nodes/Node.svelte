@@ -27,7 +27,7 @@
     slot: Slot,
     iteration: Iteration,
     text: Text,
-    anchor: Anchor
+    anchor: Anchor,
   }[node.type]
 
   let lastLength = node.children.length

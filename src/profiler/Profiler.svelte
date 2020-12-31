@@ -88,22 +88,10 @@
         <span>Tag name</span>
         {selected.node.tagName}&nbsp;(#{selected.node.id})
       </div>
-      <div>
-        <span>Start</span>
-        {round(selected.start)}ms
-      </div>
-      <div>
-        <span>Operation</span>
-        {selected.type}
-      </div>
-      <div>
-        <span>Block type</span>
-        {selected.node.type}
-      </div>
-      <div>
-        <span>End</span>
-        {round(selected.end)}ms
-      </div>
+      <div><span>Start</span> {round(selected.start)}ms</div>
+      <div><span>Operation</span> {selected.type}</div>
+      <div><span>Block type</span> {selected.node.type}</div>
+      <div><span>End</span> {round(selected.end)}ms</div>
       <div>
         <span>Duration</span>
         {round(selected.children.reduce((acc, o) => acc - o.duration, selected.duration))}ms
