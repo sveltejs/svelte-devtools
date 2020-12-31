@@ -1,6 +1,8 @@
 import * as fs from 'fs'
 import svelte from 'rollup-plugin-svelte'
 import resolve from 'rollup-plugin-node-resolve'
+import css from 'rollup-plugin-css-only'
+import format from './scripts/format.mjs'
 
 export default [{
   input: 'src/index.js',
@@ -14,6 +16,7 @@ export default [{
     }
   },
   plugins: [
+    format(),
     svelte({
       preprocess: {
         markup: input => {
@@ -23,9 +26,9 @@ export default [{
           return { code }
         }
       },
-      css: css => css.write('dest/devtools/styles.css'),
     }),
-    resolve()
+    resolve(),
+    css({ output: 'styles.css' }),
   ]
 }, {
   input: 'src/client/index.js',
@@ -58,10 +61,13 @@ export default [{
     format: 'iife'
   },
   plugins: [
+    format(),
     svelte({
-      dev: true,
-      css: css => css.write('test/public/styles.css')
+      compilerOptions: {
+        dev: true
+      }
     }),
-    resolve()
+    resolve(),
+    css({ output: 'styles.css' })
   ]
 }]

@@ -5,24 +5,26 @@
   "repository": "github:RedHatter/svelte-devtools",
   "license": "MIT",
   "scripts": {
-    "build": "$npm_execpath run build:format && rollup -c && $npm_execpath run build:icon",
-    "build:format": "node --experimental-modules ./scripts/format.mjs",
+    "build": "rollup -c && $npm_execpath run build:icon",
     "build:icon": "for size in 16 24 48 96 128; do if [ ! -e dest/icon-$size.png -o src/svelte-logo.svg -nt dest/icon-$size.png ]; then svgexport src/svelte-logo.svg dest/icon-$size.png $size:; fi; done",
     "dev": "http-serve test/public -p 8940 & web-ext run -s dest -u http://127.0.0.1:8940 -u about:debugging && kill $!",
     "package": "$npm_execpath run build && web-ext build -s dest"
   },
   "devDependencies": {
     "http-serve": "^1.0.1",
-    "prettier": "git+https://github.com/RedHatter/prettier.git#sort-css",
-    "prettier-plugin-svelte": "^0.7.0",
-    "rollup": "^1.27.4",
-    "rollup-plugin-node-resolve": "^5.0.0",
-    "rollup-plugin-svelte": "^5.1.1",
+    "postcss": "^8.2.2",
+    "postcss-sorting": "^6.0.0",
+    "prettier": "^2.2.1",
+    "prettier-plugin-svelte": "^1.4.2",
+    "rollup": "^2.35.1",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-svelte": "^7.0.0",
+    "rollup-plugin-transform-input": "https://github.com/RedHatter/rollup-plugin-transform-input.git",
     "svelte": "^3.20.1",
     "svelte-listener": "git+https://github.com/RedHatter/svelte-listener.git",
-    "svgexport": "^0.3.2",
-    "tiny-glob": "^0.2.6",
-    "web-ext": "^3.2.1"
+    "svgexport": "^0.4.1",
+    "web-ext": "^5.4.1"
   },
   "engines": {
     "node": ">=11.14.0"
