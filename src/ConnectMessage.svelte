@@ -20,18 +20,18 @@
   }
 
   h1 {
-    margin-top: 30px;
-    margin-bottom: 8px;
+    margin-top: 2.727rem /* 30px */;
+    margin-bottom: 0.727rem /* 8px */;
     font-size: 1.4em;
   }
 
   ul {
-    padding-left: 20px;
+    padding-left: 1.818rem /* 20px */;
     list-style-type: disc;
   }
 
   li {
-    margin-bottom: 8px;
+    margin-bottom: 0.727rem /* 8px */;
   }
 
   :global(.dark) .button {

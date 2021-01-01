@@ -12,8 +12,8 @@
 
 <style>
   div {
-    height: 16px;
-    line-height: 16px;
+    height: 1.455rem /* 16px */;
+    line-height: 1.455rem /* 16px */;
   }
 
   div {

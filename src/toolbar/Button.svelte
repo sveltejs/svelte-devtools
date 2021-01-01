@@ -8,11 +8,11 @@
   button {
     position: relative;
     z-index: 1;
-    margin: 1px;
-    padding: 5px;
+    margin: 0.091rem /* 1px */;
+    padding: 0.455rem /* 5px */;
     outline: none;
     border: none;
-    border-radius: 2px;
+    border-radius: 0.182rem /* 2px */;
     background-color: transparent;
     color: rgb(12, 12, 13);
     line-height: 0;
@@ -66,8 +66,8 @@
   }
 
   button :global(svg) {
-    width: 16px;
-    height: 16px;
+    width: 1.455rem;
+    height: 1.455rem;
     vertical-align: middle;
     fill: currentColor;
   }

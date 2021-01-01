@@ -11,7 +11,7 @@
     overflow: hidden;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 1px 0 0 1px;
+    margin: 0.091rem /* 1px */ 0 0 0.091rem /* 1px */;
     height: 2em;
     color: white;
     line-height: 2em;

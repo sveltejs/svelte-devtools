@@ -6,6 +6,7 @@
     <style>
       html {
         height: 100%;
+        font-size: 11px;
       }
 
       body {
@@ -13,7 +14,6 @@
         margin: 0;
         height: 100%;
         color: rgb(74, 74, 79);
-        font-size: 11px;
         font-family: monospace;
       }
 
@@ -53,12 +53,12 @@
 
       [data-tooltip]::after {
         position: absolute;
-        bottom: -2px;
+        bottom: -0.182rem /* -2px */;
         left: 0;
         z-index: 1;
         display: block;
-        padding: 6px 16px;
-        border-radius: 5px;
+        padding: 0.545rem /* 6px */ 1.455rem /* 16px */;
+        border-radius: 0.455rem /* 5px */;
         background-color: rgb(48, 64, 81);
         color: white;
         content: attr(data-tooltip);
@@ -71,14 +71,14 @@
 
       [data-tooltip]::before {
         position: absolute;
-        bottom: -2px;
-        left: 30px;
+        bottom: -0.182rem /* -2px */;
+        left: 2.727rem /* 30px */;
         display: block;
         width: 0;
         height: 0;
-        border-right: 5px solid transparent;
-        border-bottom: 5px solid rgb(48, 64, 81);
-        border-left: 5px solid transparent;
+        border-right: 0.455rem /* 5px */ solid transparent;
+        border-bottom: 0.455rem /* 5px */ solid rgb(48, 64, 81);
+        border-left: 0.455rem /* 5px */ solid transparent;
         content: '';
         opacity: 0;
         transition: opacity 0.2s;

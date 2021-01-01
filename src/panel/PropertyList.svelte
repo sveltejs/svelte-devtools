@@ -22,24 +22,24 @@
 
 <style>
   .empty {
-    margin: 8px 0 0 12px;
+    margin: 0.727rem /* 8px */ 0 0 1.091rem /* 12px */;
     color: rgb(118, 118, 118);
   }
 
   h1 {
-    margin: 8px 0 0 8px;
+    margin: 0.727rem /* 8px */ 0 0 0.727rem /* 8px */;
     color: rgb(118, 118, 118);
     font-weight: bold;
     font-size: 1rem;
   }
 
   ul {
-    margin: 5px;
+    margin: 0.455rem /* 5px */;
   }
 
   ul,
   div {
-    margin-bottom: 20px;
+    margin-bottom: 1.818rem /* 20px */;
   }
 </style>
 

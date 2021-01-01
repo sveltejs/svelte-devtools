@@ -14,7 +14,7 @@
   .attr-value {
     display: inline-block;
     overflow: hidden;
-    max-width: 200px;
+    max-width: 18.182rem /* 200px */;
     color: rgb(0, 62, 170);
     vertical-align: bottom;
     text-overflow: ellipsis;

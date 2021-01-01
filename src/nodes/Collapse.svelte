@@ -10,31 +10,31 @@
     position: relative;
     display: inline-block;
     align-self: stretch;
-    width: 15px;
+    width: 1.364rem /* 15px */;
     vertical-align: bottom;
     cursor: pointer;
   }
 
   span::after {
     position: absolute;
-    bottom: 4px;
-    left: 4px;
+    bottom: 0.364rem /* 4px */;
+    left: 0.364rem /* 4px */;
     width: 0;
     height: 0;
-    border-top: 5px solid rgba(135, 135, 137, 0.9);
-    border-right: 4px solid transparent;
-    border-left: 4px solid transparent;
+    border-top: 0.455rem /* 5px */ solid rgba(135, 135, 137, 0.9);
+    border-right: 0.364rem /* 4px */ solid transparent;
+    border-left: 0.364rem /* 4px */ solid transparent;
     content: '';
     transition: transform 0.3s;
     transform: rotate(0deg);
   }
 
   :global(.node-tree) span::after {
-    bottom: 5px;
+    bottom: 0.455rem /* 5px */;
   }
 
   :global(.chrome .node-tree) span::after {
-    bottom: 6px;
+    bottom: 0.545rem /* 6px */;
   }
 
   span.selected::after {

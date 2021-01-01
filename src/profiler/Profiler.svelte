@@ -41,12 +41,12 @@
   }
 
   .panel div {
-    margin: 5px 0;
+    margin: 0.455rem /* 5px */ 0;
     width: calc(100% / 3);
   }
 
   .panel span {
-    margin-right: 5px;
+    margin-right: 0.455rem /* 5px */;
     font-weight: bold;
   }
 </style>

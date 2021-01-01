@@ -2,8 +2,8 @@
   div {
     display: flex;
     align-items: stretch;
-    padding: 0 5px;
-    border-bottom: 1px solid rgb(224, 224, 226);
+    padding: 0 0.455rem /* 5px */;
+    border-bottom: 0.091rem /* 1px */ solid rgb(224, 224, 226);
     background-color: rgb(249, 249, 250);
   }
 

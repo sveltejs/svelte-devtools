@@ -41,8 +41,9 @@
   }
 
   svg {
-    margin: 4px 4px 4px 6px;
-    width: 12px;
+    margin: 0.364rem /* 4px */ 0.364rem /* 4px */ 0.364rem /* 4px */ 0.545rem
+      /* 6px */;
+    width: 1.091rem /* 12px */;
   }
 
   input {
@@ -55,9 +56,9 @@
   }
 
   .separator {
-    margin: 0 5px;
-    width: 1px;
-    height: calc(100% - 10px);
+    margin: 0 0.455rem /* 5px */;
+    width: 0.091rem /* 1px */;
+    height: calc(100% - 0.909rem /* 10px */);
     background-color: rgb(224, 224, 226);
   }
 
@@ -69,21 +70,21 @@
   .prev {
     position: relative;
     display: block;
-    margin: 5px;
-    width: 5px;
-    height: 5px;
+    margin: 0.455rem /* 5px */;
+    width: 0.455rem /* 5px */;
+    height: 0.455rem /* 5px */;
     border-style: solid;
     transform: rotate(45deg);
   }
 
   .next {
-    bottom: 2px;
-    border-width: 0 1px 1px 0;
+    bottom: 0.182rem /* 2px */;
+    border-width: 0 0.091rem /* 1px */ 0.091rem /* 1px */ 0;
   }
 
   .prev {
-    top: 2px;
-    border-width: 1px 0 0 1px;
+    top: 0.182rem /* 2px */;
+    border-width: 0.091rem /* 1px */ 0 0 0.091rem /* 1px */;
   }
 </style>
 

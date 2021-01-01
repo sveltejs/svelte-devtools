@@ -9,26 +9,26 @@
 
 <style>
   div > :global(div) {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid lightgray;
+    margin-bottom: 1.818rem /* 20px */;
+    padding-bottom: 1.818rem /* 20px */;
+    border-bottom: 0.091rem /* 1px */ solid lightgray;
   }
 
   div :global(p) {
-    margin: 20px;
-    padding: 10px;
+    margin: 1.818rem /* 20px */;
+    padding: 0.909rem /* 10px */;
     background-color: beige;
   }
 
   div :global(ol) {
-    margin: -20px 20px 20px;
-    padding-bottom: 10px;
+    margin: -1.818rem /* -20px */ 1.818rem /* 20px */ 1.818rem /* 20px */;
+    padding-bottom: 0.909rem /* 10px */;
     background-color: beige;
   }
 
   div :global(ol:first-child) {
-    margin-top: 20px;
-    padding-top: 10px;
+    margin-top: 1.818rem /* 20px */;
+    padding-top: 0.909rem /* 10px */;
   }
 </style>
 

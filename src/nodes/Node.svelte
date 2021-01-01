@@ -48,7 +48,7 @@
     top: 1.6em;
     bottom: 1.6em;
     z-index: 1;
-    width: 2px;
+    width: 0.182rem /* 2px */;
     background-color: #e0e0e2;
   }
 

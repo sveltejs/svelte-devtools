@@ -37,8 +37,8 @@
 
 <style>
   ul {
-    margin-left: 8px;
-    width: calc(100% - 8px);
+    margin-left: 0.727rem /* 8px */;
+    width: calc(100% - 0.727rem /* 8px */);
   }
 
   li {
@@ -46,7 +46,7 @@
     display: flex;
     align-items: end;
     flex-wrap: wrap;
-    padding: 4px 0 4px 15px;
+    padding: 0.364rem /* 4px */ 0 0.364rem /* 4px */ 1.364rem /* 15px */;
   }
 
   .function,
@@ -68,7 +68,7 @@
   }
 
   li :global(.collapse) {
-    margin-left: -15px;
+    margin-left: -1.364rem /* -15px */;
   }
 
   .error {

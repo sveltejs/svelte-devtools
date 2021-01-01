@@ -12,7 +12,7 @@
 
   li {
     flex: 0 1 auto;
-    min-width: 5px;
+    min-width: 0.455rem /* 5px */;
   }
 </style>
 

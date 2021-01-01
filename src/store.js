@@ -16,6 +16,28 @@ export const searchValue = writable('')
 export const profilerEnabled = writable(false)
 export const profileFrame = writable({})
 
+// Zoom work around in FireFox
+if (typeof browser !== 'undefined') {
+  let fontSize = 11
+  window.addEventListener('keyup', e => {
+    if (!e.ctrlKey) return
+
+    switch (e.key) {
+      case '=':
+        fontSize = Math.min(fontSize + 1.1, 22)
+        break
+      case '-':
+        fontSize = Math.max(fontSize - 1.1, 5.5)
+        break
+      case '0':
+        fontSize = 11
+        break
+    }
+
+    document.documentElement.style.fontSize = fontSize + 'px'
+  })
+}
+
 function interactableNodes(list) {
   const _visibility = get(visibility)
   return list.filter(
