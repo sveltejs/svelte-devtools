@@ -3,6 +3,7 @@ node_modules
 dest/devtools/styles.css
 dest/devtools/styles.css.map
 dest/devtools/bundle.js
+dest/background.js
 dest/privilegedContent.js
 dest/icon-*.png
 credentials

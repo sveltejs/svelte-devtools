@@ -1,7 +1,6 @@
+import './base.css'
 import { devtools } from 'chrome'
 import App from './App.svelte'
-
-if (typeof browser == 'undefined') document.body.classList.add('chrome')
 
 function setDarkMode(theme) {
   if (theme == 'dark') document.body.classList.add('dark')

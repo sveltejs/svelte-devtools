@@ -2,6 +2,8 @@ import * as fs from 'fs'
 import svelte from 'rollup-plugin-svelte'
 import resolve from 'rollup-plugin-node-resolve'
 import css from 'rollup-plugin-css-only'
+import jscc from 'rollup-plugin-jscc'
+
 import format from './scripts/format.mjs'
 
 export default [{
@@ -17,6 +19,10 @@ export default [{
   },
   plugins: [
     format(),
+    jscc({
+      asloader: false,
+      extensions: ['css', 'js', 'svelte']
+    }),
     svelte({
       preprocess: {
         markup: input => {
@@ -31,6 +37,18 @@ export default [{
     css({ output: 'styles.css' }),
   ]
 }, {
+  input: 'src/background.js',
+  output: {
+    file: 'dest/background.js'
+  },
+  plugins: [
+    format(),
+    jscc({
+      asloader: false,
+      extensions: ['css', 'js', 'svelte']
+    }),
+  ]
+},{
   input: 'src/client/index.js',
   output: {
     file: 'dest/privilegedContent.js',

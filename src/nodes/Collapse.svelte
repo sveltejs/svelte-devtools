@@ -30,11 +30,11 @@
   }
 
   :global(.node-tree) span::after {
+    /* #if process.env.TARGET === 'chrome'
+    bottom: 0.545rem /* 6px */
+    /* #else */
     bottom: 0.455rem /* 5px */;
-  }
-
-  :global(.chrome .node-tree) span::after {
-    bottom: 0.545rem /* 6px */;
+    /* #endif */
   }
 
   span.selected::after {

@@ -1,5 +1,3 @@
-const isChrome = typeof browser == 'undefined'
-
 const toolsPorts = new Map()
 const pagePorts = new Map()
 
@@ -49,17 +47,19 @@ function attachScript(tabId, changed) {
   if (
     !toolsPorts.has(tabId) ||
     changed.status != 'loading' ||
-    (!isChrome && !changed.url)
+    // #if process.env.TARGET === 'firefox'
+    !changed.url
+    // #endif
   )
     return
 
   chrome.tabs.executeScript(tabId, {
     code: `window.profilerEnabled = ${profilerEnabledList.includes(tabId)}`,
-    runAt: 'document_start'
+    runAt: 'document_start',
   })
   chrome.tabs.executeScript(tabId, {
     file: '/privilegedContent.js',
-    runAt: 'document_start'
+    runAt: 'document_start',
   })
 }
 
