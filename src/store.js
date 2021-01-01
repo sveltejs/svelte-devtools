@@ -16,11 +16,17 @@ export const searchValue = writable('')
 export const profilerEnabled = writable(false)
 export const profileFrame = writable({})
 
+function interactableNodes(list) {
+  const _visibility = get(visibility)
+  return list.filter(
+    o => _visibility[o.type] && o.type !== 'text' && o.type !== 'anchor'
+  )
+}
+
 window.addEventListener('keydown', e => {
   if (e.target !== document.body) return
 
   selectedNode.update(node => {
-    console.log(e, node)
     if (node.invalidate === undefined) return node
     switch (e.key) {
       case 'Enter':
@@ -34,17 +40,17 @@ window.addEventListener('keydown', e => {
         return node
 
       case 'ArrowDown': {
-        const _visibility = get(visibility)
-        const children = node.children.filter(o => _visibility[o.type])
+        const children = interactableNodes(node.children)
 
         if (node.collapsed || children.length === 0) {
           var next = node
           var current = node
           do {
-            const siblings = (current.parent === undefined
-              ? get(rootNodes)
-              : current.parent.children
-            ).filter(o => _visibility[o.type])
+            const siblings = interactableNodes(
+              current.parent === undefined
+                ? get(rootNodes)
+                : current.parent.children
+            )
             const index = siblings.findIndex(o => o.id === current.id)
             next = siblings[index + 1]
 
@@ -63,11 +69,9 @@ window.addEventListener('keydown', e => {
         return node
 
       case 'ArrowUp': {
-        const _visibility = get(visibility)
-        const siblings = (node.parent === undefined
-          ? get(rootNodes)
-          : node.parent.children
-        ).filter(o => _visibility[o.type])
+        const siblings = interactableNodes(
+          node.parent === undefined ? get(rootNodes) : node.parent.children
+        )
         const index = siblings.findIndex(o => o.id === node.id)
         return index > 0 ? siblings[index - 1] : node.parent ?? node
       }
