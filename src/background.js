@@ -49,6 +49,8 @@ function attachScript(tabId, changed) {
     changed.status != 'loading' ||
     // #if process.env.TARGET === 'firefox'
     !changed.url
+    // #else
+    false
     // #endif
   )
     return

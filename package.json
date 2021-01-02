@@ -5,13 +5,15 @@
   "repository": "github:RedHatter/svelte-devtools",
   "license": "MIT",
   "scripts": {
-    "build:firefox": "TARGET=firefox rollup -c && $npm_execpath run build:icon",
-    "build:chrome": "TARGET=chrome rollup -c && $npm_execpath run build:icon",
-    "build:icon": "for size in 16 24 48 96 128; do if [ ! -e dest/icon-$size.png -o src/svelte-logo.svg -nt dest/icon-$size.png ]; then svgexport src/svelte-logo.svg dest/icon-$size.png $size:; fi; done",
+    "build:firefox": "cross-env TARGET=firefox rollup -c",
+    "build:chrome": "cross-env TARGET=chrome rollup -c",
+    "build:icon": "node ./scripts/buildIcons.mjs",
     "dev": "http-serve test/public -p 8940 & web-ext run -s dest -u http://127.0.0.1:8940 -u about:debugging && kill $!",
-    "package": "$npm_execpath run build && web-ext build -s dest"
+    "package:firefox": "yarpm run build:firefox && web-ext build -s dest",
+    "package:chrome": "yarpm run build:chrome && web-ext build -s dest"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "http-serve": "^1.0.1",
     "postcss": "^8.2.2",
     "postcss-sorting": "^6.0.0",
@@ -26,7 +28,8 @@
     "svelte": "^3.20.1",
     "svelte-listener": "git+https://github.com/RedHatter/svelte-listener.git",
     "svgexport": "^0.4.1",
-    "web-ext": "^5.4.1"
+    "web-ext": "^5.4.1",
+    "yarpm": "^0.2.1"
   },
   "engines": {
     "node": ">=11.14.0"
