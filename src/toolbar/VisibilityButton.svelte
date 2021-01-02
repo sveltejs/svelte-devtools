@@ -17,44 +17,44 @@
 
   ul {
     position: absolute;
-    top: 2.909rem /* 32px */;
-    left: -1.818rem /* -20px */;
-    padding: 0.545rem /* 6px */ 0;
-    border: 0.091rem /* 1px */ solid rgb(224, 224, 226);
-    border-radius: 0.182rem /* 2px */;
+    top: 2.667rem /* 32px */;
+    left: -1.667rem /* -20px */;
+    padding: 0.5rem /* 6px */ 0;
+    border: 0.083rem /* 1px */ solid rgb(224, 224, 226);
+    border-radius: 0.167rem /* 2px */;
     background-color: #ffffff;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    box-shadow: 0 0.083rem 0.25rem rgba(0, 0, 0, 0.075) !important;
     text-align: left;
     line-height: 1;
   }
 
   span {
     position: absolute;
-    top: -0.909rem /* -10px */;
-    left: 1.818rem /* 20px */;
+    top: -0.833rem /* -10px */;
+    left: 1.667rem /* 20px */;
     display: block;
     overflow: hidden;
-    width: 2.091rem /* 23px */;
-    height: 1.091rem /* 12px */;
+    width: 1.917rem /* 23px */;
+    height: 1rem /* 12px */;
   }
 
   span::before {
     position: absolute;
-    top: 0.273rem /* 3px */;
-    left: 0.182rem /* 2px */;
+    top: 0.25rem /* 3px */;
+    left: 0.167rem /* 2px */;
     display: block;
-    width: 1.455rem /* 16px */;
-    height: 1.455rem /* 16px */;
-    border: 0.091rem /* 1px */ solid rgb(224, 224, 226);
+    width: 1.333rem /* 16px */;
+    height: 1.333rem /* 16px */;
+    border: 0.083rem /* 1px */ solid rgb(224, 224, 226);
     background-color: #ffffff;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    box-shadow: 0 0.083rem 0.25rem rgba(0, 0, 0, 0.075) !important;
     content: '';
     transform: rotate(45deg);
   }
 
   li {
     position: relative;
-    padding: 0.364rem /* 4px */ 0.909rem /* 10px */ 0.364rem /* 4px */ 2.545rem
+    padding: 0.333rem /* 4px */ 0.833rem /* 10px */ 0.333rem /* 4px */ 2.333rem
       /* 28px */;
   }
 
@@ -65,9 +65,9 @@
   li.checked::before {
     position: absolute;
     top: 0;
-    left: 0.909rem /* 10px */;
+    left: 0.833rem /* 10px */;
     display: block;
-    width: 1rem /* 11px */;
+    width: 0.917rem /* 11px */;
     height: 100%;
     background: center / contain no-repeat
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='rgb(12, 12, 13)'%3E%3Cpath stroke-width='0.5' d='M6 14a1 1 0 0 1-.707-.293l-3-3a1 1 0 0 1 1.414-1.414l2.157 2.157 6.316-9.023a1 1 0 0 1 1.639 1.146l-7 10a1 1 0 0 1-.732.427A.863.863 0 0 1 6 14z'/%3E%3C/svg%3E%0A");

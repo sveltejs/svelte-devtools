@@ -22,24 +22,24 @@
 
 <style>
   .empty {
-    margin: 0.727rem /* 8px */ 0 0 1.091rem /* 12px */;
+    margin: 0.667rem /* 8px */ 0 0 1rem /* 12px */;
     color: rgb(118, 118, 118);
   }
 
   h1 {
-    margin: 0.727rem /* 8px */ 0 0 0.727rem /* 8px */;
+    margin: 0.667rem /* 8px */ 0 0 0.667rem /* 8px */;
     color: rgb(118, 118, 118);
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 0.917rem;
   }
 
   ul {
-    margin: 0.455rem /* 5px */;
+    margin: 0.417rem /* 5px */;
   }
 
   ul,
   div {
-    margin-bottom: 1.818rem /* 20px */;
+    margin-bottom: 1.667rem /* 20px */;
   }
 </style>
 

@@ -41,9 +41,9 @@
   }
 
   svg {
-    margin: 0.364rem /* 4px */ 0.364rem /* 4px */ 0.364rem /* 4px */ 0.545rem
+    margin: 0.333rem /* 4px */ 0.333rem /* 4px */ 0.333rem /* 4px */ 0.5rem
       /* 6px */;
-    width: 1.091rem /* 12px */;
+    width: 1rem /* 12px */;
   }
 
   input {
@@ -56,9 +56,9 @@
   }
 
   .separator {
-    margin: 0 0.455rem /* 5px */;
-    width: 0.091rem /* 1px */;
-    height: calc(100% - 0.909rem /* 10px */);
+    margin: 0 0.417rem /* 5px */;
+    width: 0.083rem /* 1px */;
+    height: calc(100% - 0.833rem /* 10px */);
     background-color: rgb(224, 224, 226);
   }
 
@@ -70,21 +70,21 @@
   .prev {
     position: relative;
     display: block;
-    margin: 0.455rem /* 5px */;
-    width: 0.455rem /* 5px */;
-    height: 0.455rem /* 5px */;
+    margin: 0.417rem /* 5px */;
+    width: 0.417rem /* 5px */;
+    height: 0.417rem /* 5px */;
     border-style: solid;
     transform: rotate(45deg);
   }
 
   .next {
-    bottom: 0.182rem /* 2px */;
-    border-width: 0 0.091rem /* 1px */ 0.091rem /* 1px */ 0;
+    bottom: 0.167rem /* 2px */;
+    border-width: 0 0.083rem /* 1px */ 0.083rem /* 1px */ 0;
   }
 
   .prev {
-    top: 0.182rem /* 2px */;
-    border-width: 0.091rem /* 1px */ 0 0 0.091rem /* 1px */;
+    top: 0.167rem /* 2px */;
+    border-width: 0.083rem /* 1px */ 0 0 0.083rem /* 1px */;
   }
 </style>
 

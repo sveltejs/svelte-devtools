@@ -15,8 +15,8 @@
     top: 0;
     bottom: 0;
     left: 0;
-    width: 0.455rem /* 5px */;
-    border-left: 0.091rem /* 1px */ solid rgb(224, 224, 226);
+    width: 0.417rem /* 5px */;
+    border-left: 0.083rem /* 1px */ solid rgb(224, 224, 226);
     cursor: ew-resize;
   }
 
@@ -25,8 +25,8 @@
     top: 0;
     right: 0;
     left: 0;
-    height: 0.455rem /* 5px */;
-    border-top: 0.091rem /* 1px */ solid rgb(224, 224, 226);
+    height: 0.417rem /* 5px */;
+    border-top: 0.083rem /* 1px */ solid rgb(224, 224, 226);
     cursor: ns-resize;
   }
 

@@ -11,10 +11,10 @@
     overflow: hidden;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 0.091rem /* 1px */ 0 0 0.091rem /* 1px */;
-    height: 2em;
+    margin: 0.083rem /* 1px */ 0 0 0.083rem /* 1px */;
+    height: 2rem;
     color: white;
-    line-height: 2em;
+    line-height: 2rem;
     cursor: pointer;
   }
 

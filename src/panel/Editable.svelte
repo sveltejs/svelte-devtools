@@ -26,7 +26,7 @@
 
   input {
     flex-grow: 1;
-    margin-right: 0.909rem /* 10px */;
+    margin-right: 0.833rem /* 10px */;
     outline: none;
     border: none;
     box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.1);

@@ -45,10 +45,10 @@
 
   span {
     position: absolute;
-    top: 1.6em;
-    bottom: 1.6em;
+    top: 1.6rem;
+    bottom: 1.6rem;
     z-index: 1;
-    width: 0.182rem /* 2px */;
+    width: 0.167rem /* 2px */;
     background-color: #e0e0e2;
   }
 

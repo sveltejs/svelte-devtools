@@ -37,16 +37,16 @@
   .panel {
     display: flex;
     flex-wrap: wrap;
-    padding: 1em;
+    padding: 1rem;
   }
 
   .panel div {
-    margin: 0.455rem /* 5px */ 0;
+    margin: 0.417rem /* 5px */ 0;
     width: calc(100% / 3);
   }
 
   .panel span {
-    margin-right: 0.455rem /* 5px */;
+    margin-right: 0.417rem /* 5px */;
     font-weight: bold;
   }
 </style>

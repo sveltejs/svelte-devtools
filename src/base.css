@@ -1,6 +1,6 @@
 html {
   height: 100%;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 body {
@@ -8,6 +8,9 @@ body {
   margin: 0;
   height: 100%;
   color: rgb(74, 74, 79);
+  /* #if process.env.TARGET === 'firefox'
+  font-size: 11px;
+  /* #endif */
   font-family: monospace;
 }
 
@@ -47,12 +50,12 @@ ul {
 
 [data-tooltip]::after {
   position: absolute;
-  bottom: -0.182rem /* -2px */;
+  bottom: -0.167rem /* -2px */;
   left: 0;
   z-index: 1;
   display: block;
-  padding: 0.545rem /* 6px */ 1.455rem /* 16px */;
-  border-radius: 0.455rem /* 5px */;
+  padding: 0.5rem /* 6px */ 1.333rem /* 16px */;
+  border-radius: 0.417rem /* 5px */;
   background-color: rgb(48, 64, 81);
   color: white;
   content: attr(data-tooltip);
@@ -65,14 +68,14 @@ ul {
 
 [data-tooltip]::before {
   position: absolute;
-  bottom: -0.182rem /* -2px */;
-  left: 2.727rem /* 30px */;
+  bottom: -0.167rem /* -2px */;
+  left: 2.5rem /* 30px */;
   display: block;
   width: 0;
   height: 0;
-  border-right: 0.455rem /* 5px */ solid transparent;
-  border-bottom: 0.455rem /* 5px */ solid rgb(48, 64, 81);
-  border-left: 0.455rem /* 5px */ solid transparent;
+  border-right: 0.417rem /* 5px */ solid transparent;
+  border-bottom: 0.417rem /* 5px */ solid rgb(48, 64, 81);
+  border-left: 0.417rem /* 5px */ solid transparent;
   content: '';
   opacity: 0;
   transition: opacity 0.2s;
