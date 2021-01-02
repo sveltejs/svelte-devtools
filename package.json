@@ -1,6 +1,6 @@
 {
   "name": "svelte-devtools",
-  "version": "1.2.3",
+  "version": "1.3.0",
   "description": "Browser devtools extension for debugging Svelte applications.",
   "repository": "github:RedHatter/svelte-devtools",
   "license": "MIT",
