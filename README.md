@@ -4,6 +4,8 @@
 Install from the [Firefox addon page](https://addons.mozilla.org/en-US/firefox/addon/svelte-devtools/) or the
 [Chrome addon page](https://chrome.google.com/webstore/detail/svelte-devtools/ckolcbmkjpjmangdbmnkpjigpkddpogn)
 
+**Svelte devtools is actively maintained. If you have any problems or feature requests feel free to create an issue.**
+
 Svelte Devtools is a Firefox and Chrome extension for the Svelte javascript framework. It allows you to inspect the Svelte state and component hierarchies in the Developer Tools.
 
 After installing you will see a new tab in Developer Tools. This tab displays a tree of Svelte components, HTMLx blocks, and DOM elements that were rendered on the page. By selecting one of the nodes in the tree, you can inspect and edit its current state in the panel to the right.
@@ -34,7 +36,9 @@ export default {
   },
   plugins: [
     svelte({
-      dev: true
+      compilerOptions: {
+        dev: true
+      }
     })
   ]
 }
@@ -65,26 +69,31 @@ Below is the relevant snipet from a `webpack.config.js` with `dev: true` set.
 
 ## Build from source
 
-### Building
+### Firefox
 
 Clone this repository and run the package script.
 ```
 git clone https://github.com/RedHatter/svelte-devtools.git
 cd svelte-devtools
 npm install
-npm run package
+npm run package:firefox
 ```
 This should build the codebase and output a zip file under `web-ext-artifacts`.
-
-### Installing
-
-#### Firefox
 
 Unsigned addons can't be install in firefox permanently but addons can be installed temporarily.
 1. Navigate to `about:debugging`.
 2. Click "Load Temporary Add-on" and choose the generated zip file.
 
-#### Chrome
+### Chrome
+
+Clone this repository and run the package script.
+```
+git clone https://github.com/RedHatter/svelte-devtools.git
+cd svelte-devtools
+npm install
+npm run package:chrome
+```
+This should build the codebase and output a zip file under `web-ext-artifacts`.
 
 1. Navigate to `chrome://extensions/`.
 2. Turn on developer mode using the 'Developer mode' switch in the upper right hand corner of the page.
