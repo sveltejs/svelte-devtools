@@ -11,6 +11,7 @@
   .root {
     overflow-y: auto;
     flex: 0 0 auto;
+    max-height: 100%;
     color: rgb(57, 63, 76);
   }
 
