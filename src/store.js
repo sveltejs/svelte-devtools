@@ -261,11 +261,15 @@ port.onMessage.addListener(msg => {
 
     case 'removeNode': {
       const node = nodeMap.get(msg.node.id)
-      const index = node.parent.children.findIndex(o => o.id == node.id)
-      node.parent.children.splice(index, 1)
+      if (node.parent) {
+        const index = node.parent.children.findIndex(o => o.id == node.id)
+        node.parent.children.splice(index, 1)
+      }
       nodeMap.delete(node.id)
 
-      node.parent.invalidate()
+      if (node.parent) {
+        node.parent.invalidate()
+      }
 
       break
     }
