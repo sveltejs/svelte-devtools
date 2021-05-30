@@ -57,7 +57,9 @@ Below is the relevant snipet from a `webpack.config.js` with `dev: true` set.
         use: {
           loader: 'svelte-loader',
           options: {
-            dev: true,
+            compilerOptions: {
+              dev: true,
+            }
           },
         },
       },
