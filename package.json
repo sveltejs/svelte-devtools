@@ -29,7 +29,7 @@
     "svelte-listener": "git+https://github.com/RedHatter/svelte-listener.git",
     "svgexport": "^0.4.1",
     "web-ext": "^5.4.1",
-    "yarpm": "^0.2.1"
+    "yarpm": "^1.1.1"
   },
   "engines": {
     "node": ">=11.14.0"
