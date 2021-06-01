@@ -1,0 +1,34 @@
+name: Build extension for Chrome and Firefox
+
+on:
+  push:
+    branches: [] # Run on push to every branch
+  pull_request:
+    branches: [] # Run on every pull request
+  workflow_dispatch: # Run when user clicks "Run workflow" button on the Actions tab.
+
+jobs:
+  # This job will install Node and build extension for Chrome and Firefox
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install dependencies
+      run: npm install
+    - name: Build for Firefox
+      run: npm run package:firefox
+    - name: Cleanup
+      run: rm -rf web-ext-artifacts/
+    - name: Build for Chrome
+      run: npm run package:chrome
