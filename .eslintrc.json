@@ -1,0 +1,36 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true,
+    "jasmine": true,
+    "webextensions": true
+  },
+  "extends": [
+    "standard"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "eqeqeq": "warn",
+    "space-before-function-paren": "warn",
+    "comma-dangle": "warn",
+    "no-case-declarations": "warn",
+    "no-duplicate-case": "warn",
+    "curly": "warn",
+    "operator-linebreak": "warn",
+    "prefer-const": "warn",
+    "indent": "warn",
+    "no-new": "warn",
+    "no-unused-vars": "warn",
+    "no-sequences": "warn"
+  }
+}

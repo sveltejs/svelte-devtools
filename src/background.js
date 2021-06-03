@@ -45,12 +45,12 @@ function handlePageMessage(msg, port) {
 
 function attachScript(tabId, changed) {
   if (
-    !toolsPorts.has(tabId) ||
-    changed.status != 'loading' ||
+    !toolsPorts.has(tabId)
+    || changed.status != 'loading'
     // #if process.env.TARGET === 'firefox'
-    !changed.url
+    || !changed.url
     // #else
-    false
+    || false
     // #endif
   )
     return

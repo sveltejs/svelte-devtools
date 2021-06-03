@@ -10,10 +10,17 @@
     "build:icon": "node ./scripts/buildIcons.mjs",
     "dev": "http-serve test/public -p 8940 & web-ext run -s dest -u http://127.0.0.1:8940 -u about:debugging && kill $!",
     "package:firefox": "yarpm run build:icon && yarpm run build:firefox && web-ext build -s dest",
-    "package:chrome": "yarpm run build:icon && yarpm run build:chrome && web-ext build -s dest"
+    "package:chrome": "yarpm run build:icon && yarpm run build:chrome && web-ext build -s dest",
+    "test:lint": "eslint src/ --ext ts --ext js"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
     "cross-env": "^7.0.3",
+    "eslint": "^7.27.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-standard": "^5.0.0",
     "http-serve": "^1.0.1",
     "postcss": "^8.2.2",
     "postcss-sorting": "^6.0.0",
