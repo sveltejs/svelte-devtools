@@ -18,7 +18,7 @@
     "postcss": "^8.2.2",
     "postcss-sorting": "^6.0.0",
     "prettier": "^2.2.1",
-    "prettier-plugin-svelte": "^1.4.2",
+    "prettier-plugin-svelte": "^2.3.0",
     "rollup": "^2.35.1",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-jscc": "^2.0.0",
@@ -29,7 +29,7 @@
     "svelte-listener": "git+https://github.com/RedHatter/svelte-listener.git",
     "svgexport": "^0.4.1",
     "web-ext": "^6.1.0",
-    "yarpm": "^0.2.1"
+    "yarpm": "^1.1.1"
   },
   "engines": {
     "node": ">=11.14.0"
