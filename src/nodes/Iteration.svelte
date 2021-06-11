@@ -4,6 +4,9 @@
   export let selected
 </script>
 
+<div class:hover class:selected {style}>&#8618;</div>
+<slot />
+
 <style>
   div {
     height: 1.333rem /* 16px */;
@@ -18,6 +21,3 @@
     color: rgb(175, 181, 191);
   }
 </style>
-
-<div class:hover class:selected {style}>&#8618;</div>
-<slot />

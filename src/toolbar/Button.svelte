@@ -4,6 +4,10 @@
   export let type = 'button'
 </script>
 
+<button on:click {disabled} {type} class:active>
+  <slot />
+</button>
+
 <style>
   button {
     position: relative;
@@ -72,7 +76,3 @@
     fill: currentColor;
   }
 </style>
-
-<button on:click {disabled} {type} class:active>
-  <slot />
-</button>

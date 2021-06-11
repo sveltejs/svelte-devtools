@@ -5,6 +5,19 @@
   let size = 300
 </script>
 
+<svelte:window
+  on:mousemove={e =>
+    isResizing &&
+    (size =
+      grow == 'left' ? window.innerWidth - e.x : window.innerHeight - e.y)}
+  on:mouseup={e => (isResizing = false)}
+/>
+
+<div style="{grow == 'left' ? 'width' : 'height'}: {size}px">
+  <div class="{grow} resize" on:mousedown={e => (isResizing = true)} />
+  <slot />
+</div>
+
 <style>
   div {
     position: relative;
@@ -42,12 +55,3 @@
     border-color: rgb(107, 107, 108);
   }
 </style>
-
-<svelte:window
-  on:mousemove={e => isResizing && (size = grow == 'left' ? window.innerWidth - e.x : window.innerHeight - e.y)}
-  on:mouseup={e => (isResizing = false)} />
-
-<div style="{grow == 'left' ? 'width' : 'height'}: {size}px">
-  <div class="{grow} resize" on:mousedown={e => (isResizing = true)} />
-  <slot />
-</div>

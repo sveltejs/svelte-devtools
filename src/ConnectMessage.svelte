@@ -2,6 +2,21 @@
   import { reload } from './store.js'
 </script>
 
+<div class="root">
+  <p>
+    To connect to&nbsp;
+    <b>Svelte</b>
+    &nbsp;perform a hard refresh (ctrl+F5) or&nbsp;
+    <span on:click={reload} class="button">click here</span>
+    .
+  </p>
+  <h1>Not working? Did you...</h1>
+  <ul>
+    <li>Use Svelte version 3.12.0 or above?</li>
+    <li>Build with dev mode enabled?</li>
+  </ul>
+</div>
+
 <style>
   .root {
     position: absolute;
@@ -38,18 +53,3 @@
     color: rgb(117, 191, 255);
   }
 </style>
-
-<div class="root">
-  <p>
-    To connect to&nbsp;
-    <b>Svelte</b>
-    &nbsp;perform a hard refresh (ctrl+F5) or&nbsp;
-    <span on:click={reload} class="button">click here</span>
-    .
-  </p>
-  <h1>Not working? Did you...</h1>
-  <ul>
-    <li>Use Svelte version 3.12.0 or above?</li>
-    <li>Build with dev mode enabled?</li>
-  </ul>
-</div>

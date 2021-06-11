@@ -10,27 +10,13 @@
   export let collapsed
 </script>
 
-<style>
-  div {
-    height: 1.333rem /* 16px */;
-    line-height: 1.333rem /* 16px */;
-  }
-
-  div {
-    color: rgb(151, 164, 179);
-  }
-
-  :global(.dark) div {
-    color: rgb(175, 181, 191);
-  }
-</style>
-
 <div
   class="tag-open tag-name"
   class:hover
   class:selected
   {style}
-  on:dblclick={e => (collapsed = !collapsed)}>
+  on:dblclick={e => (collapsed = !collapsed)}
+>
   <Collapse {selected} bind:collapsed />
   {#if source}
     {source}
@@ -53,3 +39,18 @@
     &rbrace;
   </div>
 {/if}
+
+<style>
+  div {
+    height: 1.333rem /* 16px */;
+    line-height: 1.333rem /* 16px */;
+  }
+
+  div {
+    color: rgb(151, 164, 179);
+  }
+
+  :global(.dark) div {
+    color: rgb(175, 181, 191);
+  }
+</style>

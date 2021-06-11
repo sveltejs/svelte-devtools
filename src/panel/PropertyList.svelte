@@ -20,6 +20,24 @@
   }
 </script>
 
+<h1>{header}</h1>
+
+{#if entries.length}
+  <ul>
+    {#each entries as { key, value } (key)}
+      <CollapsableValue
+        errorMessage={errorMessages[key]}
+        {readOnly}
+        {key}
+        {value}
+        on:change={e => change(key, e.detail)}
+      />
+    {/each}
+  </ul>
+{:else}
+  <div class="empty">None</div>
+{/if}
+
 <style>
   .empty {
     margin: 0.667rem /* 8px */ 0 0 1rem /* 12px */;
@@ -42,20 +60,3 @@
     margin-bottom: 1.667rem /* 20px */;
   }
 </style>
-
-<h1>{header}</h1>
-
-{#if entries.length}
-  <ul>
-    {#each entries as { key, value } (key)}
-      <CollapsableValue
-        errorMessage={errorMessages[key]}
-        {readOnly}
-        {key}
-        {value}
-        on:change={e => change(key, e.detail)} />
-    {/each}
-  </ul>
-{:else}
-  <div class="empty">None</div>
-{/if}

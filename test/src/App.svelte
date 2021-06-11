@@ -7,6 +7,15 @@
   import Slots from './Slots/Slots.svelte'
 </script>
 
+<div>
+  <BasicTree />
+  <Detach />
+  <Blocks />
+  <Bind />
+  <Events />
+  <Slots />
+</div>
+
 <style>
   div > :global(div) {
     margin-bottom: 1.667rem /* 20px */;
@@ -31,12 +40,3 @@
     padding-top: 0.833rem /* 10px */;
   }
 </style>
-
-<div>
-  <BasicTree />
-  <Detach />
-  <Blocks />
-  <Bind />
-  <Events />
-  <Slots />
-</div>

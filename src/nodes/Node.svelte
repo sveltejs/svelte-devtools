@@ -38,6 +38,43 @@
   }
 </script>
 
+{#if $visibility[node.type]}
+  <li
+    bind:this={node.dom}
+    class:flash
+    on:animationend={e => (flash = false)}
+    on:mouseover|stopPropagation={e => ($hoveredNodeId = node.id)}
+    on:click|stopPropagation={e => ($selectedNode = node)}
+  >
+    <svelte:component
+      this={nodeType}
+      tagName={node.tagName}
+      bind:collapsed={node.collapsed}
+      {...node.detail}
+      hasChildren={node.children.length != 0}
+      hover={$hoveredNodeId == node.id}
+      selected={$selectedNode.id == node.id}
+      style={`padding-left: ${depth * 12}px`}
+    >
+      {#if $selectedNode.id == node.id}
+        <span style={`left: ${depth * 12 + 6}px`} />
+      {/if}
+      <ul>
+        {#each node.children as child (child.id)}
+          <svelte:self
+            node={child}
+            depth={node.type == 'iteration' ? depth : depth + 1}
+          />
+        {/each}
+      </ul>
+    </svelte:component>
+  </li>
+{:else}
+  {#each node.children as node (node.id)}
+    <svelte:self {node} {depth} />
+  {/each}
+{/if}
+
 <style>
   li {
     position: relative;
@@ -92,37 +129,3 @@
     background-color: rgb(53, 59, 72);
   }
 </style>
-
-{#if $visibility[node.type]}
-  <li
-    bind:this={node.dom}
-    class:flash
-    on:animationend={e => (flash = false)}
-    on:mouseover|stopPropagation={e => ($hoveredNodeId = node.id)}
-    on:click|stopPropagation={e => ($selectedNode = node)}>
-    <svelte:component
-      this={nodeType}
-      tagName={node.tagName}
-      bind:collapsed={node.collapsed}
-      {...node.detail}
-      hasChildren={node.children.length != 0}
-      hover={$hoveredNodeId == node.id}
-      selected={$selectedNode.id == node.id}
-      style={`padding-left: ${depth * 12}px`}>
-      {#if $selectedNode.id == node.id}
-        <span style={`left: ${depth * 12 + 6}px`} />
-      {/if}
-      <ul>
-        {#each node.children as child (child.id)}
-          <svelte:self
-            node={child}
-            depth={node.type == 'iteration' ? depth : depth + 1} />
-        {/each}
-      </ul>
-    </svelte:component>
-  </li>
-{:else}
-  {#each node.children as node (node.id)}
-    <svelte:self {node} {depth} />
-  {/each}
-{/if}

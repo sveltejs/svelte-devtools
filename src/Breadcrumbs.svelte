@@ -29,6 +29,29 @@
   $: setSelectedBreadcrumb($selectedNode)
 </script>
 
+{#if breadcrumbList.length > 1}
+  <ul bind:this={root}>
+    {#if shorttend}
+      <li>
+        &hellip;
+        <div />
+      </li>
+    {/if}
+    {#each breadcrumbList as node}
+      {#if $visibility[node.type]}
+        <li
+          on:click={e => ($selectedNode = node)}
+          on:mouseover={e => ($hoveredNodeId = node.id)}
+          class:selected={node.id == $selectedNode.id}
+        >
+          {node.tagName}
+          <div />
+        </li>
+      {/if}
+    {/each}
+  </ul>
+{/if}
+
 <style>
   ul {
     display: flex;
@@ -91,25 +114,3 @@
     border-left-color: rgba(135, 135, 137, 0.9);
   }
 </style>
-
-{#if breadcrumbList.length > 1}
-  <ul bind:this={root}>
-    {#if shorttend}
-      <li>
-        &hellip;
-        <div />
-      </li>
-    {/if}
-    {#each breadcrumbList as node}
-      {#if $visibility[node.type]}
-        <li
-          on:click={e => ($selectedNode = node)}
-          on:mouseover={e => ($hoveredNodeId = node.id)}
-          class:selected={node.id == $selectedNode.id}>
-          {node.tagName}
-          <div />
-        </li>
-      {/if}
-    {/each}
-  </ul>
-{/if}

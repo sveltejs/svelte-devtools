@@ -9,13 +9,13 @@
   $: post = text ? text.substring(i + $searchValue.length) : ''
 </script>
 
+{#if i == -1 || $searchValue.length < 2}
+  {text}
+{:else}{pre}<span>{highlight}</span>{post}{/if}
+
 <style>
   span {
     background-color: yellow !important;
     color: black !important;
   }
 </style>
-
-{#if i == -1 || $searchValue.length < 2}
-  {text}
-{:else}{pre}<span>{highlight}</span>{post}{/if}

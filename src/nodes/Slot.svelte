@@ -9,27 +9,13 @@
   export let collapsed
 </script>
 
-<style>
-  div {
-    height: 1.333rem /* 16px */;
-    line-height: 1.333rem /* 16px */;
-  }
-
-  div {
-    color: rgb(0, 116, 232);
-  }
-
-  :global(.dark) div {
-    color: rgb(117, 191, 255);
-  }
-</style>
-
 <div
   class="tag-open tag-name"
   class:hover
   class:selected
   {style}
-  on:dblclick={e => (collapsed = !collapsed)}>
+  on:dblclick={e => (collapsed = !collapsed)}
+>
   <Collapse {selected} bind:collapsed />
   &lt;
   <SearchTerm text={tagName} />
@@ -48,3 +34,18 @@
     &gt;
   </div>
 {/if}
+
+<style>
+  div {
+    height: 1.333rem /* 16px */;
+    line-height: 1.333rem /* 16px */;
+  }
+
+  div {
+    color: rgb(0, 116, 232);
+  }
+
+  :global(.dark) div {
+    color: rgb(117, 191, 255);
+  }
+</style>
