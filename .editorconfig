@@ -1,0 +1,13 @@
+# This file specifies formatting convention for the source code
+# Learn more at: https://EditorConfig.org
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+
+# Indent JavaScript and TypeScript files with two spaces
+[*.{js,ts}]
+indent_style = space
+indent_size = 2
