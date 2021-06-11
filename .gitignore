@@ -10,3 +10,4 @@ credentials
 test/public/bundle.js
 test/public/styles.css
 test/public/styles.css.map
+web-ext-artifacts/
