@@ -16,6 +16,7 @@
     string="value"
     number={0}
     boolean={false}
-    array={[]} />
+    array={[]}
+  />
   <span {title} />
 </div>

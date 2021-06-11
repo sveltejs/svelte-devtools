@@ -1,3 +1,7 @@
+<div>
+  <slot />
+</div>
+
 <style>
   div {
     display: flex;
@@ -16,7 +20,3 @@
     /* #endif */
   }
 </style>
-
-<div>
-  <slot />
-</div>

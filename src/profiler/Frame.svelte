@@ -5,17 +5,6 @@
   export let duration
 </script>
 
-<style>
-  ul {
-    display: flex;
-  }
-
-  li {
-    flex: 0 1 auto;
-    min-width: 0.417rem /* 5px */;
-  }
-</style>
-
 {#if children}
   <ul>
     {#each children as child, i}
@@ -26,3 +15,14 @@
     {/each}
   </ul>
 {/if}
+
+<style>
+  ul {
+    display: flex;
+  }
+
+  li {
+    flex: 0 1 auto;
+    min-width: 0.417rem /* 5px */;
+  }
+</style>

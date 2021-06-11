@@ -5,6 +5,13 @@
   export { className as class }
 </script>
 
+<span
+  class={className}
+  class:selected
+  class:collapsed
+  on:click={e => (collapsed = !collapsed)}
+/>
+
 <style>
   span {
     position: relative;
@@ -45,9 +52,3 @@
     transform: rotate(-90deg);
   }
 </style>
-
-<span
-  class={className}
-  class:selected
-  class:collapsed
-  on:click={e => (collapsed = !collapsed)} />

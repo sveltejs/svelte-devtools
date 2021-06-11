@@ -12,26 +12,6 @@
   import Node from './nodes/Node.svelte'
 </script>
 
-<style>
-  div {
-    display: flex;
-    overflow: hidden;
-    flex: 1 1 0;
-    flex-direction: column;
-  }
-
-  ul {
-    overflow: auto;
-    flex-grow: 1;
-    padding-top: 0.583rem; /* 8px */
-  }
-
-  .root div {
-    margin-top: 40%;
-    text-align: center;
-  }
-</style>
-
 {#if $profilerEnabled}
   <div>
     <Profiler />
@@ -55,3 +35,23 @@
 {:else}
   <ConnectMessage />
 {/if}
+
+<style>
+  div {
+    display: flex;
+    overflow: hidden;
+    flex: 1 1 0;
+    flex-direction: column;
+  }
+
+  ul {
+    overflow: auto;
+    flex-grow: 1;
+    padding-top: 0.583rem; /* 8px */
+  }
+
+  .root div {
+    margin-top: 40%;
+    text-align: center;
+  }
+</style>

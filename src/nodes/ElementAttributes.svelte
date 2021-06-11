@@ -5,6 +5,32 @@
   export let listeners
 </script>
 
+{#each attributes as { key, value, isBound, flash } (key)}
+  &nbsp;
+  <span class:flash>
+    <span class="attr-name">
+      {#if isBound}bind:{/if}
+      <SearchTerm text={key} />
+    </span>
+    =
+    <span class="attr-value">
+      <SearchTerm text={value} />
+    </span>
+  </span>
+{/each}
+
+{#each listeners as { event, handler, modifiers }}
+  &nbsp;
+  <span
+    class="attr-name"
+    data-tooltip={typeof handler == 'function' ? handler() : handler}
+  >
+    on:
+    <SearchTerm text={event} />
+    {#if modifiers && modifiers.length}|{modifiers.join('|')}{/if}
+  </span>
+{/each}
+
 <style>
   .attr-name {
     position: relative;
@@ -29,28 +55,3 @@
     color: rgb(185, 142, 255);
   }
 </style>
-
-{#each attributes as { key, value, isBound, flash } (key)}
-  &nbsp;
-  <span class:flash>
-    <span class="attr-name">
-      {#if isBound}bind:{/if}
-      <SearchTerm text={key} />
-    </span>
-    =
-    <span class="attr-value">
-      <SearchTerm text={value} />
-    </span>
-  </span>
-{/each}
-
-{#each listeners as { event, handler, modifiers }}
-  &nbsp;
-  <span
-    class="attr-name"
-    data-tooltip={typeof handler == 'function' ? handler() : handler}>
-    on:
-    <SearchTerm text={event} />
-    {#if modifiers && modifiers.length}|{modifiers.join('|')}{/if}
-  </span>
-{/each}

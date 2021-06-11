@@ -5,6 +5,11 @@
   export let frame
 </script>
 
+<div class={frame.type} on:click={() => dispatch('click', frame)}>
+  &zwnj;
+  <span>{frame.node.tagName}</span>
+</div>
+
 <style>
   div {
     display: flex;
@@ -34,8 +39,3 @@
     background-color: rgb(115, 115, 115);
   }
 </style>
-
-<div class={frame.type} on:click={() => dispatch('click', frame)}>
-  &zwnj;
-  <span>{frame.node.tagName}</span>
-</div>

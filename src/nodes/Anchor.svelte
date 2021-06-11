@@ -2,6 +2,8 @@
   export let style
 </script>
 
+<div {style}>#anchor</div>
+
 <style>
   div {
     color: rgb(151, 164, 179);
@@ -11,5 +13,3 @@
     color: rgb(175, 181, 191);
   }
 </style>
-
-<div {style}>#anchor</div>

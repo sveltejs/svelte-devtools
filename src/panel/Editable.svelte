@@ -18,6 +18,23 @@
   $: if (input) input.select()
 </script>
 
+{#if isEditing}
+  <input
+    bind:this={input}
+    value={JSON.stringify(value)}
+    on:keydown={e => e.key == 'Enter' && commit(e)}
+    on:blur={commit}
+  />
+{:else}
+  <span
+    class={className}
+    class:readOnly
+    on:click={() => (isEditing = !readOnly)}
+  >
+    {JSON.stringify(value)}
+  </span>
+{/if}
+
 <style>
   span:not(.readOnly) {
     flex-grow: 1;
@@ -33,18 +50,3 @@
     font-size: inherit;
   }
 </style>
-
-{#if isEditing}
-  <input
-    bind:this={input}
-    value={JSON.stringify(value)}
-    on:keydown={e => e.key == 'Enter' && commit(e)}
-    on:blur={commit} />
-{:else}
-  <span
-    class={className}
-    class:readOnly
-    on:click={() => (isEditing = !readOnly)}>
-    {JSON.stringify(value)}
-  </span>
-{/if}

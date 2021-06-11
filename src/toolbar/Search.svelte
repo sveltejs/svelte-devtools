@@ -33,6 +33,31 @@
   }
 </script>
 
+<form on:submit|preventDefault={next}>
+  <div class="separator" />
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <path
+      fill="rgba(135, 135, 137, 0.9)"
+      d="M15.707 14.293l-5-5-1.414 1.414 5 5a1 1 0 0 0 1.414-1.414z"
+    />
+    <path
+      fill="rgba(135, 135, 137, 0.9)"
+      fill-rule="evenodd"
+      d="M6 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2A6 6 0 1 0 6 0a6 6 0 0 0 0 12z"
+    />
+  </svg>
+  <input placeholder="Search" bind:value={$searchValue} />
+  {#if resultsPosition > -1}
+    {resultsPosition + 1}&nbsp;of&nbsp;{results.length}&nbsp;
+  {/if}
+  <Button type="submit" disabled={!results.length}>
+    <div class="next" />
+  </Button>
+  <Button on:click={prev} disabled={!results.length}>
+    <div class="prev" />
+  </Button>
+</form>
+
 <style>
   form {
     display: flex;
@@ -87,26 +112,3 @@
     border-width: 0.083rem /* 1px */ 0 0 0.083rem /* 1px */;
   }
 </style>
-
-<form on:submit|preventDefault={next}>
-  <div class="separator" />
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-    <path
-      fill="rgba(135, 135, 137, 0.9)"
-      d="M15.707 14.293l-5-5-1.414 1.414 5 5a1 1 0 0 0 1.414-1.414z" />
-    <path
-      fill="rgba(135, 135, 137, 0.9)"
-      fill-rule="evenodd"
-      d="M6 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2A6 6 0 1 0 6 0a6 6 0 0 0 0 12z" />
-  </svg>
-  <input placeholder="Search" bind:value={$searchValue} />
-  {#if resultsPosition > -1}
-    {resultsPosition + 1}&nbsp;of&nbsp;{results.length}&nbsp;
-  {/if}
-  <Button type="submit" disabled={!results.length}>
-    <div class="next" />
-  </Button>
-  <Button on:click={prev} disabled={!results.length}>
-    <div class="prev" />
-  </Button>
-</form>

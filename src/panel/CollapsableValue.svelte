@@ -35,6 +35,77 @@
   $: type = typeof value
 </script>
 
+<li
+  {...{ 'data-tooltip': errorMessage }}
+  on:click|stopPropagation={e => (collapsed = !collapsed)}
+>
+  {#if type == 'string'}
+    {key}:&nbsp;
+
+    <Editable class="string" {readOnly} {value} on:change />
+  {:else if value == null || value == undefined || value != value}
+    {key}:&nbsp;
+
+    <Editable class="null" {readOnly} {value} on:change />
+  {:else if type == 'number' || type == 'boolean'}
+    {key}:&nbsp;
+
+    <Editable class="number" {readOnly} {value} on:change />
+  {:else if Array.isArray(value)}
+    {#if value.length}
+      <Collapse class="collapse" {collapsed} />
+      {key}:&nbsp;
+      <span class="object">Array [{value.length}]</span>
+      {#if !collapsed}
+        <ul>
+          {#each value as v, key}
+            <svelte:self
+              {readOnly}
+              {key}
+              value={v}
+              on:change={e =>
+                dispatch('change', stringify(value, key, e.detail))}
+            />
+          {/each}
+        </ul>
+      {/if}
+    {:else}{key}:&nbsp; <span class="object">Array []</span>{/if}
+  {:else if type == 'object'}
+    {#if value.__isFunction}
+      <Collapse class="collapse" {collapsed} />
+      {key}:&nbsp;
+      <span class="function">function&nbsp;{value.name || ''}&nbsp;()</span>
+      {#if !collapsed}
+        <pre>{value.source}</pre>
+      {/if}
+    {:else if value.__isSymbol}
+      {key}:&nbsp;
+      <span class="symbol">{value.name || 'Symbol()'}</span>
+    {:else if Object.keys(value).length}
+      <Collapse class="collapse" {collapsed} />
+      {key}:&nbsp;
+      <span class="object">Object &lbrace;&hellip;&rbrace;</span>
+      {#if !collapsed}
+        <ul>
+          {#each Object.entries(value) as [key, v] (key)}
+            <svelte:self
+              {readOnly}
+              {key}
+              value={v}
+              on:change={e =>
+                dispatch('change', stringify(value, key, e.detail))}
+            />
+          {/each}
+        </ul>
+      {/if}
+    {:else}
+      {key}:&nbsp;
+      <span class="object">Object &lbrace; &rbrace;</span>
+    {/if}
+  {/if}
+  {#if errorMessage}<span class="error">!</span>{/if}
+</li>
+
 <style>
   ul {
     margin-left: 0.667rem /* 8px */;
@@ -88,69 +159,3 @@
     color: rgb(255, 125, 233);
   }
 </style>
-
-<li
-  {...{ 'data-tooltip': errorMessage }}
-  on:click|stopPropagation={e => (collapsed = !collapsed)}>
-  {#if type == 'string'}
-    {key}:&nbsp;
-
-    <Editable class="string" {readOnly} {value} on:change />
-  {:else if value == null || value == undefined || value != value}
-    {key}:&nbsp;
-
-    <Editable class="null" {readOnly} {value} on:change />
-  {:else if type == 'number' || type == 'boolean'}
-    {key}:&nbsp;
-
-    <Editable class="number" {readOnly} {value} on:change />
-  {:else if Array.isArray(value)}
-    {#if value.length}
-      <Collapse class="collapse" {collapsed} />
-      {key}:&nbsp;
-      <span class="object">Array [{value.length}]</span>
-      {#if !collapsed}
-        <ul>
-          {#each value as v, key}
-            <svelte:self
-              {readOnly}
-              {key}
-              value={v}
-              on:change={e => dispatch('change', stringify(value, key, e.detail))} />
-          {/each}
-        </ul>
-      {/if}
-    {:else}{key}:&nbsp; <span class="object">Array []</span>{/if}
-  {:else if type == 'object'}
-    {#if value.__isFunction}
-      <Collapse class="collapse" {collapsed} />
-      {key}:&nbsp;
-      <span class="function">function&nbsp;{value.name || ''}&nbsp;()</span>
-      {#if !collapsed}
-        <pre>{value.source}</pre>
-      {/if}
-    {:else if value.__isSymbol}
-      {key}:&nbsp;
-      <span class="symbol">{value.name || 'Symbol()'}</span>
-    {:else if Object.keys(value).length}
-      <Collapse class="collapse" {collapsed} />
-      {key}:&nbsp;
-      <span class="object">Object &lbrace;&hellip;&rbrace;</span>
-      {#if !collapsed}
-        <ul>
-          {#each Object.entries(value) as [key, v] (key)}
-            <svelte:self
-              {readOnly}
-              {key}
-              value={v}
-              on:change={e => dispatch('change', stringify(value, key, e.detail))} />
-          {/each}
-        </ul>
-      {/if}
-    {:else}
-      {key}:&nbsp;
-      <span class="object">Object &lbrace; &rbrace;</span>
-    {/if}
-  {/if}
-  {#if errorMessage}<span class="error">!</span>{/if}
-</li>

@@ -49,26 +49,13 @@
   }
 </script>
 
-<style>
-  div {
-    line-height: 1.333rem /* 16px */;
-  }
-
-  .tag-name {
-    color: rgb(0, 116, 232);
-  }
-
-  :global(.dark) .tag-name {
-    color: rgb(117, 191, 255);
-  }
-</style>
-
 {#if hasChildren}
   <div
     class:hover
     class:selected
     {style}
-    on:dblclick={e => (collapsed = !collapsed)}>
+    on:dblclick={e => (collapsed = !collapsed)}
+  >
     <Collapse {selected} bind:collapsed />
     &lt;
     <span class="tag-name">
@@ -104,3 +91,17 @@
     &nbsp;/&gt;
   </div>
 {/if}
+
+<style>
+  div {
+    line-height: 1.333rem /* 16px */;
+  }
+
+  .tag-name {
+    color: rgb(0, 116, 232);
+  }
+
+  :global(.dark) .tag-name {
+    color: rgb(117, 191, 255);
+  }
+</style>
