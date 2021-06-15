@@ -107,8 +107,13 @@ window.addEventListener('keydown', e => {
 const nodeMap = new Map()
 
 const port = chrome.runtime.connect()
+
+/* Include all relevant content script settings in
+ * message itself to avoid extra async queries
+ */
 port.postMessage({
   type: 'init',
+  profilerEnabled: get(profilerEnabled),
   tabId: chrome.devtools.inspectedWindow.tabId,
 })
 

@@ -10,28 +10,17 @@ chrome.runtime.onConnect.addListener(port => {
   }
 })
 
-const profilerEnabledList = []
-
 function handleToolsMessage(msg, port) {
   switch (msg.type) {
+    // 'init' and 'reload' messages do not need to be delivered to content script
     case 'init':
-      setup(msg.tabId, port)
+      setup(msg.tabId, port, msg.profilerEnabled)
       break
     case 'reload':
       chrome.tabs.reload(msg.tabId, { bypassCache: true })
       break
     default:
       chrome.tabs.sendMessage(msg.tabId, msg)
-      break
-  }
-
-  switch (msg.type) {
-    case 'startProfiler':
-      profilerEnabledList.push(msg.tabId)
-      break
-    case 'startProfiler':
-      const i = profilerEnabledList.indexOf(msg.tabId)
-      if (i != -1) profilerEnabledList.slice(i, 1)
       break
   }
 }
@@ -59,22 +48,27 @@ function attachScript(tabId, changed) {
     return
 
   chrome.tabs.executeScript(tabId, {
-    code: `window.profilerEnabled = ${profilerEnabledList.includes(tabId)}`,
-    runAt: 'document_start',
-  })
-  chrome.tabs.executeScript(tabId, {
     file: '/privilegedContent.js',
     runAt: 'document_start',
   })
 }
 
-function setup(tabId, port) {
+function setup(tabId, port, profilerEnabled) {
+  chrome.tabs.executeScript(tabId, {
+    code: profilerEnabled ? `window.sessionStorage.SvelteDevToolsProfilerEnabled = "true"` : 'delete window.sessionStorage.SvelteDevToolsProfilerEnabled',
+    runAt: 'document_start',
+  })
+
   toolsPorts.set(tabId, port)
+
   port.onDisconnect.addListener(() => {
     toolsPorts.delete(tabId)
-    const i = profilerEnabledList.indexOf(tabId)
-    if (i != -1) profilerEnabledList.slice(i, 1)
     chrome.tabs.onUpdated.removeListener(attachScript)
+    // Inform content script that it background closed and it needs to clean up
+    chrome.tabs.sendMessage(tabId, {
+      type: 'clear',
+      tabId: tabId,
+    })
   })
 
   chrome.tabs.onUpdated.addListener(attachScript)
