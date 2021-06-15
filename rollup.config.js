@@ -60,14 +60,22 @@ export default [{
     footer: `\`
   if (window.profilerEnabled) window.tag.text = window.tag.text.replace('let profilerEnabled = false;', '\$&\\nstartProfiler();')
   document.children[0].append(window.tag)
-  const port = chrome.runtime.connect()
-  port.onMessage.addListener(window.postMessage.bind(window))
+  const sendMessage = chrome.runtime.sendMessage
+  const postMessage = window.postMessage.bind(window)
+  chrome.runtime.onMessage.addListener((message, sender) => {
+    const fromBackground = sender && sender.id === chrome.runtime.id
+    if (!fromBackground) {
+      console.error('Message from unexpected sender', sender, message)
+      return
+    }
+    postMessage(message)
+  })
   window.addEventListener(
     'message',
-    e => e.source == window && port.postMessage(e.data),
+    e => e.source == window && sendMessage(e.data),
     false
   )
-  window.addEventListener('unload', () => port.postMessage({ type: 'clear' }))
+  window.addEventListener('unload', () => sendMessage({ type: 'clear' }))
 }`
   },
   plugins: [ resolve() ]

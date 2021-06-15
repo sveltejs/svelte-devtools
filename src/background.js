@@ -1,13 +1,12 @@
 const toolsPorts = new Map()
-const pagePorts = new Map()
 
 chrome.runtime.onConnect.addListener(port => {
   if (port.sender.url == chrome.runtime.getURL('/devtools/panel.html')) {
     port.onMessage.addListener(handleToolsMessage)
   } else {
-    port.onMessage.addListener(handlePageMessage)
-    port.onDisconnect.addListener(port => pagePorts.delete(port.sender.tab.id))
-    pagePorts.set(port.sender.tab.id, port)
+    // This is not an expected connection, so we just log an error and close it
+    console.error('Unexpected connection. Port ', port)
+    port.disconnect();
   }
 })
 
@@ -22,8 +21,7 @@ function handleToolsMessage(msg, port) {
       chrome.tabs.reload(msg.tabId, { bypassCache: true })
       break
     default:
-      const page = pagePorts.get(msg.tabId)
-      if (page) page.postMessage(msg)
+      chrome.tabs.sendMessage(msg.tabId, msg)
       break
   }
 
@@ -38,8 +36,13 @@ function handleToolsMessage(msg, port) {
   }
 }
 
-function handlePageMessage(msg, port) {
-  const tools = toolsPorts.get(port.sender.tab.id)
+// Receive messages from content scripts
+chrome.runtime.onMessage.addListener((msg, sender) =>
+  handlePageMessage(msg, sender.tab.id)
+);
+
+function handlePageMessage(msg, tabId) {
+  const tools = toolsPorts.get(tabId)
   if (tools) tools.postMessage(msg)
 }
 
@@ -69,7 +72,6 @@ function setup(tabId, port) {
   toolsPorts.set(tabId, port)
   port.onDisconnect.addListener(() => {
     toolsPorts.delete(tabId)
-    pagePorts.delete(tabId)
     const i = profilerEnabledList.indexOf(tabId)
     if (i != -1) profilerEnabledList.slice(i, 1)
     chrome.tabs.onUpdated.removeListener(attachScript)
