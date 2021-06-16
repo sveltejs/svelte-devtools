@@ -1,4 +1,4 @@
-import { writable, get, derived } from 'svelte/store'
+import { writable, get } from 'svelte/store'
 
 export const visibility = writable({
   component: true,
