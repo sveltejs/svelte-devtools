@@ -58,7 +58,7 @@ export default [{
   window.tag = document.createElement('script')
   window.tag.text = \``,
     footer: `\`
-  if (window.profilerEnabled) window.tag.text = window.tag.text.replace('let profilerEnabled = false;', '\$&\\nstartProfiler();')
+  if (window.sessionStorage.SvelteDevToolsProfilerEnabled === "true") window.tag.text = window.tag.text.replace('let profilerEnabled = false;', '\$&\\nstartProfiler();')
   document.children[0].append(window.tag)
   const sendMessage = chrome.runtime.sendMessage
   const postMessage = window.postMessage.bind(window)
@@ -67,6 +67,16 @@ export default [{
     if (!fromBackground) {
       console.error('Message from unexpected sender', sender, message)
       return
+    }
+    switch (message.type) {
+      case 'startProfiler':
+        window.sessionStorage.SvelteDevToolsProfilerEnabled = "true"
+        break
+      case 'stopProfiler':
+        // fallthrough
+      case 'clear':
+        delete window.sessionStorage.SvelteDevToolsProfilerEnabled
+        break
     }
     postMessage(message)
   })
