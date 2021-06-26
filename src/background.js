@@ -1,3 +1,5 @@
+'use strict'
+
 const toolsPorts = new Map()
 
 chrome.runtime.onConnect.addListener(port => {
