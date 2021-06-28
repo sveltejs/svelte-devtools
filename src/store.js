@@ -38,6 +38,8 @@ window.addEventListener('keyup', e => {
 })
 // #endif
 
+let port
+
 function interactableNodes(list) {
   const _visibility = get(visibility)
   return list.filter(
@@ -106,40 +108,38 @@ window.addEventListener('keydown', e => {
 
 const nodeMap = new Map()
 
-const port = chrome.runtime.connect()
-
 /* Include all relevant content script settings in
  * message itself to avoid extra async queries
  */
-port.postMessage({
+chrome.runtime.sendMessage({
   type: 'init',
   profilerEnabled: get(profilerEnabled),
   tabId: chrome.devtools.inspectedWindow.tabId,
 })
 
 export function reload() {
-  port.postMessage({
+  chrome.runtime.sendMessage({
     type: 'reload',
     tabId: chrome.devtools.inspectedWindow.tabId,
   })
 }
 
 export function startPicker() {
-  port.postMessage({
+  chrome.runtime.sendMessage({
     type: 'startPicker',
     tabId: chrome.devtools.inspectedWindow.tabId,
   })
 }
 
 export function stopPicker() {
-  port.postMessage({
+  chrome.runtime.sendMessage({
     type: 'stopPicker',
     tabId: chrome.devtools.inspectedWindow.tabId,
   })
 }
 
 selectedNode.subscribe(node => {
-  port.postMessage({
+  chrome.runtime.sendMessage({
     type: 'setSelected',
     tabId: chrome.devtools.inspectedWindow.tabId,
     nodeId: node.id,
@@ -158,7 +158,7 @@ selectedNode.subscribe(node => {
 })
 
 hoveredNodeId.subscribe(nodeId =>
-  port.postMessage({
+  chrome.runtime.sendMessage({
     type: 'setHover',
     tabId: chrome.devtools.inspectedWindow.tabId,
     nodeId,
@@ -166,7 +166,7 @@ hoveredNodeId.subscribe(nodeId =>
 )
 
 profilerEnabled.subscribe(o =>
-  port.postMessage({
+  chrome.runtime.sendMessage({
     type: o ? 'startProfiler' : 'stopProfiler',
     tabId: chrome.devtools.inspectedWindow.tabId,
   })
@@ -227,7 +227,7 @@ function resolveEventBubble(node) {
   }
 }
 
-port.onMessage.addListener(msg => {
+function messageHandler(msg) {
   switch (msg.type) {
     case 'clear': {
       selectedNode.set({})
@@ -304,4 +304,13 @@ port.onMessage.addListener(msg => {
       break
     }
   }
-})
+}
+
+function connect() {
+  port = chrome.runtime.connect({
+    name: String(chrome.devtools.inspectedWindow.tabId),
+  })
+  port.onMessage.addListener(messageHandler)
+}
+
+connect()
