@@ -227,16 +227,15 @@ function resolveEventBubble(node) {
   }
 }
 
+/* When page is reloaded or refreshed we need to 'clear' past data */
+chrome.devtools.network.onNavigated.addListener(() => {
+  selectedNode.set({})
+  hoveredNodeId.set(null)
+  rootNodes.set([])
+})
+
 port.onMessage.addListener(msg => {
   switch (msg.type) {
-    case 'clear': {
-      selectedNode.set({})
-      hoveredNodeId.set(null)
-      rootNodes.set([])
-
-      break
-    }
-
     case 'addNode': {
       const node = msg.node
       node.children = []

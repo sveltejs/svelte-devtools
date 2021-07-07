@@ -85,7 +85,6 @@ export default [{
     e => e.source == window && sendMessage(e.data),
     false
   )
-  window.addEventListener('unload', () => sendMessage({ type: 'clear' }))
 }`
   },
   plugins: [ resolve() ]
