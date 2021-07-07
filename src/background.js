@@ -6,7 +6,7 @@ chrome.runtime.onConnect.addListener(port => {
   } else {
     // This is not an expected connection, so we just log an error and close it
     console.error('Unexpected connection. Port ', port)
-    port.disconnect();
+    port.disconnect()
   }
 })
 
@@ -19,6 +19,22 @@ function handleToolsMessage(msg, port) {
     case 'reload':
       chrome.tabs.reload(msg.tabId, { bypassCache: true })
       break
+
+    // #if process.env.TARGET !== 'firefox'
+    case 'navigation':
+      /*
+       * Tab might not be ready for script injection yet, so we try to try to execute script
+       * right away (in case page is already loading) and then also listen for updated
+       * events.
+       */
+      chrome.tabs.executeScript(msg.tabId, {
+        file: '/privilegedContent.js',
+        runAt: 'document_start',
+      })
+      chrome.tabs.onUpdated.addListener(attachScript)
+      break
+    // #endif
+
     default:
       chrome.tabs.sendMessage(msg.tabId, msg)
       break
@@ -28,11 +44,22 @@ function handleToolsMessage(msg, port) {
 // Receive messages from content scripts
 chrome.runtime.onMessage.addListener((msg, sender) =>
   handlePageMessage(msg, sender.tab.id)
-);
+)
 
 function handlePageMessage(msg, tabId) {
-  const tools = toolsPorts.get(tabId)
-  if (tools) tools.postMessage(msg)
+  switch (msg.type) {
+    case 'ready':
+      // #if process.env.TARGET !== 'firefox'
+      chrome.tabs.onUpdated.removeListener(attachScript)
+      // #endif
+      break
+
+    default: {
+      const tools = toolsPorts.get(tabId)
+      if (tools) tools.postMessage(msg)
+      break
+    }
+  }
 }
 
 function attachScript(tabId, changed) {
@@ -55,7 +82,9 @@ function attachScript(tabId, changed) {
 
 function setup(tabId, port, profilerEnabled) {
   chrome.tabs.executeScript(tabId, {
-    code: profilerEnabled ? `window.sessionStorage.SvelteDevToolsProfilerEnabled = "true"` : 'delete window.sessionStorage.SvelteDevToolsProfilerEnabled',
+    code: profilerEnabled
+      ? 'window.sessionStorage.SvelteDevToolsProfilerEnabled = "true"'
+      : 'delete window.sessionStorage.SvelteDevToolsProfilerEnabled',
     runAt: 'document_start',
   })
 
@@ -71,5 +100,7 @@ function setup(tabId, port, profilerEnabled) {
     })
   })
 
+  // #if process.env.TARGET === 'firefox'
   chrome.tabs.onUpdated.addListener(attachScript)
+  // #endif
 }

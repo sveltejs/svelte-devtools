@@ -227,6 +227,19 @@ function resolveEventBubble(node) {
   }
 }
 
+/*
+ * When page is reloaded or refreshed we need to notify background
+ * so it injects content script.
+ */
+// #if process.env.TARGET !== 'firefox'
+chrome.devtools.network.onNavigated.addListener(() => {
+  port.postMessage({
+    type: 'navigation',
+    tabId: chrome.devtools.inspectedWindow.tabId,
+  })
+})
+// #endif
+
 port.onMessage.addListener(msg => {
   switch (msg.type) {
     case 'clear': {

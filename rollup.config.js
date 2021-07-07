@@ -86,6 +86,7 @@ export default [{
     false
   )
   window.addEventListener('unload', () => sendMessage({ type: 'clear' }))
+  sendMessage({ type: 'ready' })
 }`
   },
   plugins: [ resolve() ]
