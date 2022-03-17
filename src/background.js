@@ -1,7 +1,7 @@
 const toolsPorts = new Map()
 
 chrome.runtime.onConnect.addListener(port => {
-  if (port.sender.url == chrome.runtime.getURL('/devtools/panel.html')) {
+  if (port.sender.url.replace('//devtools', '/devtools') == chrome.runtime.getURL('/devtools/panel.html')) {
     port.onMessage.addListener(handleToolsMessage)
   } else {
     // This is not an expected connection, so we just log an error and close it
