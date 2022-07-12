@@ -3,7 +3,7 @@ chrome.devtools.panels.create(
   chrome.devtools.panels.themeName == 'dark'
     ? '/devtools/svelte-logo-dark.svg'
     : '/devtools/svelte-logo-light.svg',
-  '/devtools/panel.html',
+  'devtools/panel.html',
   panel =>
     panel.onShown.addListener(() =>
       chrome.devtools.inspectedWindow.eval(
