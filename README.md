@@ -100,3 +100,7 @@ This should build the codebase and output a zip file under `web-ext-artifacts`.
 1. Navigate to `chrome://extensions/`.
 2. Turn on developer mode using the 'Developer mode' switch in the upper right hand corner of the page.
 3. Click 'Load Unpacked' and select the `dest` directory.
+
+## Acknowledgements
+
+- This extension was initially created and developed by [RedHatter](https://github.com/RedHatter)
