@@ -19,7 +19,7 @@
     "postcss-sorting": "^6.0.0",
     "prettier": "^2.2.1",
     "prettier-plugin-svelte": "^2.3.0",
-    "rollup": "^2.35.1",
+    "rollup": "^3.4.0",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-jscc": "^2.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
