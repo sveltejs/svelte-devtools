@@ -16,7 +16,7 @@
     "cross-env": "^7.0.3",
     "http-serve": "^1.0.1",
     "postcss": "^8.2.2",
-    "postcss-sorting": "^6.0.0",
+    "postcss-sorting": "^8.0.1",
     "prettier": "^2.2.1",
     "prettier-plugin-svelte": "^2.3.0",
     "rollup": "^2.35.1",
