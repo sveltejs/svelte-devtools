@@ -34,21 +34,13 @@ function handlePageMessage(msg, tabId) {
 }
 
 function attachScript(tabId, changed) {
-	if (
-		!ports.has(tabId) ||
-		changed.status != 'loading'
-		// #if process.env.TARGET === 'firefox'
-		// !changed.url
-		// #else
-		// false
-		// #endif
-	)
-		return;
-
-	chrome.tabs.executeScript(tabId, {
-		file: '/privilegedContent.js',
-		runAt: 'document_start',
-	});
+	const chromium = typeof window !== 'undefined' && window.chrome;
+	if (chromium && (!ports.has(tabId) || changed.status != 'loading')) {
+		chrome.tabs.executeScript(tabId, {
+			file: '/privilegedContent.js',
+			runAt: 'document_start',
+		});
+	}
 }
 
 function setup(tabId, port, profilerEnabled) {

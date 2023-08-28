@@ -1,9 +1,6 @@
 import svelte from 'rollup-plugin-svelte';
-import resolve from 'rollup-plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve';
 import css from 'rollup-plugin-css-only';
-import jscc from 'rollup-plugin-jscc';
-
-import format from './scripts/format.mjs';
 
 export default [
 	{
@@ -18,11 +15,6 @@ export default [
 			},
 		},
 		plugins: [
-			format(),
-			jscc({
-				asloader: false,
-				extensions: ['css', 'js', 'svelte'],
-			}),
 			svelte({
 				preprocess: {
 					markup: (input) => {
@@ -42,13 +34,7 @@ export default [
 		output: {
 			file: 'dest/background.js',
 		},
-		plugins: [
-			format(),
-			jscc({
-				asloader: false,
-				extensions: ['css', 'js', 'svelte'],
-			}),
-		],
+		plugins: [],
 	},
 	{
 		input: 'src/client/index.js',
@@ -100,7 +86,6 @@ export default [
 			format: 'iife',
 		},
 		plugins: [
-			format(),
 			svelte({
 				compilerOptions: {
 					dev: true,

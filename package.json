@@ -8,41 +8,25 @@
 	"scripts": {
 		"dev": "vite build --watch",
 		"build": "vite build",
-		"old-dev": "http-serve test/public -p 8940 & web-ext run -s dest -u http://127.0.0.1:8940 -u about:debugging && kill $!",
 		"format": "prettier -w . --plugin=prettier-plugin-svelte --plugin=prettier-plugin-sort-package-json",
 		"check": "pnpm check:style && pnpm check:svelte",
 		"check:style": "prettier -c . --plugin=prettier-plugin-svelte --plugin=prettier-plugin-sort-package-json",
-		"check:svelte": "svelte-check --tsconfig ./tsconfig.json",
-		"build:firefox": "cross-env TARGET=firefox rollup -c",
-		"build:chrome": "cross-env TARGET=chrome rollup -c",
-		"build:icon": "node ./scripts/generate-icons.mjs",
-		"package:firefox": "pnpm build:icon && pnpm build:firefox && web-ext build -s dest",
-		"package:chrome": "pnpm build:icon && pnpm build:chrome && web-ext build -s dest"
+		"check:svelte": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"packageManager": "pnpm@8.7.0",
 	"devDependencies": {
-		"@sveltejs/kit": "^1.23.0",
-		"@types/chrome": "^0.0.244",
-		"cross-env": "^7.0.3",
-		"http-serve": "^1.0.1",
-		"postcss": "^8.4.28",
-		"postcss-sorting": "^8.0.2",
+		"@rollup/plugin-node-resolve": "^15.2.1",
 		"prettier": "^3.0.2",
 		"prettier-plugin-sort-package-json": "^0.1.1",
 		"prettier-plugin-svelte": "^3.0.3",
 		"rollup": "^3.28.1",
 		"rollup-plugin-css-only": "^4.3.0",
-		"rollup-plugin-jscc": "^2.0.0",
-		"rollup-plugin-node-resolve": "^5.2.0",
 		"rollup-plugin-svelte": "^7.1.6",
-		"rollup-plugin-transform-input": "git+https://github.com/RedHatter/rollup-plugin-transform-input.git",
 		"svelte": "^4.2.0",
 		"svelte-adapter-extension": "^0.1.0",
 		"svelte-check": "^3.5.0",
-		"svelte-listener": "git+https://github.com/RedHatter/svelte-listener.git",
-		"svgexport": "^0.4.2",
+		"svelte-listener": "github:RedHatter/svelte-listener",
 		"typescript": "^5.2.2",
-		"vite": "^4.4.9",
-		"web-ext": "^7.6.2"
+		"vite": "^4.4.9"
 	}
 }
