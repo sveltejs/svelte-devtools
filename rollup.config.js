@@ -1,41 +1,7 @@
-import svelte from 'rollup-plugin-svelte';
-import resolve from '@rollup/plugin-node-resolve';
-import css from 'rollup-plugin-css-only';
+// -- TODO: remove file --
 
 export default [
-	{
-		input: 'src/index.js',
-		external: ['chrome'],
-		output: {
-			file: 'dest/devtools/bundle.js',
-			name: 'App',
-			format: 'iife',
-			globals: {
-				chrome: 'chrome',
-			},
-		},
-		plugins: [
-			svelte({
-				preprocess: {
-					markup: (input) => {
-						const code = input.content
-							.replace(/(>|})\s+(?![^]*?<\/(?:script|style)>|[^<]*?>|[^{]*?})/g, '$1')
-							.replace(/(?<!<[^>]*?|{[^}]*?)\s+(<|{)(?![^]*<\/(?:script|style)>)/g, '$1');
-						return { code };
-					},
-				},
-			}),
-			resolve(),
-			css({ output: 'styles.css' }),
-		],
-	},
-	{
-		input: 'src/background.js',
-		output: {
-			file: 'dest/background.js',
-		},
-		plugins: [],
-	},
+	// TODO: generate through vite plugin
 	{
 		input: 'src/client/index.js',
 		output: {
@@ -76,23 +42,5 @@ export default [
   window.addEventListener('unload', () => sendMessage({ type: 'clear' }))
 }`,
 		},
-		plugins: [resolve()],
-	},
-	{
-		input: 'test/src/index.js',
-		output: {
-			file: 'test/public/bundle.js',
-			name: 'App',
-			format: 'iife',
-		},
-		plugins: [
-			svelte({
-				compilerOptions: {
-					dev: true,
-				},
-			}),
-			resolve(),
-			css({ output: 'styles.css' }),
-		],
 	},
 ];
