@@ -1,10 +1,10 @@
 <script>
-  import SearchTerm from './SearchTerm.svelte'
+	import SearchTerm from './SearchTerm.svelte';
 
-  export let style
-  export let nodeValue
+	export let style;
+	export let nodeValue;
 </script>
 
 <div {style}>
-  <SearchTerm text={nodeValue} />
+	<SearchTerm text={nodeValue} />
 </div>

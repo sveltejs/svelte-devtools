@@ -1,3 +1,3 @@
 <script>
-  export let value = Date.now()
+	export let value = Date.now();
 </script>

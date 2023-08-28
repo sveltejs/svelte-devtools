@@ -1,4 +1,5 @@
 # Svelte DevTools
+
 [![Mozilla Add-on](https://img.shields.io/amo/users/svelte-devtools?color=red&label=Firefox)](https://addons.mozilla.org/en-US/firefox/addon/svelte-devtools/) [![Chrome Web Store](https://img.shields.io/chrome-web-store/users/ckolcbmkjpjmangdbmnkpjigpkddpogn?color=blue&label=Chrome)](https://chrome.google.com/webstore/detail/svelte-devtools/ckolcbmkjpjmangdbmnkpjigpkddpogn)
 
 Install from the [Firefox addon page](https://addons.mozilla.org/en-US/firefox/addon/svelte-devtools/) or the
@@ -12,17 +13,20 @@ After installing you will see a new tab in Developer Tools. This tab displays a 
 
 **Requires svelte version 3.12.0 or above**
 
-![1.1.0 Screenshot](https://raw.githubusercontent.com/RedHatter/svelte-devtools/master/screenshot.png "1.1.0 Screenshot")
+![1.1.0 Screenshot](https://raw.githubusercontent.com/RedHatter/svelte-devtools/master/screenshot.png '1.1.0 Screenshot')
 
 ## Enabling dev mode
 
 In order for svelte-devtools to comunicate with your application bundle the svelte compiler must have the `dev` option set to `true`.
 
 ### Template
+
 By default the [svelte template](https://github.com/sveltejs/template) will set `dev: true` when running `npm run dev` and `false` otherwise.
 
 ### Rollup
+
 Below is a minimalist rollup config with `dev: true` set.
+
 ```
 // rollup.config.js
 import * as fs from 'fs';
@@ -45,7 +49,9 @@ export default {
 ```
 
 ### Webpack
+
 Below is the relevant snipet from a `webpack.config.js` with `dev: true` set.
+
 ```
   ...
   module: {
@@ -74,27 +80,32 @@ Below is the relevant snipet from a `webpack.config.js` with `dev: true` set.
 ### Firefox
 
 Clone this repository and run the package script.
+
 ```
 git clone https://github.com/RedHatter/svelte-devtools.git
 cd svelte-devtools
 npm install
 npm run package:firefox
 ```
+
 This should build the codebase and output a zip file under `web-ext-artifacts`.
 
 Unsigned addons can't be install in firefox permanently but addons can be installed temporarily.
+
 1. Navigate to `about:debugging`.
 2. Click "Load Temporary Add-on" and choose the generated zip file.
 
 ### Chrome
 
 Clone this repository and run the package script.
+
 ```
 git clone https://github.com/RedHatter/svelte-devtools.git
 cd svelte-devtools
 npm install
 npm run package:chrome
 ```
+
 This should build the codebase and output a zip file under `web-ext-artifacts`.
 
 1. Navigate to `chrome://extensions/`.
@@ -103,4 +114,4 @@ This should build the codebase and output a zip file under `web-ext-artifacts`.
 
 ## Acknowledgements
 
-- This extension was initially created and developed by [RedHatter](https://github.com/RedHatter)
+-   This extension was initially created and developed by [RedHatter](https://github.com/RedHatter)
