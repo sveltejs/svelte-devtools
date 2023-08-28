@@ -13,6 +13,13 @@ const config = {
 		prerender: {
 			handleHttpError: 'warn',
 		},
+
+		typescript: {
+			config(settings) {
+				settings.include = [...settings.include, '../static/**/*.js', '../static/**/*.ts'];
+				return settings;
+			},
+		},
 	},
 
 	onwarn(warning, handler) {
