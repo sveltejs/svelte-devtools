@@ -2,7 +2,7 @@
 	"name": "svelte-devtools",
 	"version": "1.3.0",
 	"description": "Browser devtools extension for debugging Svelte applications.",
-	"repository": "github:RedHatter/svelte-devtools",
+	"repository": "github:sveltejs/svelte-devtools",
 	"license": "MIT",
 	"scripts": {
 		"dev": "http-serve test/public -p 8940 & web-ext run -s dest -u http://127.0.0.1:8940 -u about:debugging && kill $!",

@@ -13,7 +13,7 @@ After installing you will see a new tab in Developer Tools. This tab displays a 
 
 **Requires svelte version 3.12.0 or above**
 
-![1.1.0 Screenshot](https://raw.githubusercontent.com/RedHatter/svelte-devtools/master/screenshot.png '1.1.0 Screenshot')
+![1.1.0 Screenshot](./.github/assets/screenshot-1.1.0.png '1.1.0 Screenshot')
 
 ## Enabling dev mode
 
@@ -82,7 +82,7 @@ Below is the relevant snipet from a `webpack.config.js` with `dev: true` set.
 Clone this repository and run the package script.
 
 ```
-git clone https://github.com/RedHatter/svelte-devtools.git
+git clone https://github.com/sveltejs/svelte-devtools.git
 cd svelte-devtools
 npm install
 npm run package:firefox
@@ -100,7 +100,7 @@ Unsigned addons can't be install in firefox permanently but addons can be instal
 Clone this repository and run the package script.
 
 ```
-git clone https://github.com/RedHatter/svelte-devtools.git
+git clone https://github.com/sveltejs/svelte-devtools.git
 cd svelte-devtools
 npm install
 npm run package:chrome
