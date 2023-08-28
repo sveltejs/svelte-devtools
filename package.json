@@ -12,6 +12,7 @@
     "package:firefox": "yarpm run build:icon && yarpm run build:firefox && web-ext build -s dest",
     "package:chrome": "yarpm run build:icon && yarpm run build:chrome && web-ext build -s dest"
   },
+  "packageManager": "pnpm@8.7.0",
   "devDependencies": {
     "cross-env": "^7.0.3",
     "http-serve": "^1.0.1",
@@ -30,8 +31,5 @@
     "svgexport": "^0.4.1",
     "web-ext": "^6.1.0",
     "yarpm": "^1.1.1"
-  },
-  "engines": {
-    "node": ">=11.14.0"
   }
 }
