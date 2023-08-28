@@ -3,8 +3,6 @@ import resolve from 'rollup-plugin-node-resolve';
 import css from 'rollup-plugin-css-only';
 import jscc from 'rollup-plugin-jscc';
 
-import format from './scripts/format.mjs';
-
 export default [
 	{
 		input: 'src/index.js',
@@ -18,7 +16,6 @@ export default [
 			},
 		},
 		plugins: [
-			format(),
 			jscc({
 				asloader: false,
 				extensions: ['css', 'js', 'svelte'],
@@ -43,7 +40,6 @@ export default [
 			file: 'dest/background.js',
 		},
 		plugins: [
-			format(),
 			jscc({
 				asloader: false,
 				extensions: ['css', 'js', 'svelte'],
@@ -100,7 +96,6 @@ export default [
 			format: 'iife',
 		},
 		plugins: [
-			format(),
 			svelte({
 				compilerOptions: {
 					dev: true,
