@@ -15,7 +15,7 @@
 		"check:svelte": "svelte-check",
 		"build:firefox": "cross-env TARGET=firefox rollup -c",
 		"build:chrome": "cross-env TARGET=chrome rollup -c",
-		"build:icon": "node ./scripts/buildIcons.mjs",
+		"build:icon": "node ./scripts/generate-icons.mjs",
 		"package:firefox": "pnpm build:icon && pnpm build:firefox && web-ext build -s dest",
 		"package:chrome": "pnpm build:icon && pnpm build:chrome && web-ext build -s dest"
 	},
