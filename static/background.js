@@ -1,4 +1,4 @@
-const toolsPorts = new Map();
+const ports = new Map();
 
 chrome.runtime.onConnect.addListener((port) => {
 	if (port.sender.url == chrome.runtime.getURL('/devtools/panel.html')) {
@@ -29,13 +29,13 @@ function handleToolsMessage(msg, port) {
 chrome.runtime.onMessage.addListener((msg, sender) => handlePageMessage(msg, sender.tab.id));
 
 function handlePageMessage(msg, tabId) {
-	const tools = toolsPorts.get(tabId);
+	const tools = ports.get(tabId);
 	if (tools) tools.postMessage(msg);
 }
 
 function attachScript(tabId, changed) {
 	if (
-		!toolsPorts.has(tabId) ||
+		!ports.has(tabId) ||
 		changed.status != 'loading'
 		// #if process.env.TARGET === 'firefox'
 		// !changed.url
@@ -59,10 +59,10 @@ function setup(tabId, port, profilerEnabled) {
 		runAt: 'document_start',
 	});
 
-	toolsPorts.set(tabId, port);
+	ports.set(tabId, port);
 
 	port.onDisconnect.addListener(() => {
-		toolsPorts.delete(tabId);
+		ports.delete(tabId);
 		chrome.tabs.onUpdated.removeListener(attachScript);
 		// Inform content script that it background closed and it needs to clean up
 		chrome.tabs.sendMessage(tabId, {
