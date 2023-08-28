@@ -49,9 +49,4 @@
 		flex-grow: 1;
 		padding-top: 0.583rem; /* 8px */
 	}
-
-	.root div {
-		margin-top: 40%;
-		text-align: center;
-	}
 </style>

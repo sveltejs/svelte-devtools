@@ -7,12 +7,14 @@
 	"scripts": {
 		"dev": "http-serve test/public -p 8940 & web-ext run -s dest -u http://127.0.0.1:8940 -u about:debugging && kill $!",
 		"format": "prettier -w . --plugin=prettier-plugin-svelte --plugin=prettier-plugin-sort-package-json",
-		"check": "prettier -c . --plugin=prettier-plugin-svelte --plugin=prettier-plugin-sort-package-json",
+		"check": "pnpm check:style && pnpm check:svelte",
+		"check:style": "prettier -c . --plugin=prettier-plugin-svelte --plugin=prettier-plugin-sort-package-json",
+		"check:svelte": "svelte-check",
 		"build:firefox": "cross-env TARGET=firefox rollup -c",
 		"build:chrome": "cross-env TARGET=chrome rollup -c",
 		"build:icon": "node ./scripts/buildIcons.mjs",
-		"package:firefox": "yarpm run build:icon && yarpm run build:firefox && web-ext build -s dest",
-		"package:chrome": "yarpm run build:icon && yarpm run build:chrome && web-ext build -s dest"
+		"package:firefox": "pnpm build:icon && pnpm build:firefox && web-ext build -s dest",
+		"package:chrome": "pnpm build:icon && pnpm build:chrome && web-ext build -s dest"
 	},
 	"packageManager": "pnpm@8.7.0",
 	"devDependencies": {
@@ -30,9 +32,10 @@
 		"rollup-plugin-svelte": "^7.1.6",
 		"rollup-plugin-transform-input": "git+https://github.com/RedHatter/rollup-plugin-transform-input.git",
 		"svelte": "^4.2.0",
+		"svelte-check": "^3.5.0",
 		"svelte-listener": "git+https://github.com/RedHatter/svelte-listener.git",
 		"svgexport": "^0.4.2",
-		"web-ext": "^7.6.2",
-		"yarpm": "^1.2.0"
+		"typescript": "^5.2.2",
+		"web-ext": "^7.6.2"
 	}
 }
