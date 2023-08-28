@@ -1,11 +1,11 @@
 <script>
-	import { visibility } from '../store.js';
-	import Button from './Button.svelte';
+	import { visibility } from '$lib/store.js';
+	import Button from '../components/Button.svelte';
 
-	let isOpen = false;
+	let opened = false;
 </script>
 
-<Button on:click={(e) => (isOpen = true)}>
+<Button on:click={() => (opened = true)}>
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
 		<path
 			d="M8 2C4.36364 2 1.25818 4.28067 0 7.5 1.25818 10.71933 4.36364 13 8
@@ -16,8 +16,8 @@
       2.18182-2.2S9.20727 5.3 8 5.3z"
 		/>
 	</svg>
-	{#if isOpen}
-		<div on:click|stopPropagation={(e) => (isOpen = false)} />
+	{#if opened}
+		<div on:click|stopPropagation={(e) => (opened = false)} />
 		<ul>
 			<span />
 			<li

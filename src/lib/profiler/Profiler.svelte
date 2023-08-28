@@ -1,20 +1,17 @@
-<script>
-	import { profileFrame } from '../store.js';
+<script lang="ts">
+	import type { ComponentProps } from 'svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Panel from '$lib/panel/Panel.svelte';
+	import Toolbar from '$lib/toolbar/Toolbar.svelte';
+	import ProfileButton from '$lib/toolbar/ProfileButton.svelte';
 	import Frame from './Frame.svelte';
-	import Panel from '../panel/Panel.svelte';
-	import Toolbar from '../toolbar/Toolbar.svelte';
-	import Button from '../toolbar/Button.svelte';
-	import ProfileButton from '../toolbar/ProfileButton.svelte';
 
-	let selected;
-	let top;
+	import { profileFrame } from '$lib/store.js';
 
-	function handleClick(e) {
-		if (selected == e.detail) top = e.detail;
-		else selected = e.detail;
-	}
+	let selected: null | ComponentProps<Frame>['children'][0] = null;
+	let top: null | number = null;
 
-	function round(n) {
+	function round(n: number) {
 		return Math.round(n * 100) / 100;
 	}
 
@@ -49,7 +46,14 @@
 </Toolbar>
 <div class="frame">
 	{#if children.length}
-		<Frame {children} {duration} on:click={handleClick} />
+		<Frame
+			{children}
+			{duration}
+			on:click={({ detail }) => {
+				if (selected === detail) top = detail;
+				else selected = detail;
+			}}
+		/>
 	{:else}
 		<p>Nothing to display. Perform an action or refresh the page.</p>
 	{/if}
@@ -59,16 +63,32 @@
 		<div class="panel">
 			<div>
 				<span>Tag name</span>
-				{selected.node.tagName}&nbsp;(#{selected.node.id})
+				<span>{selected.node.tagName}</span>
+				<span>(#{selected.node.id})</span>
 			</div>
-			<div><span>Start</span> {round(selected.start)}ms</div>
-			<div><span>Operation</span> {selected.type}</div>
-			<div><span>Block type</span> {selected.node.type}</div>
-			<div><span>End</span> {round(selected.end)}ms</div>
+			<div>
+				<span>Start</span>
+				<span>{round(selected.start)}ms</span>
+			</div>
+			<div>
+				<span>Operation</span>
+				<span>{selected.type}</span>
+			</div>
+			<div>
+				<span>Block type</span>
+				<span>{selected.node.type}</span>
+			</div>
+			<div>
+				<span>End</span>
+				<span>{round(selected.end)}ms</span>
+			</div>
 			<div>
 				<span>Duration</span>
-				{round(selected.children.reduce((acc, o) => acc - o.duration, selected.duration))}ms
-				of&nbsp;{round(selected.duration)}ms
+				<span>
+					{round(selected.children.reduce((acc, o) => acc - o.duration, selected.duration))}ms
+				</span>
+				<span>of</span>
+				<span>{round(selected.duration)}ms</span>
 			</div>
 		</div>
 	</Panel>
@@ -93,12 +113,13 @@
 	}
 
 	.panel div {
-		margin: 0.417rem /* 5px */ 0;
 		width: calc(100% / 3);
+		display: flex;
+		gap: 0.417rem /* 5px */;
+		margin: 0.417rem /* 5px */ 0;
 	}
 
-	.panel span {
-		margin-right: 0.417rem /* 5px */;
-		font-weight: bold;
+	.panel span:first-child {
+		font-weight: 500;
 	}
 </style>

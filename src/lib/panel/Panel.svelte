@@ -1,18 +1,22 @@
 <script>
 	export let grow = 'left';
 
-	let isResizing = false;
+	let resizing = false;
 	let size = 300;
 </script>
 
 <svelte:window
-	on:mousemove={(e) =>
-		isResizing && (size = grow == 'left' ? window.innerWidth - e.x : window.innerHeight - e.y)}
-	on:mouseup={(e) => (isResizing = false)}
+	on:mouseup={() => (resizing = false)}
+	on:mousemove={(e) => {
+		if (!resizing) return;
+		size = grow == 'left' ? window.innerWidth - e.x : window.innerHeight - e.y;
+	}}
 />
 
 <div style="{grow == 'left' ? 'width' : 'height'}: {size}px">
-	<div class="{grow} resize" on:mousedown={(e) => (isResizing = true)} />
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<div class="{grow} resize" on:mousedown={() => (resizing = true)} />
+
 	<slot />
 </div>
 

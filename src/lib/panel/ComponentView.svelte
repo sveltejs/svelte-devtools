@@ -1,10 +1,10 @@
 <script>
-	import { devtools } from 'chrome';
-	import { selectedNode } from '../store.js';
 	import Panel from './Panel.svelte';
 	import Toolbar from '../toolbar/Toolbar.svelte';
-	import Button from '../toolbar/Button.svelte';
+	import Button from '../components/Button.svelte';
 	import PropertyList from './PropertyList.svelte';
+
+	import { selectedNode } from '$lib/store.js';
 </script>
 
 <Panel>
@@ -13,7 +13,7 @@
 			<div class="spacer" />
 			<Button
 				disabled={$selectedNode.id === undefined}
-				on:click={(e) => devtools.inspectedWindow.eval('inspect(window.$s)')}
+				on:click={(e) => chrome.devtools.inspectedWindow.eval('inspect(window.$s)')}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
 					<path

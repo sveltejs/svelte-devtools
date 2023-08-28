@@ -1,10 +1,10 @@
-<script>
-	export let disabled;
-	export let active;
-	export let type = 'button';
+<script lang="ts">
+	export let type: 'button' | 'reset' | 'submit' = 'button';
+	export let disabled = false;
+	export let active = false;
 </script>
 
-<button on:click {disabled} {type} class:active>
+<button {type} {disabled} class:active on:click>
 	<slot />
 </button>
 

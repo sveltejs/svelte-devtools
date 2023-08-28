@@ -1,6 +1,6 @@
 <script>
-	import { startPicker, stopPicker, selectedNode } from '../store.js';
-	import Button from './Button.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import { startPicker, stopPicker, selectedNode } from '$lib/store.js';
 
 	let active = false;
 	let unsub = () => {};
@@ -18,7 +18,9 @@
 			active = false;
 			unsub();
 
-			setTimeout(() => node.dom && node.dom.scrollIntoView({ block: 'center' }), 120);
+			setTimeout(() => {
+				node.dom && node.dom.scrollIntoView({ block: 'center' });
+			}, 120);
 		});
 		active = true;
 		startPicker();

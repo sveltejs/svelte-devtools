@@ -1,5 +1,5 @@
 <script>
-	import { visibility, hoveredNodeId, selectedNode } from '../store.js';
+	import { visibility, hoveredNodeId, selectedNode } from '$lib/store.js';
 	import Element from './Element.svelte';
 	import Block from './Block.svelte';
 	import Slot from './Slot.svelte';

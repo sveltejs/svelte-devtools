@@ -13,10 +13,6 @@
 
 	:global(.dark) div {
 		border-bottom-color: rgb(60, 60, 61);
-		/* #if process.env.TARGET === 'chrome'
-    background-color: rgb(36, 36, 36);
-    /* #else */
-		background-color: rgb(42, 42, 46);
-		/* #endif */
+		background-color: rgb(36, 36, 36);
 	}
 </style>

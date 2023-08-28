@@ -1,17 +1,17 @@
-<script>
+<script lang="ts">
 	import { tick } from 'svelte';
-	import { selectedNode, hoveredNodeId, visibility } from './store.js';
+	import { selectedNode, hoveredNodeId, visibility } from '$lib/store.js';
 
 	let root;
-	let breadcrumbList = [];
+	let breadcrumbs = [];
 	let shorttend;
 
 	async function setSelectedBreadcrumb(node) {
-		if (breadcrumbList.find((o) => o.id == node.id)) return;
+		if (breadcrumbs.find((o) => o.id == node.id)) return;
 
-		breadcrumbList = [];
+		breadcrumbs = [];
 		while (node && node.tagName) {
-			breadcrumbList.unshift(node);
+			breadcrumbs.unshift(node);
 			node = node.parent;
 		}
 
@@ -19,9 +19,9 @@
 
 		await tick();
 		while (root && root.scrollWidth > root.clientWidth) {
-			breadcrumbList.shift();
+			breadcrumbs.shift();
 			shorttend = true;
-			breadcrumbList = breadcrumbList;
+			breadcrumbs = breadcrumbs;
 			await tick();
 		}
 	}
@@ -29,7 +29,7 @@
 	$: setSelectedBreadcrumb($selectedNode);
 </script>
 
-{#if breadcrumbList.length > 1}
+{#if breadcrumbs.length > 1}
 	<ul bind:this={root}>
 		{#if shorttend}
 			<li>
@@ -37,7 +37,7 @@
 				<div />
 			</li>
 		{/if}
-		{#each breadcrumbList as node}
+		{#each breadcrumbs as node}
 			{#if $visibility[node.type]}
 				<li
 					on:click={(e) => ($selectedNode = node)}

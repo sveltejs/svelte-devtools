@@ -1,6 +1,6 @@
 <script>
-	import { rootNodes, selectedNode, searchValue } from '../store.js';
-	import Button from './Button.svelte';
+	import { rootNodes, selectedNode, searchValue } from '$lib/store.js';
+	import Button from '../components/Button.svelte';
 
 	function next() {
 		if (resultsPosition >= results.length - 1) resultsPosition = -1;
