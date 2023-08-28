@@ -4,11 +4,11 @@
 	"version": "1.3.0",
 	"description": "Browser devtools extension for debugging Svelte applications.",
 	"icons": {
-		"16": "icon-16.png",
-		"24": "icon-24.png",
-		"48": "icon-48.png",
-		"96": "icon-96.png",
-		"128": "icon-128.png"
+		"16": "icons/16.png",
+		"24": "icons/24.png",
+		"48": "icons/48.png",
+		"96": "icons/96.png",
+		"128": "icons/128.png"
 	},
 	"permissions": ["tabs", "<all_urls>"],
 	"background": {
