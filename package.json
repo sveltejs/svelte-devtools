@@ -12,7 +12,7 @@
 		"format": "prettier -w . --plugin=prettier-plugin-svelte --plugin=prettier-plugin-sort-package-json",
 		"check": "pnpm check:style && pnpm check:svelte",
 		"check:style": "prettier -c . --plugin=prettier-plugin-svelte --plugin=prettier-plugin-sort-package-json",
-		"check:svelte": "svelte-check",
+		"check:svelte": "svelte-check --tsconfig ./tsconfig.json",
 		"build:firefox": "cross-env TARGET=firefox rollup -c",
 		"build:chrome": "cross-env TARGET=chrome rollup -c",
 		"build:icon": "node ./scripts/generate-icons.mjs",
