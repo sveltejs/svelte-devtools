@@ -20,9 +20,6 @@ devDependencies:
   rollup-plugin-css-only:
     specifier: ^4.3.0
     version: 4.3.0(rollup@3.28.1)
-  rollup-plugin-jscc:
-    specifier: ^2.0.0
-    version: 2.0.0(rollup@3.28.1)
   rollup-plugin-node-resolve:
     specifier: ^5.2.0
     version: 5.2.0(rollup@3.28.1)
@@ -80,16 +77,6 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
-    dev: true
-
-  /@jsbits/escape-regex-str@1.0.3:
-    resolution: {integrity: sha512-0800vYI2fg1nuUq/T9Tqv8DMOLLNiRAltxFbKIbR7szrvW6qTuI2+zGK51hV7NAAmUr4G83Kvpj2R6Yyg07iIw==}
-    engines: {node: '>=4.2'}
-    dev: true
-
-  /@jsbits/get-package-version@1.0.3:
-    resolution: {integrity: sha512-IJy1jRL01x7p6UEpgKa1lVLstMUx8EiIR8pPoS5sBfsHEoeLkzYiNpAfxPx8zLDUJyS1yBbChJjcWdPqyH285w==}
-    engines: {node: '>=4.2'}
     dev: true
 
   /@nodelib/fs.scandir@2.1.5:
@@ -410,25 +397,8 @@ packages:
       '@types/estree': 1.0.1
     dev: true
 
-  /jscc@1.1.1:
-    resolution: {integrity: sha512-anpZkTXwZbxfxLEBMciKxXMHx2xOLK2qhynIhTnoSyC+wGOEPrAoofxnADgblbarn0kijVMt1U71cQGmRF/1Og==}
-    engines: {node: '>=6.0'}
-    dependencies:
-      '@jsbits/escape-regex-str': 1.0.3
-      '@jsbits/get-package-version': 1.0.3
-      magic-string: 0.25.9
-      perf-regexes: 1.0.1
-      skip-regex: 1.0.2
-    dev: true
-
   /locate-character@3.0.0:
     resolution: {integrity: sha512-SW13ws7BjaeJ6p7Q6CO2nchbYEc3X3J6WrmTTDto7yMPqVSZTUyY5Tjbid+Ab8gLnATtygYtiDIJGQRRn2ZOiA==}
-    dev: true
-
-  /magic-string@0.25.9:
-    resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
-    dependencies:
-      sourcemap-codec: 1.4.8
     dev: true
 
   /magic-string@0.27.0:
@@ -514,11 +484,6 @@ packages:
 
   /path-parse@1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
-    dev: true
-
-  /perf-regexes@1.0.1:
-    resolution: {integrity: sha512-L7MXxUDtqr4PUaLFCDCXBfGV/6KLIuSEccizDI7JxT+c9x1G1v04BQ4+4oag84SHaCdrBgQAIs/Cqn+flwFPng==}
-    engines: {node: '>=6.14'}
     dev: true
 
   /periscopic@3.1.0:
@@ -614,18 +579,6 @@ packages:
       rollup: 3.28.1
     dev: true
 
-  /rollup-plugin-jscc@2.0.0(rollup@3.28.1):
-    resolution: {integrity: sha512-5jG9q79K2u5uRBTKA+GA4gqt1zA7qHQRpcabZMoVs913gr75s428O7K3r58n2vADDzwIhiOKMo7rCMhOyks6dw==}
-    engines: {node: '>=10.12.0'}
-    peerDependencies:
-      rollup: '>=2'
-    dependencies:
-      '@jsbits/get-package-version': 1.0.3
-      jscc: 1.1.1
-      rollup: 3.28.1
-      rollup-pluginutils: 2.8.2
-    dev: true
-
   /rollup-plugin-node-resolve@5.2.0(rollup@3.28.1):
     resolution: {integrity: sha512-jUlyaDXts7TW2CqQ4GaO5VJ4PwwaV8VUGA7+km3n6k6xtOEacf61u0VXwN80phY/evMcaS+9eIeJ9MOyDxt5Zw==}
     deprecated: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-node-resolve.
@@ -689,11 +642,6 @@ packages:
       rimraf: 2.7.1
     dev: true
 
-  /skip-regex@1.0.2:
-    resolution: {integrity: sha512-pEjMUbwJ5Pl/6Vn6FsamXHXItJXSRftcibixDmNCWbWhic0hzHrwkMZo0IZ7fMRH9KxcWDFSkzhccB4285PutA==}
-    engines: {node: '>=4.2'}
-    dev: true
-
   /sorcery@0.11.0:
     resolution: {integrity: sha512-J69LQ22xrQB1cIFJhPfgtLuI6BpWRiWu1Y3vSsIwK/eAScqJxd/+CJlUuHQRdX2C9NGFamq+KqNywGgaThwfHw==}
     hasBin: true
@@ -707,11 +655,6 @@ packages:
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
     engines: {node: '>=0.10.0'}
-    dev: true
-
-  /sourcemap-codec@1.4.8:
-    resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
-    deprecated: Please use @jridgewell/sourcemap-codec instead
     dev: true
 
   /strip-indent@3.0.0:

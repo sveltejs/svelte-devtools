@@ -16,8 +16,8 @@ export const searchValue = writable('');
 export const profilerEnabled = writable(false);
 export const profileFrame = writable({});
 
-// #if process.env.TARGET === 'firefox'
-// Zoom workaround
+/**
+// zoom workaround for firefox
 let fontSize = 11;
 window.addEventListener('keyup', (e) => {
 	if (!e.ctrlKey) return;
@@ -36,7 +36,7 @@ window.addEventListener('keyup', (e) => {
 
 	document.documentElement.style.fontSize = fontSize + 'px';
 });
-// #endif
+*/
 
 function interactableNodes(list) {
 	const _visibility = get(visibility);

@@ -8,18 +8,11 @@ body {
 	margin: 0;
 	height: 100%;
 	color: rgb(74, 74, 79);
-	/* #if process.env.TARGET === 'firefox'
-  font-size: 11px;
-  /* #endif */
 	font-family: monospace;
 }
 
 body.dark {
-	/* #if process.env.TARGET === 'chrome'
-  background-color: rgb(36, 36, 36);
-  /* #else */
-	background-color: rgb(42, 42, 46);
-	/* #endif */
+	background-color: rgb(36, 36, 36);
 	color: rgb(177, 177, 179);
 	scrollbar-color: rgb(115, 115, 115) rgb(60, 60, 61);
 }

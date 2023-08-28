@@ -65,11 +65,7 @@
 	}
 
 	:global(.dark) .root {
-		/* #if process.env.TARGET === 'chrome'
-    background-color: rgb(36, 36, 36);
-    /* #else */
-		background-color: rgb(27, 27, 29);
-		/* #endif */
+		background-color: rgb(36, 36, 36);
 		color: rgb(177, 177, 179);
 	}
 </style>
