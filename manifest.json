@@ -1,19 +1,25 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"name": "Svelte Devtools",
-	"version": "1.3.0",
+	"version": "2.0.0",
 	"description": "Browser devtools extension for debugging Svelte applications.",
 	"icons": {
-		"16": "icon-16.png",
-		"24": "icon-24.png",
-		"48": "icon-48.png",
-		"96": "icon-96.png",
-		"128": "icon-128.png"
+		"16": "icons/16.png",
+		"24": "icons/24.png",
+		"48": "icons/48.png",
+		"96": "icons/96.png",
+		"128": "icons/128.png"
 	},
-	"permissions": ["tabs", "<all_urls>"],
 	"background": {
-		"scripts": ["background.js"]
+		"service_worker": "background.js"
 	},
 	"devtools_page": "devtools/index.html",
-	"web_accessible_resources": ["privilegedContent.js"]
+	"host_permissions": ["*://*/*"],
+	"permissions": ["tabs"],
+	"web_accessible_resources": [
+		{
+			"resources": ["privilegedContent.js"],
+			"matches": ["*://*/*"]
+		}
+	]
 }
