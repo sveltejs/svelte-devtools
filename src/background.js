@@ -1,4 +1,4 @@
-const toolsPorts = new Map();
+const ports = new Map();
 
 chrome.runtime.onConnect.addListener((port) => {
 	if (port.sender.url == chrome.runtime.getURL('/devtools/panel.html')) {
@@ -29,18 +29,17 @@ function handleToolsMessage(msg, port) {
 chrome.runtime.onMessage.addListener((msg, sender) => handlePageMessage(msg, sender.tab.id));
 
 function handlePageMessage(msg, tabId) {
-	const tools = toolsPorts.get(tabId);
+	const tools = ports.get(tabId);
 	if (tools) tools.postMessage(msg);
 }
 
 function attachScript(tabId, changed) {
-	const chromium = typeof window !== 'undefined' && window.chrome;
-	if (chromium && (!toolsPorts.has(tabId) || changed.status != 'loading')) {
-		chrome.tabs.executeScript(tabId, {
-			file: '/privilegedContent.js',
-			runAt: 'document_start',
-		});
-	}
+	const firefox = !window.chrome && !changed.url;
+	if (!ports.has(tabId) || changed.status !== 'loading' || firefox) return;
+	chrome.tabs.executeScript(tabId, {
+		file: '/privilegedContent.js',
+		runAt: 'document_start',
+	});
 }
 
 function setup(tabId, port, profilerEnabled) {
@@ -51,10 +50,10 @@ function setup(tabId, port, profilerEnabled) {
 		runAt: 'document_start',
 	});
 
-	toolsPorts.set(tabId, port);
+	ports.set(tabId, port);
 
 	port.onDisconnect.addListener(() => {
-		toolsPorts.delete(tabId);
+		ports.delete(tabId);
 		chrome.tabs.onUpdated.removeListener(attachScript);
 		// Inform content script that it background closed and it needs to clean up
 		chrome.tabs.sendMessage(tabId, {
