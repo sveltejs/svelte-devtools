@@ -1,6 +1,6 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
-	import { startPicker, stopPicker, selectedNode } from '$lib/store.js';
+	import { startPicker, stopPicker, selectedNode } from '$lib/store';
 
 	let active = false;
 	let unsub = () => {};

@@ -1,5 +1,5 @@
 <script>
-	import { visibility } from '$lib/store.js';
+	import { visibility } from '$lib/store';
 	import Button from '../components/Button.svelte';
 
 	let opened = false;

@@ -1,5 +1,5 @@
 <script>
-	import { visibility, hoveredNodeId, selectedNode } from '$lib/store.js';
+	import { visibility, hoveredNodeId, selectedNode } from '$lib/store';
 	import Element from './Element.svelte';
 	import Block from './Block.svelte';
 	import Slot from './Slot.svelte';
@@ -52,7 +52,7 @@
 			bind:collapsed={node.collapsed}
 			{...node.detail}
 			hasChildren={node.children.length != 0}
-			hover={$hoveredNodeId == node.id}
+			hover={$hoveredNodeId === node.id}
 			selected={$selectedNode.id == node.id}
 			style={`padding-left: ${depth * 12}px`}
 		>

@@ -1,5 +1,5 @@
 <script>
-	import { searchValue } from '$lib/store.js';
+	import { searchValue } from '$lib/store';
 
 	export let text;
 

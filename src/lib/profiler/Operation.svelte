@@ -4,7 +4,9 @@
 
 	export let frame: {
 		type: 'mount' | 'patch' | 'detach';
-		node: { tagName: string };
+		node: { id: string; type: string; tagName: string };
+		start: number;
+		end: number;
 	};
 </script>
 

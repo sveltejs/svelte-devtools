@@ -1,7 +1,7 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
 
-	import { profilerEnabled } from '$lib/store.js';
+	import { profilerEnabled } from '$lib/store';
 </script>
 
 <Button on:click={() => ($profilerEnabled = !$profilerEnabled)}>

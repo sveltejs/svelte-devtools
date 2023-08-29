@@ -4,7 +4,7 @@
 	import Button from '../components/Button.svelte';
 	import PropertyList from './PropertyList.svelte';
 
-	import { selectedNode } from '$lib/store.js';
+	import { selectedNode } from '$lib/store';
 </script>
 
 <Panel>

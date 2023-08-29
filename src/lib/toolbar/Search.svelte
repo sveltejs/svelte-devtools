@@ -1,5 +1,5 @@
 <script>
-	import { rootNodes, selectedNode, searchValue } from '$lib/store.js';
+	import { rootNodes, selectedNode, searchValue } from '$lib/store';
 	import Button from '../components/Button.svelte';
 
 	function next() {

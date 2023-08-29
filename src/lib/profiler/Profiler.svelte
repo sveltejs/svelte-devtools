@@ -6,7 +6,7 @@
 	import ProfileButton from '$lib/toolbar/ProfileButton.svelte';
 	import Frame from './Frame.svelte';
 
-	import { profileFrame } from '$lib/store.js';
+	import { profileFrame } from '$lib/store';
 
 	let selected: null | ComponentProps<Frame>['children'][0] = null;
 	let top: null | number = null;
