@@ -10,17 +10,17 @@
 
 <style>
 	button {
-		position: relative;
+		cursor: pointer;
 		z-index: 1;
-		margin: 0.083rem /* 1px */;
-		padding: 0.417rem /* 5px */;
-		outline: none;
+		position: relative;
+		padding: 0.5rem;
+		margin: 0.25rem;
 		border: none;
-		border-radius: 0.167rem /* 2px */;
+		border-radius: 0.2rem;
+		outline: none;
 		background-color: transparent;
 		color: rgb(12, 12, 13);
 		line-height: 0;
-		cursor: pointer;
 	}
 
 	button.active {

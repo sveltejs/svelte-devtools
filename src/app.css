@@ -1,3 +1,10 @@
+:root {
+	--background: rgb(255, 255, 255);
+	--color: rgb(74, 74, 79);
+
+	--t-duration: 240ms;
+}
+
 html {
 	height: 100%;
 	font-size: 12px;
@@ -7,13 +14,14 @@ body {
 	display: flex;
 	margin: 0;
 	height: 100%;
-	color: rgb(74, 74, 79);
+	background: var(--background);
+	color: var(--color);
 	font-family: monospace;
 }
 
 body.dark {
-	background-color: rgb(36, 36, 36);
-	color: rgb(177, 177, 179);
+	--color: rgb(177, 177, 179);
+	--background: rgb(36, 36, 36);
 	scrollbar-color: rgb(115, 115, 115) rgb(60, 60, 61);
 }
 
@@ -43,12 +51,12 @@ ul {
 
 [data-tooltip]::after {
 	position: absolute;
-	bottom: -0.167rem /* -2px */;
+	bottom: -0.2rem;
 	left: 0;
 	z-index: 1;
 	display: block;
-	padding: 0.5rem /* 6px */ 1.333rem /* 16px */;
-	border-radius: 0.417rem /* 5px */;
+	padding: 0.5rem 1;
+	border-radius: 0.5rem;
 	background-color: rgb(48, 64, 81);
 	color: white;
 	content: attr(data-tooltip);
@@ -61,14 +69,14 @@ ul {
 
 [data-tooltip]::before {
 	position: absolute;
-	bottom: -0.167rem /* -2px */;
+	bottom: -0.2rem;
 	left: 2.5rem /* 30px */;
 	display: block;
 	width: 0;
 	height: 0;
-	border-right: 0.417rem /* 5px */ solid transparent;
-	border-bottom: 0.417rem /* 5px */ solid rgb(48, 64, 81);
-	border-left: 0.417rem /* 5px */ solid transparent;
+	border-right: 0.5rem solid transparent;
+	border-bottom: 0.5rem solid rgb(48, 64, 81);
+	border-left: 0.5rem solid transparent;
 	content: '';
 	opacity: 0;
 	transition: opacity 0.2s;
