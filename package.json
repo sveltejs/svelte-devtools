@@ -14,7 +14,7 @@
 	"packageManager": "pnpm@8.7.0",
 	"devDependencies": {
 		"@rollup/plugin-node-resolve": "^15.2.1",
-		"prettier": "^3.0.2",
+		"prettier": "^3.0.3",
 		"prettier-plugin-sort-package-json": "^0.1.1",
 		"prettier-plugin-svelte": "^3.0.3",
 		"rollup": "^3.28.1",
