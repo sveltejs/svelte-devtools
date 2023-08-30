@@ -30,11 +30,11 @@ devDependencies:
     specifier: ^4.2.0
     version: 4.2.0
   svelte-check:
-    specifier: ^3.5.0
-    version: 3.5.0(svelte@4.2.0)
+    specifier: ^3.5.1
+    version: 3.5.1(svelte@4.2.0)
   svelte-listener:
     specifier: github:RedHatter/svelte-listener
-    version: github.com/RedHatter/svelte-listener/54b89f3f02697623bd2d162159400cec3fb67e82
+    version: git/github.com+RedHatter/svelte-listener/54b89f3f02697623bd2d162159400cec3fb67e82
   typescript:
     specifier: ^5.2.2
     version: 5.2.2
@@ -242,7 +242,7 @@ packages:
     dev: true
 
   /concat-map@0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
     dev: true
 
   /css-tree@2.3.1:
@@ -669,8 +669,8 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /svelte-check@3.5.0(svelte@4.2.0):
-    resolution: {integrity: sha512-KHujbn4k17xKYLmtCwv0sKKM7uiHTYcQvXnvrCcNU6a7hcszh99zFTIoiu/Sp/ewAw5aJmillJ1Cs8gKLmcX4A==}
+  /svelte-check@3.5.1(svelte@4.2.0):
+    resolution: {integrity: sha512-+Zb4iHxAhdUtcUg/WJPRjlS1RJalIsWAe9Mz6G1zyznSs7dDkT7VUBdXc3q7Iwg49O/VrZgyJRvOJkjuBfKjFA==}
     hasBin: true
     peerDependencies:
       svelte: ^3.55.0 || ^4.0.0-next.0 || ^4.0.0
@@ -779,8 +779,8 @@ packages:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
     dev: true
 
-  github.com/RedHatter/svelte-listener/54b89f3f02697623bd2d162159400cec3fb67e82:
-    resolution: {tarball: https://codeload.github.com/RedHatter/svelte-listener/tar.gz/54b89f3f02697623bd2d162159400cec3fb67e82}
+  git/github.com+RedHatter/svelte-listener/54b89f3f02697623bd2d162159400cec3fb67e82:
+    resolution: {commit: 54b89f3f02697623bd2d162159400cec3fb67e82, repo: git@github.com:RedHatter/svelte-listener.git, type: git}
     name: svelte-listener
     version: 0.0.1
     dev: true

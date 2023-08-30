@@ -21,7 +21,7 @@
 		"rollup-plugin-css-only": "^4.3.0",
 		"rollup-plugin-svelte": "^7.1.6",
 		"svelte": "^4.2.0",
-		"svelte-check": "^3.5.0",
+		"svelte-check": "^3.5.1",
 		"svelte-listener": "github:RedHatter/svelte-listener",
 		"typescript": "^5.2.2"
 	}
