@@ -6,3 +6,6 @@ node_modules
 .DS_Store
 .cache
 .env
+
+# generate files
+static/privileged-content.js
