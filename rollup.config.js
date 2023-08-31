@@ -1,11 +1,11 @@
-// -- TODO: remove file --
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 export default [
 	// TODO: generate through vite plugin
 	{
 		input: 'src/client/index.js',
 		output: {
-			file: 'dest/privilegedContent.js',
+			file: 'static/privileged-content.js',
 			name: 'SvelteDevtools',
 			format: 'iife',
 			banner: `if (!window.tag) {
@@ -42,5 +42,6 @@ export default [
   window.addEventListener('unload', () => sendMessage({ type: 'clear' }))
 }`,
 		},
+		plugins: [nodeResolve()],
 	},
 ];
