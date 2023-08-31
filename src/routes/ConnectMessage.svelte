@@ -1,12 +1,5 @@
 <script>
-	import { port } from '$lib/store';
-
-	function reload() {
-		$port.postMessage({
-			type: 'reload',
-			tabId: chrome.devtools.inspectedWindow.tabId,
-		});
-	}
+	import { reload } from '$lib/runtime';
 </script>
 
 <div>
@@ -20,7 +13,7 @@
 	<footer>
 		<p style:font-size="1.5rem">Not working? Did you...</p>
 		<ul>
-			<li>Use Svelte version 4.0.2 or above?</li>
+			<li>Use Svelte version 4.0.0 or above?</li>
 			<li>Build with dev mode enabled?</li>
 		</ul>
 	</footer>

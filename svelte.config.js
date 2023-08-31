@@ -6,7 +6,9 @@ const config = {
 	preprocess: [vitePreprocess()],
 
 	kit: {
-		adapter: adapter({}),
+		adapter: adapter({
+			output: 'index.html',
+		}),
 
 		appDir: 'ext',
 
