@@ -1,17 +1,18 @@
 const ports = new Map();
 
 chrome.runtime.onConnect.addListener((port) => {
-	if (port.sender?.url === chrome.runtime.getURL('/index.html')) {
+	if (port.sender?.id === chrome.runtime.id) {
 		port.onMessage.addListener((message, port) => {
 			// 'init' and 'reload' messages do not need to be delivered to content script
 			switch (message.type) {
 				case 'init': {
-					chrome.tabs.executeScript(message.tabId, {
-						code: message.profilerEnabled
-							? 'window.sessionStorage.SvelteDevToolsProfilerEnabled = "true"'
-							: 'delete window.sessionStorage.SvelteDevToolsProfilerEnabled',
-						runAt: 'document_start',
-					});
+					// TODO: reenable profiler
+					// chrome.tabs.executeScript(message.tabId, {
+					// 	code: message.profilerEnabled
+					// 		? 'window.sessionStorage.SvelteDevToolsProfilerEnabled = "true"'
+					// 		: 'delete window.sessionStorage.SvelteDevToolsProfilerEnabled',
+					// 	runAt: 'document_start',
+					// });
 
 					ports.set(message.tabId, port);
 
@@ -30,12 +31,13 @@ chrome.runtime.onConnect.addListener((port) => {
 
 					/** @type {Parameters<chrome.tabs.TabUpdatedEvent['addListener']>[0]} */
 					function attach(tabId, changed) {
-						const firefox = !window.chrome && !changed.url;
-						if (!ports.has(tabId) || changed.status !== 'loading' || firefox) return;
-						chrome.tabs.executeScript(tabId, {
-							file: '/privilegedContent.js',
-							runAt: 'document_start',
-						});
+						// TODO: window does not exist in service worker
+						// const firefox = !window.chrome && !changed.url;
+						if (!ports.has(tabId) || changed.status !== 'loading' /** || firefox */) return;
+						// TODO: figure out the replacement
+						chrome.scripting.registerContentScripts([
+							{ id: `${tabId}`, js: ['/privileged-content.js'], runAt: 'document_start' },
+						]);
 					}
 				}
 				case 'reload':
@@ -46,7 +48,7 @@ chrome.runtime.onConnect.addListener((port) => {
 		});
 	} else {
 		// This is not an expected connection, so we just log an error and close it
-		console.error(`Unexpected connection. Port ${port}`);
+		console.error(`Unexpected connection. Port from ${port.sender?.url}`);
 		port.disconnect();
 	}
 });
