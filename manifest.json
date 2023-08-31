@@ -19,7 +19,7 @@
 	"permissions": ["tabs"],
 	"web_accessible_resources": [
 		{
-			"resources": ["privilegedContent.js"],
+			"resources": ["privileged-content.js"],
 			"matches": ["*://*/*"]
 		}
 	]
