@@ -4,7 +4,7 @@ import {
 	startProfiler,
 	stopProfiler,
 	getSvelteVersion,
-} from 'svelte-listener';
+} from './listener';
 import { highlight, startPicker, stopPicker } from './highlight.js';
 
 window.__svelte_devtools_inject_state = function (id, key, value) {
