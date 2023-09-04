@@ -1,5 +1,5 @@
 <script>
-	import { reload } from '$lib/runtime';
+	import { site } from '$lib/runtime';
 </script>
 
 <div>
@@ -7,7 +7,7 @@
 	<p style:display="inline-flex" style:font-size="1.75rem">
 		<span>No Svelte app detected</span>
 
-		<button style:margin-left="1rem" on:click={reload}>reload</button>
+		<button style:margin-left="1rem" on:click={site.refresh}>reload</button>
 	</p>
 
 	<footer>

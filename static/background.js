@@ -1,7 +1,8 @@
 const ports = new Map();
 
 chrome.runtime.onConnect.addListener((port) => {
-	if (port.sender?.id === chrome.runtime.id) {
+	console.log(port.sender?.url, chrome.runtime.getURL('/index.html'));
+	if (port.sender?.url === chrome.runtime.getURL('/index.html')) {
 		port.onMessage.addListener((message, port) => {
 			// 'init' and 'reload' messages do not need to be delivered to content script
 			switch (message.type) {
@@ -34,13 +35,26 @@ chrome.runtime.onConnect.addListener((port) => {
 						// TODO: window does not exist in service worker
 						// const firefox = !window.chrome && !changed.url;
 						if (!ports.has(tabId) || changed.status !== 'loading' /** || firefox */) return;
+
+						// chrome.offscreen.createDocument({
+						// reasons:[]
+						// });
+
+						chrome.scripting.executeScript({
+							target: { tabId },
+							files: ['/privileged-content.js'],
+						});
+
 						// TODO: figure out the replacement
-						chrome.scripting.registerContentScripts([
-							{ id: `${tabId}`, js: ['/privileged-content.js'], runAt: 'document_start' },
-						]);
+						// chrome.scripting.registerContentScripts([
+						// 	{ id: `${tabId}`, js: ['/privileged-content.js'], runAt: 'document_start' },
+						// ]);
 					}
 				}
-				case 'reload':
+
+				case 'ext.reload':
+					return chrome.runtime.reload();
+				case 'page.refresh':
 					return chrome.tabs.reload(message.tabId, { bypassCache: true });
 				default:
 					return chrome.tabs.sendMessage(message.tabId, message);

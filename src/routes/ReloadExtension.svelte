@@ -1,4 +1,14 @@
-<button type="button" on:click={() => location.reload()}>
+<script>
+	import { ext } from '$lib/runtime';
+</script>
+
+<button
+	type="button"
+	on:click={() => {
+		ext.reload();
+		location.reload();
+	}}
+>
 	<svg
 		width="24"
 		height="24"

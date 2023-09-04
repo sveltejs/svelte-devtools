@@ -16,7 +16,7 @@
 	},
 	"devtools_page": "devtools/index.html",
 	"host_permissions": ["*://*/*"],
-	"permissions": ["tabs"],
+	"permissions": ["activeTab", "offscreen", "scripting"],
 	"web_accessible_resources": [
 		{
 			"resources": ["privileged-content.js"],
