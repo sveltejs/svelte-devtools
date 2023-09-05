@@ -5,7 +5,7 @@ export default [
 	{
 		input: 'src/client/index.js',
 		output: {
-			file: 'static/privileged-content.js',
+			file: 'static/courier.js',
 			name: 'SvelteDevtools',
 			format: 'iife',
 			// 		banner: `if (!window.tag) {

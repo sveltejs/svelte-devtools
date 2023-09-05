@@ -36,19 +36,10 @@ chrome.runtime.onConnect.addListener((port) => {
 						// const firefox = !window.chrome && !changed.url;
 						if (!ports.has(tabId) || changed.status !== 'loading' /** || firefox */) return;
 
-						// chrome.offscreen.createDocument({
-						// reasons:[]
-						// });
-
 						chrome.scripting.executeScript({
 							target: { tabId },
-							files: ['/privileged-content.js'],
+							files: ['/courier.js'],
 						});
-
-						// TODO: figure out the replacement
-						// chrome.scripting.registerContentScripts([
-						// 	{ id: `${tabId}`, js: ['/privileged-content.js'], runAt: 'document_start' },
-						// ]);
 					}
 				}
 

@@ -19,7 +19,7 @@
 	"permissions": ["activeTab", "offscreen", "scripting"],
 	"web_accessible_resources": [
 		{
-			"resources": ["privileged-content.js"],
+			"resources": ["courier.js"],
 			"matches": ["*://*/*"]
 		}
 	]
