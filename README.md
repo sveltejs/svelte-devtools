@@ -27,7 +27,7 @@ By default the [svelte template](https://github.com/sveltejs/template) will set 
 
 Below is a minimalist rollup config with `dev: true` set.
 
-```
+```js
 // rollup.config.js
 import * as fs from 'fs';
 import svelte from 'rollup-plugin-svelte';
@@ -52,7 +52,7 @@ export default {
 
 Below is the relevant snipet from a `webpack.config.js` with `dev: true` set.
 
-```
+```js
   ...
   module: {
     rules: [
@@ -81,7 +81,7 @@ Below is the relevant snipet from a `webpack.config.js` with `dev: true` set.
 
 Clone this repository and run the package script.
 
-```
+```sh
 git clone https://github.com/sveltejs/svelte-devtools.git
 cd svelte-devtools
 npm install
@@ -99,7 +99,7 @@ Unsigned addons can't be install in firefox permanently but addons can be instal
 
 Clone this repository and run the package script.
 
-```
+```sh
 git clone https://github.com/sveltejs/svelte-devtools.git
 cd svelte-devtools
 npm install
