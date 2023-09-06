@@ -1,8 +1,8 @@
 chrome.devtools.panels.create(
 	'Svelte',
 	chrome.devtools.panels.themeName === 'dark'
-		? '/devtools/svelte-logo-dark.svg'
-		: '/devtools/svelte-logo-light.svg',
+		? '/icons/svelte-logo-dark.svg'
+		: '/icons/svelte-logo-light.svg',
 	'/index.html',
 	// (panel) => {
 	// 	panel.onShown.addListener(() =>

@@ -14,7 +14,7 @@
 	"background": {
 		"service_worker": "background.js"
 	},
-	"devtools_page": "devtools/index.html",
+	"devtools_page": "register.html",
 	"host_permissions": ["*://*/*"],
 	"permissions": ["activeTab", "scripting"],
 	"web_accessible_resources": [
