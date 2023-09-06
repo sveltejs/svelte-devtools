@@ -2,16 +2,58 @@ type Modifiers = Array<
 	'capture' | 'preventDefault' | 'stopPropagation' | 'stopImmediatePropagation'
 >;
 
-type SvelteDevListener = CustomEvent<{
+type SvelteListenerDetail = {
 	version: string;
-	node: Node;
+	node: Node & {
+		__listeners?: Exclude<SvelteDevListener, 'node'>[];
+	};
 	event: string;
 	handler: EventListenerOrEventListenerObject;
 	modifiers: Modifiers;
-}>;
+};
 
 declare global {
 	interface DocumentEventMap {
+		SvelteRegisterComponent: CustomEvent<{
+			version: string;
+			component: any;
+			tagName: string;
+			options: any;
+			id: string;
+		}>;
+
+		SvelteRegisterBlock: CustomEvent<{
+			version: string;
+			id: string;
+			source: string;
+			type:
+				| 'anchor'
+				| 'block'
+				| 'catch'
+				| 'component'
+				| 'each'
+				| 'else'
+				| 'if'
+				| 'key'
+				| 'pending'
+				| 'slot'
+				| 'text'
+				| 'then';
+
+			detail?: any;
+			tagName?: string;
+
+			block: {
+				c(): void;
+				d(detaching: boolean): void;
+				h(): void;
+				l(nodes: any[]): void;
+				m(target: Node, anchor: Node): void;
+				p(changed: boolean, ctx: any): void;
+			};
+			ctx: Array<any>; // TODO: do we need this typed?
+		}>;
+
 		SvelteDOMInsert: CustomEvent<{
 			version: string;
 			target: Node;
@@ -22,8 +64,8 @@ declare global {
 			node: Node;
 		}>;
 
-		SvelteDOMAddEventListener: SvelteDevListener;
-		SvelteDOMRemoveEventListener: SvelteDevListener;
+		SvelteDOMAddEventListener: CustomEvent<SvelteListenerDetail>;
+		SvelteDOMRemoveEventListener: CustomEvent<SvelteListenerDetail>;
 
 		SvelteDOMSetAttribute: CustomEvent<{
 			version: string;
