@@ -4,10 +4,10 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 export default [
 	{
 		input: 'src/client/index.js',
-		output: {
-			file: 'build/courier.js',
-			format: 'iife',
-		},
+		output: [
+			{ file: 'static/courier.js', format: 'iife' },
+			{ file: 'build/courier.js', format: 'iife' },
+		],
 		plugins: [nodeResolve()],
 	},
 ];
