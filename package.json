@@ -8,7 +8,7 @@
 	"scripts": {
 		"dev:app": "svelte-kit sync && vite build --watch",
 		"dev:scripts": "rollup -cw",
-		"build": "rollup -c && svelte-kit sync && vite build",
+		"build": "svelte-kit sync && vite build && rollup -c",
 		"format": "prettier -w . --plugin=prettier-plugin-svelte --plugin=prettier-plugin-sort-package-json",
 		"check": "pnpm check:style && pnpm check:svelte",
 		"check:style": "prettier -c . --plugin=prettier-plugin-svelte --plugin=prettier-plugin-sort-package-json",

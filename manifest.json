@@ -16,7 +16,7 @@
 	},
 	"devtools_page": "devtools/index.html",
 	"host_permissions": ["*://*/*"],
-	"permissions": ["activeTab", "offscreen", "scripting"],
+	"permissions": ["activeTab", "scripting"],
 	"web_accessible_resources": [
 		{
 			"resources": ["courier.js"],

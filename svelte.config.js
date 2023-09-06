@@ -25,6 +25,7 @@ const config = {
 	},
 
 	onwarn(warning, handler) {
+		if (warning.message.includes('A11y')) return;
 		!warning.message.includes('chrome') && handler(warning);
 	},
 };

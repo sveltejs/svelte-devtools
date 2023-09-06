@@ -38,7 +38,44 @@ chrome.runtime.onConnect.addListener((port) => {
 
 						chrome.scripting.executeScript({
 							target: { tabId },
-							files: ['/courier.js'],
+							// attach script manually instead of declaring through `files`
+							// because `detail` in the dispatched custom events is `null`
+							func: () => {
+								const script = document.createElement('script');
+								script.src = chrome.runtime.getURL('/courier.js');
+								document.body.appendChild(script);
+
+								// if (window.sessionStorage.SvelteDevToolsProfilerEnabled === 'true')
+								// 	window.tag.text = window.tag.text.replace(
+								// 		'let profilerEnabled = false;',
+								// 		'$&\\nstartProfiler();',
+								// 	);
+
+								// chrome.runtime.onMessage.addListener((message, sender) => {
+								// 	const fromBackground = sender.id === chrome.runtime.id;
+								// 	if (!fromBackground) {
+								// 		console.error('Message from unexpected sender', sender, message);
+								// 		return;
+								// 	}
+								// 	switch (message.type) {
+								// 		case 'startProfiler':
+								// 			window.sessionStorage.SvelteDevToolsProfilerEnabled = 'true';
+								// 			break;
+								// 		case 'stopProfiler':
+								// 		case 'clear':
+								// 			delete window.sessionStorage.SvelteDevToolsProfilerEnabled;
+								// 			break;
+								// 	}
+								// 	window.postMessage(message);
+								// });
+								// window.addEventListener(
+								// 	'message',
+								// 	(e) => e.source === window && chrome.runtime.sendMessage(e.data),
+								// );
+								// window.addEventListener('unload', () =>
+								// 	chrome.runtime.sendMessage({ type: 'clear' }),
+								// );
+							},
 						});
 					}
 				}
