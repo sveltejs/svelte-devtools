@@ -7,7 +7,7 @@ const config = {
 
 	kit: {
 		adapter: adapter({
-			output: 'index.html',
+			output: 'panel.html',
 		}),
 
 		appDir: 'ext',
