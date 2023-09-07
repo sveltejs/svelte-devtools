@@ -1,53 +1,47 @@
-import {
-	getNode,
-	addNodeListener,
-	startProfiler,
-	stopProfiler,
-	getSvelteVersion,
-} from './listener';
+import { addNodeListener } from './listener.js';
 import { highlight, startPicker, stopPicker } from './highlight.js';
+import { getNode } from './svelte.js';
 
-window.__svelte_devtools_inject_state = function (id, key, value) {
-	let component = getNode(id).detail;
-	component.$inject_state({ [key]: value });
-};
+// window.__svelte_devtools_inject_state = function (id, key, value) {
+// 	let component = getNode(id).detail;
+// 	component.$inject_state({ [key]: value });
+// };
 
-window.__svelte_devtools_select_element = function (element) {
-	let node = getNode(element);
-	if (node) window.postMessage({ type: 'inspect', node: serializeNode(node) });
-};
+// window.__svelte_devtools_select_element = function (element) {
+// 	let node = getNode(element);
+// 	if (node) window.postMessage({ type: 'inspect', node: serializeNode(node) });
+// };
 
-window.addEventListener('message', (e) => handleMessage(e.data), false);
+window.addEventListener('message', ({ source, data }) => {
+	console.log({ message: data });
 
-function handleMessage(msg) {
-	const node = getNode(msg.nodeId);
+	// only accept messages from our application or script
+	if (source !== window || data?.source !== 'svelte-devtools') return;
 
-	switch (msg.type) {
-		case 'setSelected':
+	const node = getNode(data.nodeId);
+
+	switch (data.type) {
+		case 'setSelected': {
 			if (node) window.$s = node.detail;
 			break;
-
-		case 'setHover':
-			highlight(node);
-			break;
+		}
+		case 'setHover': {
+			return highlight(node);
+		}
 
 		case 'startPicker':
-			startPicker();
-			break;
+			return startPicker();
 
 		case 'stopPicker':
-			stopPicker();
-			break;
+			return stopPicker();
 
-		case 'startProfiler':
-			startProfiler();
-			break;
+		// case 'startProfiler':
+		// 	return startProfiler();
 
-		case 'stopProfiler':
-			stopProfiler();
-			break;
+		// case 'stopProfiler':
+		// 	return stopProfiler();
 	}
-}
+});
 
 function clone(value, seen = new Map()) {
 	switch (typeof value) {
@@ -55,7 +49,7 @@ function clone(value, seen = new Map()) {
 			return { __isFunction: true, source: value.toString(), name: value.name };
 		case 'symbol':
 			return { __isSymbol: true, name: value.toString() };
-		case 'object':
+		case 'object': {
 			if (value === window || value === null) return null;
 			if (Array.isArray(value)) return value.map((o) => clone(o, seen));
 			if (seen.has(value)) return {};
@@ -68,127 +62,126 @@ function clone(value, seen = new Map()) {
 			}
 
 			return o;
+		}
 		default:
 			return value;
 	}
 }
 
-function gte(major, minor, patch) {
-	const version = (getSvelteVersion() || '0.0.0').split('.').map((n) => parseInt(n));
-	return (
-		version[0] > major ||
-		(version[0] == major && (version[1] > minor || (version[1] == minor && version[2] >= patch)))
-	);
-}
-
-let _shouldUseCapture = null;
-function shouldUseCapture() {
-	return _shouldUseCapture == null ? (_shouldUseCapture = gte(3, 19, 2)) : _shouldUseCapture;
-}
-
-function serializeNode(node) {
-	const serialized = {
-		id: node.id,
-		type: node.type,
-		tagName: node.tagName,
-	};
+function serialize(node) {
 	switch (node.type) {
 		case 'component': {
 			if (!node.detail.$$) {
-				serialized.detail = {};
-				break;
+				return {
+					id: node.id,
+					type: node.type,
+					tagName: node.tagName,
+					detail: {},
+				};
 			}
 
-			const internal = node.detail.$$;
-			const props = Array.isArray(internal.props)
-				? internal.props // Svelte < 3.13.0 stored props names as an array
-				: Object.keys(internal.props);
-			let ctx = clone(shouldUseCapture() ? node.detail.$capture_state() : internal.ctx);
+			const { $$: internal } = node.detail;
+			const props = Object.keys(internal.props);
+			let ctx = clone(node.detail.$capture_state());
 			if (ctx === undefined) ctx = {};
 
-			serialized.detail = {
-				attributes: props.flatMap((key) => {
-					const value = ctx[key];
-					delete ctx[key];
-					return value === undefined ? [] : { key, value, isBound: key in internal.bound };
-				}),
-				listeners: Object.entries(internal.callbacks).flatMap(([event, value]) =>
-					value.map((o) => ({ event, handler: o.toString() })),
-				),
-				ctx: Object.entries(ctx).map(([key, value]) => ({ key, value })),
+			return {
+				id: node.id,
+				type: node.type,
+				tagName: node.tagName,
+				detail: {
+					attributes: props.flatMap((key) => {
+						const value = ctx[key];
+						delete ctx[key];
+						return value === undefined ? [] : { key, value, isBound: key in internal.bound };
+					}),
+					listeners: Object.entries(internal.callbacks).flatMap(([event, value]) =>
+						value.map((o) => ({ event, handler: o.toString() })),
+					),
+					ctx: Object.entries(ctx).map(([key, value]) => ({ key, value })),
+				},
 			};
-			break;
 		}
 
 		case 'element': {
-			const element = node.detail;
-			serialized.detail = {
-				attributes: Array.from(element.attributes).map((attr) => ({
-					key: attr.name,
-					value: attr.value,
-				})),
-				listeners: element.__listeners
-					? element.__listeners.map((o) => ({
-							...o,
-							handler: o.handler.toString(),
-					  }))
-					: [],
-			};
+			const { attributes, __listeners = [] } = node.detail;
 
-			break;
+			return {
+				id: node.id,
+				type: node.type,
+				tagName: node.tagName,
+				detail: {
+					attributes: Array.from(attributes).map((attr) => ({
+						key: attr.name,
+						value: attr.value,
+					})),
+					listeners: __listeners.map((o) => ({ ...o, handler: o.handler.toString() })),
+				},
+			};
 		}
 
 		case 'text': {
-			serialized.detail = {
-				nodeValue: node.detail.nodeValue,
+			return {
+				id: node.id,
+				type: node.type,
+				tagName: node.tagName,
+				detail: {
+					nodeValue: node.detail.nodeValue,
+				},
 			};
-			break;
 		}
 
 		case 'iteration':
 		case 'block': {
 			const { ctx, source } = node.detail;
-			serialized.detail = {
-				ctx: Object.entries(clone(ctx)).map(([key, value]) => ({
-					key,
-					value,
-				})),
-				source: source.substring(source.indexOf('{'), source.indexOf('}') + 1),
+			const cloned = Object.entries(clone(ctx));
+			return {
+				id: node.id,
+				type: node.type,
+				tagName: node.tagName,
+				detail: {
+					ctx: cloned.map(([key, value]) => ({ key, value })),
+					source: source.substring(source.indexOf('{'), source.indexOf('}') + 1),
+				},
 			};
 		}
 	}
-
-	return serialized;
 }
 
+const source = 'svelte-devtools';
 addNodeListener({
 	add(node, anchor) {
+		console.log('adding', { node, anchor });
 		window.postMessage({
-			target: node.parent ? node.parent.id : null,
-			anchor: anchor ? anchor.id : null,
-			type: 'addNode',
-			node: serializeNode(node),
+			source,
+			type: 'courier/node:add',
+			node: serialize(node),
+			target: node.parent?.id ?? null,
+			anchor: anchor?.id ?? null,
 		});
 	},
 
 	remove(node) {
 		window.postMessage({
-			type: 'removeNode',
-			node: serializeNode(node),
+			source,
+			type: 'courier/node:remove',
+			node: serialize(node),
 		});
 	},
 
 	update(node) {
 		window.postMessage({
-			type: 'updateNode',
-			node: serializeNode(node),
+			source,
+			type: 'courier/node:update',
+			node: serialize(node),
 		});
 	},
 
-	profile(frame) {
-		window.postMessage({
-			type: 'updateProfile',
-			frame,
-		});
+	profile(/** frame */) {
+		console.log('profiling temporarily disabled');
+		// window.postMessage({
+		// 	type: 'courier/profile:update',
+		// 	frame,
+		// });
 	},
 });

@@ -68,7 +68,7 @@ function getOffset(element) {
 }
 
 function getBoundingRect(node) {
-	if (node.type == 'element') return getOffset(node.detail);
+	if (node.type === 'element') return getOffset(node.detail);
 
 	const union = {
 		top: Infinity,
@@ -127,11 +127,6 @@ function handleMousemove(e) {
 	highlight({ type: 'element', detail: target });
 }
 
-function handleClick() {
-	stopPicker();
-	window.__svelte_devtools_select_element(target);
-}
-
 export function stopPicker() {
 	document.removeEventListener('mousemove', handleMousemove, true);
 	highlight(null);
@@ -139,8 +134,12 @@ export function stopPicker() {
 
 export function startPicker() {
 	document.addEventListener('mousemove', handleMousemove, true);
-	document.addEventListener('click', handleClick, {
-		capture: true,
-		once: true,
-	});
+	document.addEventListener(
+		'click',
+		() => {
+			stopPicker();
+			window.__svelte_devtools_select_element(target);
+		},
+		{ capture: true, once: true },
+	);
 }
