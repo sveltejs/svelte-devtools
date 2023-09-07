@@ -20,6 +20,7 @@
 		"@sveltejs/vite-plugin-svelte": "^2.4.5",
 		"@types/chrome": "^0.0.244",
 		"@types/node": "^20.5.9",
+		"mauss": "^0.7.2",
 		"prettier": "^3.0.2",
 		"prettier-plugin-sort-package-json": "^0.1.1",
 		"prettier-plugin-svelte": "^3.0.3",

@@ -1,23 +1,26 @@
-export const port = chrome.runtime.connect();
+export const background = chrome.runtime.connect({
+	name: 'svelte-devtools:panel',
+});
 
+const source = 'svelte-devtools';
 const tabId = chrome.devtools.inspectedWindow.tabId;
 
-port.postMessage({ type: 'init', tabId });
+background.postMessage({ source, type: 'init', tabId });
 
 export const ext = {
 	reload() {
-		port.postMessage({ type: 'ext.reload', tabId });
+		background.postMessage({ source, type: 'ext.reload', tabId });
 	},
 };
 
 export const site = {
 	refresh() {
-		port.postMessage({ type: 'page.refresh', tabId });
+		background.postMessage({ source, type: 'page.refresh', tabId });
 	},
 	startPicker() {
-		port.postMessage({ type: 'startPicker', tabId });
+		background.postMessage({ source, type: 'startPicker', tabId });
 	},
 	stopPicker() {
-		port.postMessage({ type: 'stopPicker', tabId });
+		background.postMessage({ source, type: 'stopPicker', tabId });
 	},
 };

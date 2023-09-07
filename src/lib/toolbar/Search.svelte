@@ -1,19 +1,19 @@
-<script>
+<script lang="ts">
 	import { rootNodes, selectedNode, searchValue } from '$lib/store';
 	import Button from '../components/Button.svelte';
 
 	function next() {
-		if (resultsPosition >= results.length - 1) resultsPosition = -1;
-		selectedNode.set(results[++resultsPosition]);
+		if (position >= results.length - 1) position = -1;
+		selectedNode.set(results[++position]);
 	}
 
 	function prev() {
-		if (resultsPosition <= 0) resultsPosition = results.length;
-		selectedNode.set(results[--resultsPosition]);
+		if (position <= 0) position = results.length;
+		selectedNode.set(results[--position]);
 	}
 
-	function search(nodeList = $rootNodes) {
-		for (const node of nodeList) {
+	function search(list: any[]) {
+		for (const node of list) {
 			if (
 				node.tagName.includes($searchValue) ||
 				(node.detail && JSON.stringify(node.detail).includes($searchValue))
@@ -23,13 +23,13 @@
 		}
 	}
 
-	let results;
-	let resultsPosition;
+	let results: any[] = [];
+	let position = -1;
 	$: {
 		$searchValue;
 		results = [];
-		resultsPosition = -1;
-		if ($searchValue.length > 1) search();
+		position = -1;
+		if ($searchValue.length > 1) search($rootNodes);
 	}
 </script>
 
@@ -47,9 +47,11 @@
 		/>
 	</svg>
 	<input placeholder="Search" bind:value={$searchValue} />
-	{#if resultsPosition > -1}
-		{resultsPosition + 1}&nbsp;of&nbsp;{results.length}&nbsp;
+
+	{#if position > -1}
+		<span style:font-size="0.625rem">{position + 1} of {results.length}</span>
 	{/if}
+
 	<Button type="submit" disabled={!results.length}>
 		<div class="next" />
 	</Button>
@@ -61,13 +63,13 @@
 <style>
 	form {
 		display: flex;
-		align-items: center;
+		gap: 0.5rem;
 		flex-grow: 1;
+		align-items: center;
 	}
 
 	svg {
-		margin: 0.333rem /* 4px */ 0.333rem /* 4px */ 0.333rem /* 4px */ 0.5rem /* 6px */;
-		width: 1rem /* 12px */;
+		width: 1rem;
 	}
 
 	input {
@@ -80,9 +82,9 @@
 	}
 
 	.separator {
-		margin: 0 0.417rem /* 5px */;
-		width: 0.083rem /* 1px */;
-		height: calc(100% - 0.833rem /* 10px */);
+		margin: 0 0.5rem;
+		width: 0.1rem;
+		height: calc(100% - 0.1rem);
 		background-color: rgb(224, 224, 226);
 	}
 
@@ -94,20 +96,16 @@
 	.prev {
 		position: relative;
 		display: block;
-		margin: 0.417rem /* 5px */;
-		width: 0.417rem /* 5px */;
-		height: 0.417rem /* 5px */;
+		width: 0.5rem;
+		height: 0.5rem;
 		border-style: solid;
-		transform: rotate(45deg);
 	}
-
 	.next {
-		bottom: 0.167rem /* 2px */;
-		border-width: 0 0.083rem /* 1px */ 0.083rem /* 1px */ 0;
+		border-width: 0 0.1rem 0.1rem 0;
+		transform: translate3d(0, -25%, 0) rotate(45deg);
 	}
-
 	.prev {
-		top: 0.167rem /* 2px */;
-		border-width: 0.083rem /* 1px */ 0 0 0.083rem /* 1px */;
+		border-width: 0.1rem 0 0 0.1rem;
+		transform: translate3d(0, 25%, 0) rotate(45deg);
 	}
 </style>

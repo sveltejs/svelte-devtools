@@ -1,18 +1,27 @@
-<script>
+<script lang="ts">
 	import SearchTerm from './SearchTerm.svelte';
 
-	export let attributes;
-	export let listeners;
+	export let attributes: Array<{
+		key: string;
+		value: string;
+		bounded?: boolean;
+		flash?: boolean;
+	}>;
+	export let listeners: Array<{
+		event: any;
+		handler: any;
+		modifiers: any;
+	}>;
 </script>
 
-{#each attributes as { key, value, isBound, flash } (key)}
-	&nbsp;
-	<span class:flash>
+{#each attributes as { key, value, bounded, flash } (key)}
+	<span>&nbsp;</span>
+	<span class:flash style:display="flex">
 		<span class="attr-name">
-			{#if isBound}bind:{/if}
+			{#if bounded}bind:{/if}
 			<SearchTerm text={key} />
 		</span>
-		=
+		<span>=</span>
 		<span class="attr-value">
 			<SearchTerm text={value} />
 		</span>
@@ -20,7 +29,7 @@
 {/each}
 
 {#each listeners as { event, handler, modifiers }}
-	&nbsp;
+	<span>&nbsp;</span>
 	<span class="attr-name" data-tooltip={typeof handler == 'function' ? handler() : handler}>
 		on:
 		<SearchTerm text={event} />

@@ -9,8 +9,8 @@
 
 <style>
 	div {
-		height: 1.333rem /* 16px */;
-		line-height: 1.333rem /* 16px */;
+		/* height: 1.333rem; */
+		line-height: 1.5;
 	}
 
 	div {

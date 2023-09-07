@@ -10,25 +10,25 @@
 
 <style>
 	button {
-		cursor: pointer;
 		z-index: 1;
+		cursor: pointer;
 		position: relative;
-		padding: 0.5rem;
-		margin: 0.25rem;
+
+		padding: 0.375rem;
+		margin: 0.125rem;
 		border: none;
 		border-radius: 0.2rem;
 		outline: none;
+
 		background-color: transparent;
 		color: rgb(12, 12, 13);
 		line-height: 0;
 	}
-
 	button.active {
 		color: rgb(0, 96, 223);
 	}
-
 	button:hover {
-		background-color: rgb(237, 237, 240);
+		background: rgb(237, 237, 240);
 	}
 
 	button:active:hover {
@@ -70,9 +70,8 @@
 	}
 
 	button :global(svg) {
-		width: 1.333rem;
-		height: 1.333rem;
-		vertical-align: middle;
+		width: 1.25rem;
+		height: 1.25rem;
 		fill: currentColor;
 	}
 </style>

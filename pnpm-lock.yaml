@@ -17,6 +17,9 @@ devDependencies:
   '@types/node':
     specifier: ^20.5.9
     version: 20.5.9
+  mauss:
+    specifier: ^0.7.2
+    version: 0.7.2
   prettier:
     specifier: ^3.0.2
     version: 3.0.2
@@ -734,6 +737,10 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
+    dev: true
+
+  /mauss@0.7.2:
+    resolution: {integrity: sha512-2UJkOyBtytLsDQEejoNw6sFb/8UcCvCyWdx51C795ycMP8hrjIIgzOaLPgETeuUQ4YSgBeeqO285dW8lLnmLYw==}
     dev: true
 
   /mdn-data@2.0.30:

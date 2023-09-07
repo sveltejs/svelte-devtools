@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ComponentProps } from 'svelte';
 	import Button from '$lib/components/Button.svelte';
-	import Panel from '$lib/panel/Panel.svelte';
+	import Resizable from '$lib/components/Resizable.svelte';
 	import Toolbar from '$lib/toolbar/Toolbar.svelte';
 	import ProfileButton from '$lib/toolbar/ProfileButton.svelte';
 	import Frame from './Frame.svelte';
@@ -59,7 +59,7 @@
 	{/if}
 </div>
 {#if selected}
-	<Panel grow="up">
+	<Resizable axis="y">
 		<div class="panel">
 			<div>
 				<span>Tag name</span>
@@ -91,7 +91,7 @@
 				<span>{round(selected.duration)}ms</span>
 			</div>
 		</div>
-	</Panel>
+	</Resizable>
 {/if}
 
 <style>

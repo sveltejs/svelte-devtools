@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { visibility, hoveredNodeId, selectedNode } from '$lib/store';
 	import Element from './Element.svelte';
 	import Block from './Block.svelte';
@@ -7,7 +7,7 @@
 	import Text from './Text.svelte';
 	import Anchor from './Anchor.svelte';
 
-	export let node;
+	export let node: any;
 	export let depth = 1;
 
 	let _timeout = null;
@@ -20,44 +20,45 @@
 		}, 100);
 	};
 
-	$: nodeType = {
-		element: Element,
-		component: Element,
-		block: Block,
-		slot: Slot,
-		iteration: Iteration,
-		text: Text,
-		anchor: Anchor,
-	}[node.type];
-
 	let lastLength = node.children.length;
 	let flash = false;
 	$: {
-		flash = flash || node.children.length != lastLength;
+		flash = flash || node.children.length !== lastLength;
 		lastLength = node.children.length;
 	}
 </script>
 
 {#if $visibility[node.type]}
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-mouse-events-have-key-events -->
+	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 	<li
-		bind:this={node.dom}
 		class:flash
-		on:animationend={(e) => (flash = false)}
-		on:mouseover|stopPropagation={(e) => ($hoveredNodeId = node.id)}
-		on:click|stopPropagation={(e) => ($selectedNode = node)}
+		bind:this={node.dom}
+		on:animationend={() => (flash = false)}
+		on:mouseover|stopPropagation={() => ($hoveredNodeId = node.id)}
+		on:click|stopPropagation={() => ($selectedNode = node)}
 	>
 		<svelte:component
-			this={nodeType}
+			this={{
+				component: Element,
+				element: Element,
+				block: Block,
+				slot: Slot,
+				iteration: Iteration,
+				text: Text,
+				anchor: Anchor,
+			}[node.type]}
 			tagName={node.tagName}
 			bind:collapsed={node.collapsed}
 			{...node.detail}
-			hasChildren={node.children.length != 0}
+			hasChildren={node.children.length}
 			hover={$hoveredNodeId === node.id}
 			selected={$selectedNode.id == node.id}
 			style={`padding-left: ${depth * 12}px`}
 		>
-			{#if $selectedNode.id == node.id}
-				<span style={`left: ${depth * 12 + 6}px`} />
+			{#if $selectedNode.id === node.id}
+				<span style:left="{depth * 12 + 6}px" />
 			{/if}
 			<ul>
 				{#each node.children as child (child.id)}
@@ -75,6 +76,7 @@
 <style>
 	li {
 		position: relative;
+		font-size: 0.75rem;
 	}
 
 	span {

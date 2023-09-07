@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Collapse from './Collapse.svelte';
 	import SearchTerm from './SearchTerm.svelte';
 	import ElementAttributes from './ElementAttributes.svelte';
@@ -50,9 +50,10 @@
 </script>
 
 {#if hasChildren}
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div class:hover class:selected {style} on:dblclick={(e) => (collapsed = !collapsed)}>
 		<Collapse {selected} bind:collapsed />
-		&lt;
+		<span>&lt;</span>
 		<span class="tag-name">
 			<SearchTerm text={tagName} />
 		</span>
@@ -78,18 +79,20 @@
 	{/if}
 {:else}
 	<div class:hover class:selected {style}>
-		&lt;
+		<span>&lt;</span>
 		<span class="tag-name">
 			<SearchTerm text={tagName} />
 		</span>
 		<ElementAttributes attributes={_attributes} {listeners} />
-		&nbsp;/&gt;
+		<span>&nbsp;/&gt;</span>
 	</div>
 {/if}
 
 <style>
 	div {
-		line-height: 1.333rem /* 16px */;
+		display: flex;
+		flex-wrap: wrap;
+		line-height: 1.5;
 	}
 
 	.tag-name {

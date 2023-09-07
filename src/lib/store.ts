@@ -1,5 +1,5 @@
 import { writable, get } from 'svelte/store';
-import { port } from './runtime';
+import { background } from './runtime';
 
 export const visibility = writable({
 	component: true,
@@ -10,101 +10,83 @@ export const visibility = writable({
 	text: true,
 	anchor: false,
 });
-export const selectedNode = writable({});
+export const selectedNode = writable({
+	id: '',
+	type: '',
+	detail: {} as any,
+});
 export const hoveredNodeId = writable(-1);
 export const rootNodes = writable([]);
 export const searchValue = writable('');
 export const profilerEnabled = writable(false);
 export const profileFrame = writable({});
 
-/**
-// zoom workaround for firefox
-let fontSize = 11;
-window.addEventListener('keyup', (e) => {
-	if (!e.ctrlKey) return;
+// function interactableNodes(list = []) {
+// 	const _visibility = get(visibility);
+// 	return list.filter((o) => _visibility[o.type] && o.type !== 'text' && o.type !== 'anchor');
+// }
 
-	switch (e.key) {
-		case '=':
-			fontSize = Math.min(fontSize + 1.1, 22);
-			break;
-		case '-':
-			fontSize = Math.max(fontSize - 1.1, 5.5);
-			break;
-		case '0':
-			fontSize = 11;
-			break;
-	}
+// window.addEventListener('keydown', (e) => {
+// 	if (e.target !== document.body) return;
 
-	document.documentElement.style.fontSize = fontSize + 'px';
-});
-*/
+// 	selectedNode.update((node) => {
+// 		if (node.invalidate === undefined) return node;
+// 		switch (e.key) {
+// 			case 'Enter': {
+// 				node.collapsed = !node.collapsed;
+// 				node.invalidate();
+// 				return node;
+// 			}
+// 			case 'ArrowRight': {
+// 				node.collapsed = false;
+// 				node.invalidate();
+// 				return node;
+// 			}
+// 			case 'ArrowDown': {
+// 				const children = interactableNodes(node.children);
 
-function interactableNodes(list) {
-	const _visibility = get(visibility);
-	return list.filter((o) => _visibility[o.type] && o.type !== 'text' && o.type !== 'anchor');
-}
+// 				if (node.collapsed || children.length === 0) {
+// 					var next = node;
+// 					var current = node;
+// 					do {
+// 						const siblings = interactableNodes(
+// 							current.parent === undefined ? get(rootNodes) : current.parent.children,
+// 						);
+// 						const index = siblings.findIndex((o) => o.id === current.id);
+// 						next = siblings[index + 1];
 
-window.addEventListener('keydown', (e) => {
-	if (e.target !== document.body) return;
+// 						current = current.parent;
+// 					} while (next === undefined && current !== undefined);
 
-	selectedNode.update((node) => {
-		if (node.invalidate === undefined) return node;
-		switch (e.key) {
-			case 'Enter':
-				node.collapsed = !node.collapsed;
-				node.invalidate();
-				return node;
+// 					return next ?? node;
+// 				} else {
+// 					return children[0];
+// 				}
+// 			}
 
-			case 'ArrowRight':
-				node.collapsed = false;
-				node.invalidate();
-				return node;
+// 			case 'ArrowLeft': {
+// 				node.collapsed = true;
+// 				node.invalidate();
+// 				return node;
+// 			}
+// 			case 'ArrowUp': {
+// 				const siblings = interactableNodes(
+// 					node.parent === undefined ? get(rootNodes) : node.parent.children,
+// 				);
+// 				const index = siblings.findIndex((o) => o.id === node.id);
+// 				return index > 0 ? siblings[index - 1] : node.parent ?? node;
+// 			}
 
-			case 'ArrowDown': {
-				const children = interactableNodes(node.children);
-
-				if (node.collapsed || children.length === 0) {
-					var next = node;
-					var current = node;
-					do {
-						const siblings = interactableNodes(
-							current.parent === undefined ? get(rootNodes) : current.parent.children,
-						);
-						const index = siblings.findIndex((o) => o.id === current.id);
-						next = siblings[index + 1];
-
-						current = current.parent;
-					} while (next === undefined && current !== undefined);
-
-					return next ?? node;
-				} else {
-					return children[0];
-				}
-			}
-
-			case 'ArrowLeft':
-				node.collapsed = true;
-				node.invalidate();
-				return node;
-
-			case 'ArrowUp': {
-				const siblings = interactableNodes(
-					node.parent === undefined ? get(rootNodes) : node.parent.children,
-				);
-				const index = siblings.findIndex((o) => o.id === node.id);
-				return index > 0 ? siblings[index - 1] : node.parent ?? node;
-			}
-
-			default:
-				return node;
-		}
-	});
-});
+// 			default:
+// 				return node;
+// 		}
+// 	});
+// });
 
 const nodeMap = new Map();
 
 selectedNode.subscribe((node) => {
-	port.postMessage({
+	background.postMessage({
 		type: 'setSelected',
 		tabId: chrome.devtools.inspectedWindow.tabId,
 		nodeId: node.id,
@@ -123,46 +105,32 @@ selectedNode.subscribe((node) => {
 });
 
 hoveredNodeId.subscribe((nodeId) =>
-	port.postMessage({
+	background.postMessage({
 		type: 'setHover',
 		tabId: chrome.devtools.inspectedWindow.tabId,
 		nodeId,
 	}),
 );
 
-profilerEnabled.subscribe((o) =>
-	port.postMessage({
-		type: o ? 'startProfiler' : 'stopProfiler',
-		tabId: chrome.devtools.inspectedWindow.tabId,
-	}),
-);
-
-function noop() {}
+// profilerEnabled.subscribe((o) =>
+// 	port.postMessage({
+// 		type: o ? 'startProfiler' : 'stopProfiler',
+// 		tabId: chrome.devtools.inspectedWindow.tabId,
+// 	}),
+// );
 
 function insertNode(node, target, anchorId) {
 	node.parent = target;
 
-	let index = -1;
-	if (anchorId) index = target.children.findIndex((o) => o.id == anchorId);
+	const index = anchorId ? target.children.findIndex((o) => o.id == anchorId) : -1;
 
-	if (index != -1) {
+	if (index !== -1) {
 		target.children.splice(index, 0, node);
 	} else {
 		target.children.push(node);
 	}
 
 	target.invalidate();
-}
-
-function resolveFrame(frame) {
-	frame.children.forEach(resolveFrame);
-
-	if (!frame.node) return;
-
-	frame.node = nodeMap.get(frame.node) || {
-		tagName: 'Unknown',
-		type: 'Unknown',
-	};
 }
 
 function resolveEventBubble(node) {
@@ -189,28 +157,29 @@ function resolveEventBubble(node) {
 	}
 }
 
-port.onMessage.addListener((msg) => {
-	switch (msg.type) {
-		case 'clear': {
+background.onMessage.addListener(({ type, node, target, anchor /**, frame */ }) => {
+	console.log({ type, node, target, anchor });
+	switch (type) {
+		case 'ext/clear': {
 			selectedNode.set({});
-			hoveredNodeId.set(null);
+			hoveredNodeId.set(-1);
 			rootNodes.set([]);
 
 			break;
 		}
 
-		case 'addNode': {
-			const node = msg.node;
+		case 'courier/node:add': {
+			console.log('adding nodes from courier');
 			node.children = [];
 			node.collapsed = true;
-			node.invalidate = noop;
+			node.invalidate = () => {};
 			resolveEventBubble(node);
 
-			const targetNode = nodeMap.get(msg.target);
+			const targetNode = nodeMap.get(target);
 			nodeMap.set(node.id, node);
 
 			if (targetNode) {
-				insertNode(node, targetNode, msg.anchor);
+				insertNode(node, targetNode, anchor);
 				return;
 			}
 
@@ -218,52 +187,59 @@ port.onMessage.addListener((msg) => {
 
 			node._timeout = setTimeout(() => {
 				delete node._timeout;
-				const targetNode = nodeMap.get(msg.target);
-				if (targetNode) insertNode(node, targetNode, msg.anchor);
-				else rootNodes.update((o) => (o.push(node), o));
+				const targetNode = nodeMap.get(target);
+				if (targetNode) insertNode(node, targetNode, anchor);
+				else rootNodes.update((o) => [...o, node]);
 			}, 100);
 
 			break;
 		}
 
-		case 'removeNode': {
-			const node = nodeMap.get(msg.node.id);
-			nodeMap.delete(node.id);
+		case 'courier/node:remove': {
+			const current = nodeMap.get(node.id);
+			nodeMap.delete(current.id);
 
-			if (!node.parent) break;
+			if (!current.parent) break;
 
-			const index = node.parent.children.findIndex((o) => o.id == node.id);
-			node.parent.children.splice(index, 1);
+			const index = current.parent.children.findIndex((o) => o.id == current.id);
+			current.parent.children.splice(index, 1);
 
-			node.parent.invalidate();
+			current.parent.invalidate();
 
 			break;
 		}
 
-		case 'updateNode': {
-			const node = nodeMap.get(msg.node.id);
-			Object.assign(node, msg.node);
-			resolveEventBubble(node);
+		case 'courier/node:update': {
+			const current = nodeMap.get(node.id);
+			Object.assign(current, node);
+			resolveEventBubble(current);
 
 			const selected = get(selectedNode);
-			if (selected && selected.id == msg.node.id) selectedNode.update((o) => o);
+			if (selected && selected.id == node.id) selectedNode.update((o) => o);
 
-			node.invalidate();
-
-			break;
+			return current.invalidate();
 		}
 
 		case 'inspect': {
-			let node = nodeMap.get(msg.node.id);
-			selectedNode.set(node);
-
-			break;
+			const current = nodeMap.get(node.id);
+			return selectedNode.set(current);
 		}
 
-		case 'updateProfile': {
-			resolveFrame(msg.frame);
-			profileFrame.set(msg.frame);
-			break;
-		}
+		// case 'courier:profile.update': {
+		// 	resolveFrame(frame);
+		// 	profileFrame.set(frame);
+		// 	break;
+
+		// 	function resolveFrame(frame) {
+		// 		frame.children.forEach(resolveFrame);
+
+		// 		if (!frame.node) return;
+
+		// 		frame.node = nodeMap.get(frame.node) || {
+		// 			type: 'Unknown',
+		// 			tagName: 'Unknown',
+		// 		};
+		// 	}
+		// }
 	}
 });

@@ -52,7 +52,6 @@
 
 	ul {
 		overflow: auto;
-		flex-grow: 1;
 		padding-top: 0.5rem;
 	}
 </style>

@@ -2,10 +2,10 @@ import { addNodeListener } from './listener.js';
 import { highlight, startPicker, stopPicker } from './highlight.js';
 import { getNode } from './svelte.js';
 
-// window.__svelte_devtools_inject_state = function (id, key, value) {
-// 	let component = getNode(id).detail;
-// 	component.$inject_state({ [key]: value });
-// };
+window.__svelte_devtools_inject_state = function (id, key, value) {
+	let component = getNode(id).detail;
+	component.$inject_state({ [key]: value });
+};
 
 // window.__svelte_devtools_select_element = function (element) {
 // 	let node = getNode(element);
@@ -93,7 +93,7 @@ function serialize(node) {
 					attributes: props.flatMap((key) => {
 						const value = ctx[key];
 						delete ctx[key];
-						return value === undefined ? [] : { key, value, isBound: key in internal.bound };
+						return value === undefined ? [] : { key, value, bounded: key in internal.bound };
 					}),
 					listeners: Object.entries(internal.callbacks).flatMap(([event, value]) =>
 						value.map((o) => ({ event, handler: o.toString() })),
