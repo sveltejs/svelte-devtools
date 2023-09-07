@@ -1,13 +1,33 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+
 		"checkJs": true,
 		"strict": true,
+		"composite": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noImplicitReturns": true,
 
 		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true
-	}
+		"isolatedModules": true,
+		"useDefineForClassFields": true,
+		"forceConsistentCasingInFileNames": true,
+
+		"paths": {
+			"$lib": ["./src/lib"],
+			"$lib/*": ["./src/lib/*"]
+		}
+	},
+	"include": [
+		"vite.config.ts",
+		"src/**/*.d.ts",
+		"src/**/*.ts",
+		"src/**/*.js",
+		"src/**/*.svelte",
+		"static/**/*.js"
+	]
 }

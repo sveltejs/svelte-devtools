@@ -2,25 +2,25 @@
 	import { site } from '$lib/runtime';
 </script>
 
-<div>
-	<h1 style:font-size="4rem">Svelte DevTools</h1>
-	<p style:display="inline-flex" style:font-size="1.75rem">
+<main>
+	<h1 style:font-size="3rem">Svelte DevTools</h1>
+	<p style:display="inline-flex" style:font-size="1.25rem">
 		<span>No Svelte app detected</span>
 
 		<button style:margin-left="1rem" on:click={site.refresh}>reload</button>
 	</p>
 
 	<footer>
-		<p style:font-size="1.5rem">Not working? Did you...</p>
-		<ul>
+		<p style:font-size="1rem">Not working? Did you...</p>
+		<ul style:font-size="0.875rem">
 			<li>Use Svelte version 4.0.0 or above?</li>
 			<li>Build with dev mode enabled?</li>
 		</ul>
 	</footer>
-</div>
+</main>
 
 <style>
-	div {
+	main {
 		width: 100%;
 		display: grid;
 		gap: 1rem;
@@ -28,7 +28,7 @@
 		align-content: center;
 		justify-content: center;
 	}
-	div * {
+	main * {
 		margin: 0;
 	}
 

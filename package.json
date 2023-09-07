@@ -6,9 +6,9 @@
 	"license": "MIT",
 	"type": "module",
 	"scripts": {
-		"dev:app": "svelte-kit sync && vite build --watch",
+		"dev:app": "vite build --watch",
 		"dev:scripts": "rollup -cw",
-		"build": "svelte-kit sync && vite build && rollup -c",
+		"build": "vite build && rollup -c",
 		"format": "prettier -w . --plugin=prettier-plugin-svelte --plugin=prettier-plugin-sort-package-json",
 		"check": "pnpm check:style && pnpm check:svelte",
 		"check:style": "prettier -c . --plugin=prettier-plugin-svelte --plugin=prettier-plugin-sort-package-json",
@@ -17,14 +17,14 @@
 	"packageManager": "pnpm@8.7.0",
 	"devDependencies": {
 		"@rollup/plugin-node-resolve": "^15.2.1",
-		"@sveltejs/kit": "^1.23.0",
+		"@sveltejs/vite-plugin-svelte": "^2.4.5",
 		"@types/chrome": "^0.0.244",
+		"@types/node": "^20.5.9",
 		"prettier": "^3.0.2",
 		"prettier-plugin-sort-package-json": "^0.1.1",
 		"prettier-plugin-svelte": "^3.0.3",
 		"rollup": "^3.28.1",
 		"svelte": "^4.2.0",
-		"svelte-adapter-extension": "^0.1.1",
 		"svelte-check": "^3.5.0",
 		"typescript": "^5.2.2",
 		"vite": "^4.4.9"

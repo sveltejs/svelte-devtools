@@ -1,3 +1,6 @@
+/// <reference types="svelte" />
+/// <reference types="vite/client" />
+
 type Modifiers = Array<
 	'capture' | 'preventDefault' | 'stopPropagation' | 'stopImmediatePropagation'
 >;
