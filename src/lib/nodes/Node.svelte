@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { visibility, hoveredNodeId, selectedNode } from '$lib/store';
+	import Indexer from '$lib/components/Indexer.svelte';
 	import Element from './Element.svelte';
 	import Block from './Block.svelte';
 	import Slot from './Slot.svelte';
 	import Iteration from './Iteration.svelte';
-	import Text from './Text.svelte';
 	import Anchor from './Anchor.svelte';
+
+	import { visibility, hovered, selected } from '$lib/store';
 
 	export let node: any;
 	export let depth = 1;
 
-	let _timeout = null;
+	let _timeout: null | NodeJS.Timeout;
 	node.invalidate = () => {
 		if (_timeout) return;
 
@@ -26,9 +27,15 @@
 		flash = flash || node.children.length !== lastLength;
 		lastLength = node.children.length;
 	}
+
+	$: console.log(node);
 </script>
 
 {#if $visibility[node.type]}
+	{@const active = $selected?.id === node.id}
+	{@const current = $hovered?.id === node.id}
+	{@const style = `padding-left: ${depth * 12}px`}
+
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-mouse-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
@@ -36,36 +43,86 @@
 		class:flash
 		bind:this={node.dom}
 		on:animationend={() => (flash = false)}
-		on:mouseover|stopPropagation={() => ($hoveredNodeId = node.id)}
-		on:click|stopPropagation={() => ($selectedNode = node)}
+		on:click|stopPropagation={() => selected.set(node)}
+		on:mouseover|stopPropagation={() => hovered.set(node)}
 	>
-		<svelte:component
-			this={{
-				component: Element,
-				element: Element,
-				block: Block,
-				slot: Slot,
-				iteration: Iteration,
-				text: Text,
-				anchor: Anchor,
-			}[node.type]}
-			tagName={node.tagName}
-			bind:collapsed={node.collapsed}
-			{...node.detail}
-			hasChildren={node.children.length}
-			hover={$hoveredNodeId === node.id}
-			selected={$selectedNode.id == node.id}
-			style={`padding-left: ${depth * 12}px`}
-		>
-			{#if $selectedNode.id === node.id}
-				<span style:left="{depth * 12 + 6}px" />
-			{/if}
-			<ul>
-				{#each node.children as child (child.id)}
-					<svelte:self node={child} depth={node.type == 'iteration' ? depth : depth + 1} />
-				{/each}
-			</ul>
-		</svelte:component>
+		{#if node.type === 'component' || node.type === 'element'}
+			<Element
+				tagName={node.tagName}
+				selected={active}
+				hover={current}
+				attributes={node.detail.attributes}
+				listeners={node.detail.listeners}
+				hasChildren={node.children.length}
+				{style}
+				bind:expanded={node.expanded}
+			>
+				{#if active}<span style:left="{depth * 12 + 6}px" />{/if}
+
+				<ul>
+					{#each node.children as child (child.id)}
+						{@const level = node.type == 'iteration' ? depth : depth + 1}
+
+						<svelte:self node={child} depth={level} />
+					{/each}
+				</ul>
+			</Element>
+		{:else if node.type === 'block'}
+			<Block
+				tagName={node.tagName}
+				selected={active}
+				hover={current}
+				source={node.detail.source}
+				{style}
+				bind:expanded={node.expanded}
+			>
+				{#if active}<span style:left="{depth * 12 + 6}px" />{/if}
+
+				<ul>
+					{#each node.children as child (child.id)}
+						{@const level = node.type == 'iteration' ? depth : depth + 1}
+
+						<svelte:self node={child} depth={level} />
+					{/each}
+				</ul>
+			</Block>
+		{:else if node.type === 'iteration'}
+			<Iteration selected={active} hover={current} {style}>
+				{#if active}<span style:left="{depth * 12 + 6}px" />{/if}
+
+				<ul>
+					{#each node.children as child (child.id)}
+						{@const level = node.type == 'iteration' ? depth : depth + 1}
+
+						<svelte:self node={child} depth={level} />
+					{/each}
+				</ul>
+			</Iteration>
+		{:else if node.type === 'slot'}
+			<Slot
+				tagName={node.tagName}
+				selected={active}
+				hover={current}
+				{style}
+				bind:expanded={node.expanded}
+			>
+				{#if active}<span style:left="{depth * 12 + 6}px" />{/if}
+
+				<ul>
+					{#each node.children as child (child.id)}
+						{@const level = node.type == 'iteration' ? depth : depth + 1}
+
+						<svelte:self node={child} depth={level} />
+					{/each}
+				</ul>
+			</Slot>
+		{:else if node.type === 'text'}
+			<div {style}>
+				<Indexer text={node.detail.nodeValue} />
+			</div>
+		{:else if node.type === 'anchor'}
+			<Anchor {style} />
+		{/if}
 	</li>
 {:else}
 	{#each node.children as node (node.id)}
@@ -76,16 +133,28 @@
 <style>
 	li {
 		position: relative;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
 		font-size: 0.75rem;
 	}
 
-	span {
+	/* li:hover,
+	li.hovered {
+		background: #f0f9fe;
+	}
+	li.selected {
+		background: rgb(0, 116, 232);
+		color: #ffffff;
+	} */
+
+	li span:not(:last-child) {
 		position: absolute;
 		top: 1.6rem;
 		bottom: 1.6rem;
 		z-index: 1;
 		width: 0.167rem /* 2px */;
-		background-color: #e0e0e2;
+		background: #e0e0e2;
 	}
 
 	li.flash :global(> :first-child),
@@ -97,34 +166,37 @@
 
 	@keyframes flash {
 		10% {
-			background-color: rgb(250, 217, 242);
+			background: rgb(250, 217, 242);
 		}
 	}
 
 	li :global(.selected),
 	li :global(.selected *),
 	li :global(.hover.selected) {
-		background-color: rgb(0, 116, 232);
+		background: rgb(0, 116, 232);
 		color: #ffffff;
 	}
 
 	li :global(> .selected::after) {
-		content: ' == $s';
+		content: ' === $s';
 	}
 
 	li :global(.hover) {
-		background-color: #f0f9fe;
+		background: #f0f9fe;
+	}
+
+	:global(.dark) li:hover,
+	/* :global(.dark) li.hovered, */
+	:global(.dark) li :global(.hover) {
+		background: rgb(53, 59, 72);
 	}
 
 	:global(.dark) span,
+	/* :global(.dark) li.selected, */
 	:global(.dark) li :global(.selected),
 	:global(.dark) li :global(.selected *),
 	:global(.dark) li :global(.hover.selected) {
-		background-color: rgb(32, 78, 138);
+		background: rgb(32, 78, 138);
 		color: #ffffff;
-	}
-
-	:global(.dark) li :global(.hover) {
-		background-color: rgb(53, 59, 72);
 	}
 </style>

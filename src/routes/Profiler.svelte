@@ -2,13 +2,13 @@
 	import type { ComponentProps } from 'svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Resizable from '$lib/components/Resizable.svelte';
-	import Toolbar from '$lib/toolbar/Toolbar.svelte';
-	import ProfileButton from '$lib/toolbar/ProfileButton.svelte';
-	import Frame from './Frame.svelte';
+	import Toolbar from '$lib/components/Toolbar.svelte';
+	import ProfileButton from './ProfileButton.svelte';
+	import ProfilerFrame from './ProfilerFrame.svelte';
 
 	import { profileFrame } from '$lib/store';
 
-	let selected: null | ComponentProps<Frame>['children'][0] = null;
+	let selected: null | ComponentProps<ProfilerFrame>['children'][0] = null;
 	let top: null | number = null;
 
 	function round(n: number) {
@@ -46,7 +46,7 @@
 </Toolbar>
 <div class="frame">
 	{#if children.length}
-		<Frame
+		<ProfilerFrame
 			{children}
 			{duration}
 			on:click={({ detail }) => {

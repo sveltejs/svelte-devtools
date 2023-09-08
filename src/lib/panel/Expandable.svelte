@@ -42,12 +42,10 @@
 <li
 	data-tooltip={error || null}
 	class:expanded
-	class:collapsible={scope(() => {
+	class:expandable={scope(() => {
 		if (value == null || value !== value) return false;
 		if (Array.isArray(value)) return value.length;
-		if (type === 'object') {
-			return value.__isFunction || value.__isSymbol || Object.keys(value).length;
-		}
+		if (type === 'object') return value.__is || Object.keys(value).length;
 	})}
 	on:click|stopPropagation={() => (expanded = !expanded)}
 >
@@ -76,10 +74,10 @@
 			</ul>
 		{/if}
 	{:else if type === 'object'}
-		{#if value.__isFunction}
+		{#if value.__is === 'function'}
 			<span class="function">function {value.name || ''}()</span>
 			{#if expanded}<pre style:width="100%">{value.source}</pre>{/if}
-		{:else if value.__isSymbol}
+		{:else if value.__is === 'symbol'}
 			<span class="symbol">{value.name || 'Symbol()'}</span>
 		{:else if Object.keys(value).length}
 			<span class="object">Object &lbrace;&hellip;&rbrace;</span>
@@ -123,30 +121,11 @@
 	li:hover {
 		background: rgba(135, 135, 137, 0.075);
 	}
-	li.collapsible::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		right: 100%;
-
-		border-top: 0.375rem solid rgba(135, 135, 137, 0.9);
-		border-right: 0.25rem solid transparent;
-		border-left: 0.25rem solid transparent;
-		transition-duration: 240ms;
-		transform: translate3d(-25%, calc(0.375rem + 50%), 0) rotate(-90deg);
-	}
-	li.collapsible.expanded::before {
-		transform: translate3d(-25%, calc(0.375rem + 50%), 0) rotate(0deg);
-	}
 
 	.function,
 	.symbol,
 	.object {
 		color: rgb(0, 116, 232);
-	}
-
-	li :global(.collapse) {
-		margin-left: -1.25rem;
 	}
 
 	:global(.dark) .function,

@@ -1,6 +1,6 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
-	import { selectedNode } from '$lib/store';
+	import { selected } from '$lib/store';
 	import { site } from '$lib/runtime';
 
 	let active = false;
@@ -14,7 +14,7 @@
 		}
 
 		unsub();
-		unsub = selectedNode.subscribe((node) => {
+		unsub = selected.subscribe((node) => {
 			if (!active) return;
 			active = false;
 			unsub();

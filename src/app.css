@@ -17,37 +17,54 @@ body {
 	color: var(--color);
 	font-family: monospace;
 }
-
 body.dark {
 	--color: rgb(177, 177, 179);
 	--background: rgb(36, 36, 36);
 	scrollbar-color: rgb(115, 115, 115) rgb(60, 60, 61);
 }
 
+/* dark mode scrollbar */
 body.dark ::-webkit-scrollbar {
 	width: 14px;
 	height: 14px;
 	background-color: transparent;
 	box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.5);
 }
-
 body.dark ::-webkit-scrollbar-thumb {
 	background-color: rgb(51, 51, 51);
 	box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
+/* basic resets */
 ul {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
+/* expandable arrows */
+.expandable::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 100%;
+
+	border-top: 0.375rem solid rgba(135, 135, 137, 0.9);
+	border-right: 0.25rem solid transparent;
+	border-left: 0.25rem solid transparent;
+	transition-duration: var(--t-duration);
+	transform: translate3d(-25%, calc(0.375rem + 50%), 0) rotate(-90deg);
+}
+.expandable.expanded::before {
+	transform: translate3d(-25%, calc(0.375rem + 50%), 0) rotate(0deg);
+}
+
+/* tooltip pseudo-elements */
 [data-tooltip]:hover::after,
 [data-tooltip]:hover::before {
 	opacity: 1;
 	pointer-events: auto;
 }
-
 [data-tooltip]::before {
 	content: '';
 	opacity: 0;
@@ -61,7 +78,6 @@ ul {
 	border-left: 0.5rem solid transparent;
 	transition: opacity 0.2s;
 }
-
 [data-tooltip]::after {
 	content: attr(data-tooltip);
 	opacity: 0;

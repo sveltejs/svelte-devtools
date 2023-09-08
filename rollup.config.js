@@ -1,13 +1,11 @@
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+// TODO: generate through vite if possible
 
-// TODO: generate through vite plugin if possible
-export default [
-	{
-		input: 'src/client/index.js',
-		output: [
-			{ file: 'static/courier.js', format: 'iife' },
-			{ file: 'build/courier.js', format: 'iife' },
-		],
-		plugins: [nodeResolve()],
-	},
-];
+import { defineConfig } from 'rollup';
+
+export default defineConfig({
+	input: 'src/client/index.js',
+	output: [
+		{ file: 'static/courier.js', format: 'iife' },
+		{ file: 'build/courier.js', format: 'iife' },
+	],
+});

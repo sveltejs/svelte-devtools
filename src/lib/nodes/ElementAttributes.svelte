@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SearchTerm from './SearchTerm.svelte';
+	import Indexer from '../components/Indexer.svelte';
 
 	export let attributes: Array<{
 		key: string;
@@ -19,11 +19,11 @@
 	<span class:flash style:display="flex">
 		<span class="attr-name">
 			{#if bounded}bind:{/if}
-			<SearchTerm text={key} />
+			<Indexer text={key} />
 		</span>
 		<span>=</span>
 		<span class="attr-value">
-			<SearchTerm text={value} />
+			<Indexer text={value} />
 		</span>
 	</span>
 {/each}
@@ -32,7 +32,7 @@
 	<span>&nbsp;</span>
 	<span class="attr-name" data-tooltip={typeof handler == 'function' ? handler() : handler}>
 		on:
-		<SearchTerm text={event} />
+		<Indexer text={event} />
 		{#if modifiers && modifiers.length}|{modifiers.join('|')}{/if}
 	</span>
 {/each}

@@ -13,43 +13,50 @@
 	}}
 />
 
-<aside style="{axis === 'x' ? 'width' : 'height'}: {size}px">
+<aside class={axis} style="{axis === 'x' ? 'width' : 'height'}: {size}px">
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div class="{axis} resize" on:mousedown={() => (resizing = true)} />
 
-	<slot />
+	<div><slot /></div>
 </aside>
 
 <style>
 	aside {
 		position: relative;
+		display: grid;
 		color: rgb(57, 63, 76);
+	}
+	aside.x {
+		grid-template-columns: auto 1fr;
+	}
+	aside.y {
+		grid-template-rows: auto 1fr;
 	}
 
 	.resize {
-		position: absolute;
 		top: 0;
 		left: 0;
-		width: 0.2rem;
+		width: 0.25rem;
 		background: rgb(224, 224, 226);
 	}
+	.resize:hover {
+		background: rgb(177, 177, 179);
+	}
 	.resize.x {
+		cursor: ew-resize;
 		bottom: 0;
 		width: 0.2rem;
-		cursor: ew-resize;
 	}
 	.resize.y {
+		cursor: ns-resize;
 		right: 0;
 		height: 0.2rem;
-		cursor: ns-resize;
 	}
-	.resize.x:hover {
-		width: 0.25rem;
-		background: rgb(177, 177, 179);
+	.resize.x + div {
+		overflow-x: hidden;
 	}
-	.resize.y:hover {
-		width: 0.25rem;
-		background: rgb(177, 177, 179);
+	.resize.y + div {
+		overflow-y: hidden;
 	}
 
 	:global(.dark) aside {

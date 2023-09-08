@@ -1,7 +1,7 @@
-<script>
-	export let style;
-	export let hover;
-	export let selected;
+<script lang="ts">
+	export let style: string;
+	export let hover: boolean;
+	export let selected: boolean;
 </script>
 
 <div class:hover class:selected {style}>&#8618;</div>

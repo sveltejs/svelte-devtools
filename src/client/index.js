@@ -1,11 +1,11 @@
 import { addNodeListener } from './listener.js';
-import { highlight, startPicker, stopPicker } from './highlight.js';
+import { highlight } from './highlight.js';
 import { getNode } from './svelte.js';
 
-window.__svelte_devtools_inject_state = function (id, key, value) {
-	let component = getNode(id).detail;
-	component.$inject_state({ [key]: value });
-};
+// window.__svelte_devtools_inject_state = (id, key, value) => {
+// 	const { detail: component } = getNode(id) || {};
+// 	component.$inject_state({ [key]: value });
+// };
 
 // window.__svelte_devtools_select_element = function (element) {
 // 	let node = getNode(element);
@@ -25,15 +25,16 @@ window.addEventListener('message', ({ source, data }) => {
 			if (node) window.$s = node.detail;
 			break;
 		}
-		case 'setHover': {
+		case 'ext/highlight': {
+			console.log('highlighting');
 			return highlight(node);
 		}
 
-		case 'startPicker':
-			return startPicker();
+		// case 'startPicker':
+		// 	return startPicker();
 
-		case 'stopPicker':
-			return stopPicker();
+		// case 'stopPicker':
+		// 	return stopPicker();
 
 		// case 'startProfiler':
 		// 	return startProfiler();
@@ -46,9 +47,9 @@ window.addEventListener('message', ({ source, data }) => {
 function clone(value, seen = new Map()) {
 	switch (typeof value) {
 		case 'function':
-			return { __isFunction: true, source: value.toString(), name: value.name };
+			return { __is: 'function', source: value.toString(), name: value.name };
 		case 'symbol':
-			return { __isSymbol: true, name: value.toString() };
+			return { __is: 'symbol', name: value.toString() };
 		case 'object': {
 			if (value === window || value === null) return null;
 			if (Array.isArray(value)) return value.map((o) => clone(o, seen));
@@ -151,7 +152,7 @@ function serialize(node) {
 const source = 'svelte-devtools';
 addNodeListener({
 	add(node, anchor) {
-		console.log('adding', { node, anchor });
+		console.log('adding root node', { node, anchor });
 		window.postMessage({
 			source,
 			type: 'courier/node:add',

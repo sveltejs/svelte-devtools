@@ -1,5 +1,5 @@
-<script>
-	export let style;
+<script lang="ts">
+	export let style: string;
 </script>
 
 <div {style}>#anchor</div>

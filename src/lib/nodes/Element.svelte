@@ -1,18 +1,20 @@
 <script lang="ts">
-	import Collapse from './Collapse.svelte';
-	import SearchTerm from './SearchTerm.svelte';
+	import Indexer from '../components/Indexer.svelte';
 	import ElementAttributes from './ElementAttributes.svelte';
 
-	export let style;
-	export let hasChildren;
-	export let hover;
-	export let selected;
-	export let tagName;
-	export let attributes = [];
-	export let listeners = [];
-	export let collapsed;
+	import type { ComponentProps } from 'svelte';
 
-	function stringify(value) {
+	export let expanded: boolean;
+	export let hasChildren: boolean;
+	export let hover: boolean;
+	export let selected: boolean;
+	export let style: string;
+	export let tagName: string;
+
+	export let attributes: ComponentProps<ElementAttributes>['attributes'];
+	export let listeners: ComponentProps<ElementAttributes>['listeners'];
+
+	function stringify(value: any): string {
 		switch (typeof value) {
 			case 'string':
 				return `"${value}"`;
@@ -23,56 +25,61 @@
 			case 'object':
 				if (value == null) return 'null';
 				if (Array.isArray(value)) return `[${value.map(stringify).join(', ')}]`;
-				if (value.__isFunction) return value.name + '()';
-				if (value.__isSymbol) return value.name;
+				if (value.__is === 'function') return value.name + '()';
+				if (value.__is === 'symbol') return value.name;
 				return `{${Object.entries(value)
 					.map(([key, value]) => `${key}: ${stringify(value)}`)
 					.join(', ')}}`;
+
+			case 'bigint':
+				return value.toString() + 'n';
+			case 'boolean':
+				return value.toString();
+			default:
+				return '';
 		}
 	}
 
-	let _attributes;
-	let cache = {};
-	$: {
-		let localCache = {};
-		_attributes = attributes.map((o) => {
-			const value = stringify(o.value);
-			localCache[o.key] = value;
+	const memory: Record<string, string> = {};
+	$: cached = attributes.map((o) => {
+		const value = stringify(o.value);
+		const flash = memory[o.key] !== value;
+		memory[o.key] = value;
 
-			return {
-				...o,
-				value,
-				flash: !!_attributes && value != cache[o.key],
-			};
-		});
-		cache = localCache;
-	}
+		return { ...o, value, flash };
+	});
 </script>
 
 {#if hasChildren}
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class:hover class:selected {style} on:dblclick={(e) => (collapsed = !collapsed)}>
-		<Collapse {selected} bind:collapsed />
+	<div
+		{style}
+		class:expanded
+		class:hover
+		class:selected
+		class="expandable"
+		on:dblclick={() => (expanded = !expanded)}
+	>
 		<span>&lt;</span>
 		<span class="tag-name">
-			<SearchTerm text={tagName} />
+			<Indexer text={tagName} />
 		</span>
-		<ElementAttributes attributes={_attributes} {listeners} />
+		<ElementAttributes attributes={cached} {listeners} />
 		&gt;
-		{#if collapsed}
+		{#if !expanded}
 			&hellip;&lt;/
 			<span class="tag-name">
-				<SearchTerm text={tagName} />
+				<Indexer text={tagName} />
 			</span>
 			&gt;
 		{/if}
 	</div>
-	{#if !collapsed}
+	{#if expanded}
 		<slot />
 		<div class:hover {style}>
 			&lt;/
 			<span class="tag-name">
-				<SearchTerm text={tagName} />
+				<Indexer text={tagName} />
 			</span>
 			&gt;
 		</div>
@@ -81,9 +88,9 @@
 	<div class:hover class:selected {style}>
 		<span>&lt;</span>
 		<span class="tag-name">
-			<SearchTerm text={tagName} />
+			<Indexer text={tagName} />
 		</span>
-		<ElementAttributes attributes={_attributes} {listeners} />
+		<ElementAttributes attributes={cached} {listeners} />
 		<span>&nbsp;/&gt;</span>
 	</div>
 {/if}

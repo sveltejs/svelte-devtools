@@ -16,7 +16,6 @@
 	},
 	"packageManager": "pnpm@8.7.0",
 	"devDependencies": {
-		"@rollup/plugin-node-resolve": "^15.2.1",
 		"@sveltejs/vite-plugin-svelte": "^2.4.5",
 		"@types/chrome": "^0.0.244",
 		"@types/node": "^20.5.9",

@@ -30,5 +30,6 @@
 		"src/**/*.js",
 		"src/**/*.svelte",
 		"static/**/*.js"
-	]
+	],
+	"exclude": ["static/courier.js"]
 }

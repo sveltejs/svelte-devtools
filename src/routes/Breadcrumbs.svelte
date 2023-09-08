@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-	import { selectedNode, hoveredNodeId, visibility } from '$lib/store';
+	import { selected, hovered, visibility } from '$lib/store';
 
-	let root: undefined | HTMLUListElement;
-	let breadcrumbs: Array<{ id: number; type: string; tagName: string }> = [];
-	let shorttend;
+	let base: undefined | HTMLUListElement;
+	let breadcrumbs: NonNullable<typeof $selected>[] = [];
+	let shortened: boolean;
 
-	async function setSelectedBreadcrumb(node) {
-		if (breadcrumbs.find((o) => o.id == node.id)) return;
+	async function setSelectedBreadcrumb(node: typeof $selected) {
+		if (breadcrumbs.find((o) => o.id == node?.id)) return;
 
 		breadcrumbs = [];
 		while (node && node.tagName) {
@@ -15,23 +15,23 @@
 			node = node.parent;
 		}
 
-		shorttend = false;
+		shortened = false;
 
 		await tick();
-		while (root && root.scrollWidth > root.clientWidth) {
+		while (base && base.scrollWidth > base.clientWidth) {
 			breadcrumbs.shift();
-			shorttend = true;
+			shortened = true;
 			breadcrumbs = breadcrumbs;
 			await tick();
 		}
 	}
 
-	$: setSelectedBreadcrumb($selectedNode);
+	$: setSelectedBreadcrumb($selected);
 </script>
 
 {#if breadcrumbs.length > 1}
-	<ul bind:this={root}>
-		{#if shorttend}
+	<ul bind:this={base}>
+		{#if shortened}
 			<li>
 				&hellip;
 				<div />
@@ -43,9 +43,9 @@
 				<!-- svelte-ignore a11y-mouse-events-have-key-events -->
 				<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 				<li
-					class:selected={node.id == $selectedNode.id}
-					on:click={() => ($selectedNode = node)}
-					on:mouseover={() => ($hoveredNodeId = node.id)}
+					class:selected={node.id === $selected?.id}
+					on:click={() => selected.set(node)}
+					on:mouseover={() => hovered.set(node)}
 				>
 					{node.tagName}
 					<div />

@@ -6,7 +6,7 @@
 	nav {
 		display: flex;
 		align-items: stretch;
-		padding: 0 0.5rem;
+		padding: 0 0.25rem;
 		border-bottom: 1px solid rgb(224, 224, 226);
 		background-color: rgb(249, 249, 250);
 	}
