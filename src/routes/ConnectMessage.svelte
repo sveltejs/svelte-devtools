@@ -1,5 +1,5 @@
 <script>
-	import { site } from '$lib/runtime';
+	import { background } from '$lib/runtime';
 </script>
 
 <main>
@@ -7,12 +7,12 @@
 	<p style:display="inline-flex" style:font-size="1.25rem">
 		<span>No Svelte app detected</span>
 
-		<button style:margin-left="1rem" on:click={site.refresh}>reload</button>
+		<button on:click={() => background.send('page/refresh')}>reload</button>
 	</p>
 
 	<footer>
 		<p style:font-size="1rem">Not working? Did you...</p>
-		<ul style:font-size="0.875rem">
+		<ul>
 			<li>Use Svelte version 4.0.0 or above?</li>
 			<li>Build with dev mode enabled?</li>
 		</ul>
@@ -34,6 +34,7 @@
 
 	button {
 		cursor: pointer;
+		margin-left: 1rem;
 		border-radius: 0.2rem;
 		outline: 2px solid transparent;
 		color: #040d14;
@@ -53,7 +54,7 @@
 	ul {
 		padding-left: 1.5rem;
 		list-style-type: disc;
-		font-size: 1.25rem;
+		font-size: 0.875rem;
 	}
 	li:not(:first-child) {
 		margin-top: 0.5rem;

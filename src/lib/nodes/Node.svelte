@@ -6,6 +6,7 @@
 	import Iteration from './Iteration.svelte';
 	import Anchor from './Anchor.svelte';
 
+	import { background } from '$lib/runtime';
 	import { visibility, hovered, selected } from '$lib/store';
 
 	export let node: any;
@@ -27,14 +28,13 @@
 		flash = flash || node.children.length !== lastLength;
 		lastLength = node.children.length;
 	}
-
-	$: console.log(node);
 </script>
 
 {#if $visibility[node.type]}
 	{@const active = $selected?.id === node.id}
 	{@const current = $hovered?.id === node.id}
 	{@const style = `padding-left: ${depth * 12}px`}
+	{@const left = depth * 12 + 4}
 
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-mouse-events-have-key-events -->
@@ -44,7 +44,10 @@
 		bind:this={node.dom}
 		on:animationend={() => (flash = false)}
 		on:click|stopPropagation={() => selected.set(node)}
-		on:mouseover|stopPropagation={() => hovered.set(node)}
+		on:mouseenter|stopPropagation={() => {
+			hovered.set(node);
+			background.send('ext/highlight', node.id);
+		}}
 	>
 		{#if node.type === 'component' || node.type === 'element'}
 			<Element
@@ -57,9 +60,7 @@
 				{style}
 				bind:expanded={node.expanded}
 			>
-				{#if active}<span style:left="{depth * 12 + 6}px" />{/if}
-
-				<ul>
+				<ul class:active style:--left="{left}px">
 					{#each node.children as child (child.id)}
 						{@const level = node.type == 'iteration' ? depth : depth + 1}
 
@@ -76,9 +77,7 @@
 				{style}
 				bind:expanded={node.expanded}
 			>
-				{#if active}<span style:left="{depth * 12 + 6}px" />{/if}
-
-				<ul>
+				<ul class:active style:--left="{left}px">
 					{#each node.children as child (child.id)}
 						{@const level = node.type == 'iteration' ? depth : depth + 1}
 
@@ -88,9 +87,7 @@
 			</Block>
 		{:else if node.type === 'iteration'}
 			<Iteration selected={active} hover={current} {style}>
-				{#if active}<span style:left="{depth * 12 + 6}px" />{/if}
-
-				<ul>
+				<ul class:active style:--left="{left}px">
 					{#each node.children as child (child.id)}
 						{@const level = node.type == 'iteration' ? depth : depth + 1}
 
@@ -106,9 +103,7 @@
 				{style}
 				bind:expanded={node.expanded}
 			>
-				{#if active}<span style:left="{depth * 12 + 6}px" />{/if}
-
-				<ul>
+				<ul class:active style:--left="{left}px">
 					{#each node.children as child (child.id)}
 						{@const level = node.type == 'iteration' ? depth : depth + 1}
 
@@ -139,6 +134,21 @@
 		font-size: 0.75rem;
 	}
 
+	ul {
+		width: 100%;
+		position: relative;
+	}
+	ul.active::before {
+		content: '';
+		z-index: 1;
+		width: 0.125rem;
+		position: absolute;
+		top: 0.25rem;
+		bottom: 0.25rem;
+		left: var(--left);
+		background: #e0e0e2;
+	}
+
 	/* li:hover,
 	li.hovered {
 		background: #f0f9fe;
@@ -148,26 +158,11 @@
 		color: #ffffff;
 	} */
 
-	li span:not(:last-child) {
-		position: absolute;
-		top: 1.6rem;
-		bottom: 1.6rem;
-		z-index: 1;
-		width: 0.167rem /* 2px */;
-		background: #e0e0e2;
-	}
-
 	li.flash :global(> :first-child),
 	li.flash :global(> :first-child *),
 	li :global(.flash),
 	li :global(.flash *) {
 		animation: flash 0.8s ease-in-out;
-	}
-
-	@keyframes flash {
-		10% {
-			background: rgb(250, 217, 242);
-		}
 	}
 
 	li :global(.selected),
@@ -178,7 +173,8 @@
 	}
 
 	li :global(> .selected::after) {
-		content: ' === $s';
+		content: '=== $s';
+		margin-left: 0.5rem;
 	}
 
 	li :global(.hover) {
@@ -198,5 +194,11 @@
 	:global(.dark) li :global(.hover.selected) {
 		background: rgb(32, 78, 138);
 		color: #ffffff;
+	}
+
+	@keyframes flash {
+		10% {
+			background: rgb(250, 217, 242);
+		}
 	}
 </style>

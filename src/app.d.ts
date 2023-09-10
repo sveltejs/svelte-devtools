@@ -35,6 +35,7 @@ declare global {
 				| 'catch'
 				| 'component'
 				| 'each'
+				| 'element'
 				| 'else'
 				| 'if'
 				| 'key'

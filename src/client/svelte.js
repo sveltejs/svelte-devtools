@@ -94,108 +94,108 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 	const { type, id, block, ...rest } = detail;
 	const nodeId = pointer++;
 
-	if (block.m) {
-		// const mountFn = block.m;
-		block.m = (target, anchor) => {
-			const parentBlock = currentBlock;
-			let node = {
-				id: nodeId,
-				type: 'block',
-				detail: rest,
-				tagName: type === 'pending' ? 'await' : type,
-				parentBlock,
-				children: [],
-			};
+	// if (block.m) {
+	// 	// const mountFn = block.m;
+	// 	block.m = (target, anchor) => {
+	// 		const parentBlock = currentBlock;
+	// 		let node = {
+	// 			id: nodeId,
+	// 			type: 'block',
+	// 			detail: rest,
+	// 			tagName: type === 'pending' ? 'await' : type,
+	// 			parentBlock,
+	// 			children: [],
+	// 		};
 
-			switch (type) {
-				case 'then':
-				case 'catch':
-					if (!node.parentBlock) node.parentBlock = lastPromiseParent;
-					break;
+	// 		switch (type) {
+	// 			case 'then':
+	// 			case 'catch':
+	// 				if (!node.parentBlock) node.parentBlock = lastPromiseParent;
+	// 				break;
 
-				case 'slot':
-					node.type = 'slot';
-					break;
+	// 			case 'slot':
+	// 				node.type = 'slot';
+	// 				break;
 
-				case 'component':
-					const componentNode = nodes.map.get(block);
-					if (componentNode) {
-						nodes.map.delete(block);
-						Object.assign(node, componentNode);
-					} else {
-						Object.assign(node, {
-							type: 'component',
-							tagName: 'Unknown',
-							detail: {},
-						});
-						nodes.map.set(block, node);
-					}
+	// 			case 'component':
+	// 				const componentNode = nodes.map.get(block);
+	// 				if (componentNode) {
+	// 					nodes.map.delete(block);
+	// 					Object.assign(node, componentNode);
+	// 				} else {
+	// 					Object.assign(node, {
+	// 						type: 'component',
+	// 						tagName: 'Unknown',
+	// 						detail: {},
+	// 					});
+	// 					nodes.map.set(block, node);
+	// 				}
 
-					Promise.resolve().then(
-						() =>
-							node.detail.$$ && Object.keys(node.detail.$$.bound).length && listeners.update(node),
-					);
-					break;
-			}
+	// 				Promise.resolve().then(
+	// 					() =>
+	// 						node.detail.$$ && Object.keys(node.detail.$$.bound).length && listeners.update(node),
+	// 				);
+	// 				break;
+	// 		}
 
-			if (type === 'each') {
-				let group = nodes.map.get(parentBlock.id + id);
-				if (!group) {
-					group = {
-						id: pointer++,
-						type: 'block',
-						detail: {
-							ctx: {},
-							source: detail.source,
-						},
-						tagName: 'each',
-						parentBlock,
-						children: [],
-					};
-					nodes.map.set(parentBlock.id + id, group);
-					nodes.add({ node: group, target, anchor });
-				}
-				node.parentBlock = group;
-				node.type = 'iteration';
-				nodes.add({ node, target: group, anchor });
-			} else {
-				nodes.add({ node, target, anchor });
-			}
+	// 		if (type === 'each') {
+	// 			let group = nodes.map.get(parentBlock.id + id);
+	// 			if (!group) {
+	// 				group = {
+	// 					id: pointer++,
+	// 					type: 'block',
+	// 					detail: {
+	// 						ctx: {},
+	// 						source: detail.source,
+	// 					},
+	// 					tagName: 'each',
+	// 					parentBlock,
+	// 					children: [],
+	// 				};
+	// 				nodes.map.set(parentBlock.id + id, group);
+	// 				nodes.add({ node: group, target, anchor });
+	// 			}
+	// 			node.parentBlock = group;
+	// 			node.type = 'iteration';
+	// 			nodes.add({ node, target: group, anchor });
+	// 		} else {
+	// 			nodes.add({ node, target, anchor });
+	// 		}
 
-			currentBlock = node;
-			// updateProfile(node, 'mount', mountFn, target, anchor);
-			currentBlock = parentBlock;
-		};
-	}
+	// 		currentBlock = node;
+	// 		// updateProfile(node, 'mount', mountFn, target, anchor);
+	// 		currentBlock = parentBlock;
+	// 	};
+	// }
 
-	if (block.p) {
-		// const patchFn = block.p;
-		block.p = (changed, ctx) => {
-			const parentBlock = currentBlock;
-			currentBlock = nodes.map.get(nodeId);
+	// if (block.p) {
+	// 	// const patchFn = block.p;
+	// 	block.p = (changed, ctx) => {
+	// 		const parentBlock = currentBlock;
+	// 		currentBlock = nodes.map.get(nodeId);
 
-			listeners.update(currentBlock);
+	// 		listeners.update(currentBlock);
 
-			// updateProfile(currentBlock, 'patch', patchFn, changed, ctx);
+	// 		// updateProfile(currentBlock, 'patch', patchFn, changed, ctx);
 
-			currentBlock = parentBlock;
-		};
-	}
+	// 		currentBlock = parentBlock;
+	// 	};
+	// }
 
-	if (block.d) {
-		// const detachFn = block.d;
-		block.d = (detaching) => {
-			const node = nodes.map.get(nodeId);
+	// if (block.d) {
+	// 	// const detachFn = block.d;
+	// 	block.d = (detaching) => {
+	// 		const node = nodes.map.get(nodeId);
 
-			if (node) {
-				if (node.tagName == 'await') lastPromiseParent = node.parentBlock;
+	// 		if (node) {
+	// 			if (node.tagName == 'await') lastPromiseParent = node.parentBlock;
 
-				nodes.remove(node);
-			}
+	// 			nodes.remove(node);
+	// 		}
 
-			// updateProfile(node, 'detach', detachFn, detaching);
-		};
-	}
+	// 		// updateProfile(node, 'detach', detachFn, detaching);
+	// 	};
+	// }
 });
 
 document.addEventListener('SvelteDOMInsert', ({ detail }) => {

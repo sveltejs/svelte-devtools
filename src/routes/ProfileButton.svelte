@@ -1,11 +1,12 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
 
-	import { profilerEnabled } from '$lib/store';
+	import { background } from '$lib/runtime';
+	let enabled = false;
 </script>
 
-<Button on:click={() => ($profilerEnabled = !$profilerEnabled)}>
-	{#if $profilerEnabled}
+<Button on:click={() => background.send('ext/profiler', enabled)}>
+	{#if enabled}
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
 			<path d="M12.7,1.4 11.3,0l-8,8 8,8 1.4,-1.4L6,8Z" />
 		</svg>

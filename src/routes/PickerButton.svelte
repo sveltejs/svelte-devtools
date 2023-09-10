@@ -1,7 +1,7 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
+	import { background } from '$lib/runtime';
 	import { selected } from '$lib/store';
-	import { site } from '$lib/runtime';
 
 	let active = false;
 	let unsub = () => {};
@@ -9,7 +9,7 @@
 	function click() {
 		if (active) {
 			active = false;
-			site.stopPicker();
+			background.send('ext/stopPicker');
 			return;
 		}
 
@@ -20,11 +20,11 @@
 			unsub();
 
 			setTimeout(() => {
-				node.dom && node.dom.scrollIntoView({ block: 'center' });
+				node?.dom?.scrollIntoView({ block: 'center' });
 			}, 120);
 		});
 		active = true;
-		site.startPicker();
+		background.send('ext/startPicker');
 	}
 </script>
 

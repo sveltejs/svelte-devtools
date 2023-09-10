@@ -1,11 +1,11 @@
 <script>
-	import { ext } from '$lib/runtime';
+	import { background } from '$lib/runtime';
 </script>
 
 <button
 	type="button"
 	on:click={() => {
-		ext.reload();
+		background.send('ext/reload');
 		location.reload();
 	}}
 >

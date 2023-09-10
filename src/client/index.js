@@ -13,34 +13,27 @@ import { getNode } from './svelte.js';
 // };
 
 window.addEventListener('message', ({ source, data }) => {
-	console.log({ message: data });
-
 	// only accept messages from our application or script
 	if (source !== window || data?.source !== 'svelte-devtools') return;
 
-	const node = getNode(data.nodeId);
-
 	switch (data.type) {
-		case 'setSelected': {
+		case 'ext/select': {
+			const node = getNode(data.payload);
 			if (node) window.$s = node.detail;
-			break;
+			return;
 		}
 		case 'ext/highlight': {
-			console.log('highlighting');
+			const node = getNode(data.payload);
 			return highlight(node);
 		}
 
-		// case 'startPicker':
-		// 	return startPicker();
+		// case 'ext/inspect': {
+		// 	return data.payload ? startPicker() : stopPicker();
+		// }
 
-		// case 'stopPicker':
-		// 	return stopPicker();
-
-		// case 'startProfiler':
-		// 	return startProfiler();
-
-		// case 'stopProfiler':
-		// 	return stopProfiler();
+		// case 'ext/profiler': {
+		// 	return data.payload ? startProfiler() : stopProfiler();
+		// }
 	}
 });
 
@@ -149,40 +142,37 @@ function serialize(node) {
 	}
 }
 
-const source = 'svelte-devtools';
+/**
+ * @param {string} type
+ * @param {Record<string, any>} [payload]
+ */
+function send(type, payload) {
+	window.postMessage({ source: 'svelte-devtools', type, payload });
+}
+
 addNodeListener({
 	add(node, anchor) {
 		console.log('adding root node', { node, anchor });
-		window.postMessage({
-			source,
-			type: 'courier/node:add',
+		send('courier/node:add', {
 			node: serialize(node),
+			// @ts-expect-error
 			target: node.parent?.id ?? null,
 			anchor: anchor?.id ?? null,
 		});
 	},
 
 	remove(node) {
-		window.postMessage({
-			source,
-			type: 'courier/node:remove',
-			node: serialize(node),
-		});
+		console.log('removing root node', { node });
+		send('courier/node:remove', { node: serialize(node) });
 	},
 
 	update(node) {
-		window.postMessage({
-			source,
-			type: 'courier/node:update',
-			node: serialize(node),
-		});
+		console.log('updating root node', { node });
+		send('courier/node:update', { node: serialize(node) });
 	},
 
 	profile(/** frame */) {
-		console.log('profiling temporarily disabled');
-		// window.postMessage({
-		// 	type: 'courier/profile:update',
-		// 	frame,
-		// });
+		// console.log('profiling frame', { frame });
+		// send('courier/profile:update', { frame });
 	},
 });

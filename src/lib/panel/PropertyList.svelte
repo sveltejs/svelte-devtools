@@ -2,7 +2,7 @@
 	import Expandable from './Expandable.svelte';
 
 	export let entries: Array<{ key: string; value: string }> = [];
-	export let id: string;
+	export let id: number;
 	export let readonly = false;
 
 	const errors: Record<string, string | undefined> = {};

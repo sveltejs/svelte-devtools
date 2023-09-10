@@ -14,130 +14,21 @@
 	import ConnectMessage from './ConnectMessage.svelte';
 	import ReloadExtension from './ReloadExtension.svelte';
 
-	import { hovered, root, selected, visibility } from '$lib/store';
 	import { background } from '$lib/runtime';
+	import { hovered, root, selected, visibility } from '$lib/store';
 	import Divider from '$lib/components/Divider.svelte';
 
-	const nodes = new Map();
+	$: if ($selected) {
+		background.send('ext/select', $selected.id);
 
-	function insertNode(node: any, target: any, anchorId: number) {
-		node.parent = target;
-
-		const index = anchorId ? target.children.findIndex((o: any) => o.id == anchorId) : -1;
-
-		if (index !== -1) {
-			target.children.splice(index, 0, node);
-		} else {
-			target.children.push(node);
+		let current = $selected;
+		let invalid = null;
+		while ((current = current.parent)) {
+			if (current.expanded) continue;
+			(invalid = current).expanded = true;
 		}
-
-		target.invalidate();
+		if (invalid) invalid.invalidate();
 	}
-
-	function resolveEventBubble(node: any) {
-		if (!node.detail || !node.detail.listeners) return;
-
-		for (const listener of node.detail.listeners) {
-			if (!listener.handler.includes('bubble($$self, event)')) continue;
-
-			listener.handler = () => {
-				let target = node;
-				while ((target = target.parent)) if (target.type == 'component') break;
-
-				const listeners = target.detail.listeners;
-				if (!listeners) return null;
-
-				const parentListener = listeners.find((o: any) => o.event == listener.event);
-				if (!parentListener) return null;
-
-				const handler = parentListener.handler;
-				if (!handler) return null;
-
-				return '// From parent\n' + (typeof handler == 'function' ? handler() : handler);
-			};
-		}
-	}
-
-	background.onMessage.addListener(({ type, node, target, anchor }) => {
-		console.log({ type, node, target, anchor });
-		switch (type) {
-			case 'ext/clear': {
-				selected.set(undefined);
-				hovered.set(undefined);
-				root.set([]);
-				break;
-			}
-
-			case 'courier/node:add': {
-				node.children = [];
-				node.expanded = false;
-				node.invalidate = () => {};
-				resolveEventBubble(node);
-
-				const targetNode = nodes.get(target);
-				nodes.set(node.id, node);
-
-				if (targetNode) {
-					insertNode(node, targetNode, anchor);
-					return;
-				}
-
-				if (node._timeout) return;
-
-				node._timeout = setTimeout(() => {
-					delete node._timeout;
-					const targetNode = nodes.get(target);
-					if (targetNode) insertNode(node, targetNode, anchor);
-					else root.update((o) => [...o, node]);
-				}, 100);
-
-				break;
-			}
-
-			case 'courier/node:remove': {
-				const current = nodes.get(node.id);
-				nodes.delete(current.id);
-				if (!current.parent) break;
-
-				const index = current.parent.children.findIndex((o: any) => o.id == current.id);
-				current.parent.children.splice(index, 1);
-				current.parent.invalidate();
-				break;
-			}
-
-			case 'courier/node:update': {
-				const current = nodes.get(node.id);
-				Object.assign(current, node);
-				resolveEventBubble(current);
-
-				if ($selected?.id == node.id) selected.update((o) => o);
-
-				return current.invalidate();
-			}
-
-			case 'inspect': {
-				const current = nodes.get(node.id);
-				return selected.set(current);
-			}
-
-			// case 'courier:profile.update': {
-			// 	resolveFrame(frame);
-			// 	profileFrame.set(frame);
-			// 	break;
-
-			// 	function resolveFrame(frame) {
-			// 		frame.children.forEach(resolveFrame);
-
-			// 		if (!frame.node) return;
-
-			// 		frame.node = nodes.get(frame.node) || {
-			// 			type: 'Unknown',
-			// 			tagName: 'Unknown',
-			// 		};
-			// 	}
-			// }
-		}
-	});
 </script>
 
 <svelte:window
@@ -194,7 +85,10 @@
 
 		<Toolbar>
 			<ProfileButton />
+
+			<!-- toggle highlighting page elements -->
 			<PickerButton />
+
 			<VisibilitySelection />
 
 			<Divider type="vertical" margin="0.25rem" />
