@@ -7,5 +7,5 @@ node_modules
 .cache
 .env
 
-# generate files
+# generated files
 static/courier.js
