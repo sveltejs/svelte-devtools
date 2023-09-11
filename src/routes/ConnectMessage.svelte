@@ -13,8 +13,8 @@
 	<footer>
 		<p style:font-size="1rem">Not working? Did you...</p>
 		<ul>
-			<li>Use Svelte version 4.0.0 or above?</li>
 			<li>Build with dev mode enabled?</li>
+			<li>Use Svelte version 4.0.0 or above?</li>
 		</ul>
 	</footer>
 </main>

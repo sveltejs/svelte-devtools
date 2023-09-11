@@ -21,22 +21,22 @@
 	{#if source}
 		{source}
 	{:else}
-		&lbrace;#
+		<span>&lbrace;#</span>
 		<Indexer text={tagName} />
-		&rbrace;
+		<span>&rbrace;</span>
 	{/if}
 	{#if !expanded}
-		&hellip;&lbrace;/
+		<span>&hellip;&lbrace;/</span>
 		<Indexer text={tagName} />
-		&rbrace;
+		<span>&rbrace;</span>
 	{/if}
 </div>
 {#if expanded}
 	<slot />
 	<div class="tag-close tag-name" class:hover {style}>
-		&lbrace;/
+		<span>&lbrace;/</span>
 		<Indexer text={tagName} />
-		&rbrace;
+		<span>&rbrace;</span>
 	</div>
 {/if}
 

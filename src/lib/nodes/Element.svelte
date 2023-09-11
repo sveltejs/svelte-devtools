@@ -65,23 +65,23 @@
 			<Indexer text={tagName} />
 		</span>
 		<ElementAttributes attributes={cached} {listeners} />
-		&gt;
+		<span>&gt;</span>
 		{#if !expanded}
-			&hellip;&lt;/
+			<span>&hellip;&lt;/</span>
 			<span class="tag-name">
 				<Indexer text={tagName} />
 			</span>
-			&gt;
+			<span>&gt;</span>
 		{/if}
 	</div>
 	{#if expanded}
 		<slot />
 		<div class:hover {style}>
-			&lt;/
+			<span>&lt;/</span>
 			<span class="tag-name">
 				<Indexer text={tagName} />
 			</span>
-			&gt;
+			<span>&gt;</span>
 		</div>
 	{/if}
 {:else}

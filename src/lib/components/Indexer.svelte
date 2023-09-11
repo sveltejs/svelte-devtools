@@ -1,12 +1,17 @@
 <script lang="ts">
 	import { query } from '$lib/store';
 
-	export let text: string;
+	export let text = '';
 
 	$: i = text ? text.indexOf($query) : -1;
-	$: pre = text ? text.substring(0, i) : '';
-	$: highlight = text ? text.substring(i, i + $query.length) : '';
-	$: post = text ? text.substring(i + $query.length) : '';
 </script>
 
-{#if i === -1 || $query.length < 2}{text}{:else}{pre}<mark>{highlight}</mark>{post}{/if}
+{#if i === -1 || $query.length < 2}
+	<span>{text}</span>
+{:else}
+	{@const pre = text.slice(0, i)}
+	{@const highlight = text.slice(i, i + $query.length)}
+	{@const post = text.slice(i + $query.length)}
+
+	<span>{pre}</span><mark>{highlight}</mark><span>{post}</span>
+{/if}
