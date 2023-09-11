@@ -62,7 +62,7 @@
 			>
 				<ul class:active style:--left="{left}px">
 					{#each node.children as child (child.id)}
-						{@const level = node.type == 'iteration' ? depth : depth + 1}
+						{@const level = node.type === 'iteration' ? depth : depth + 1}
 
 						<svelte:self node={child} depth={level} />
 					{/each}
@@ -79,7 +79,7 @@
 			>
 				<ul class:active style:--left="{left}px">
 					{#each node.children as child (child.id)}
-						{@const level = node.type == 'iteration' ? depth : depth + 1}
+						{@const level = node.type === 'iteration' ? depth : depth + 1}
 
 						<svelte:self node={child} depth={level} />
 					{/each}
@@ -89,7 +89,7 @@
 			<Iteration selected={active} hover={current} {style}>
 				<ul class:active style:--left="{left}px">
 					{#each node.children as child (child.id)}
-						{@const level = node.type == 'iteration' ? depth : depth + 1}
+						{@const level = node.type === 'iteration' ? depth : depth + 1}
 
 						<svelte:self node={child} depth={level} />
 					{/each}
@@ -105,7 +105,7 @@
 			>
 				<ul class:active style:--left="{left}px">
 					{#each node.children as child (child.id)}
-						{@const level = node.type == 'iteration' ? depth : depth + 1}
+						{@const level = node.type === 'iteration' ? depth : depth + 1}
 
 						<svelte:self node={child} depth={level} />
 					{/each}

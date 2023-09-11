@@ -30,7 +30,7 @@
 
 {#each listeners as { event, handler, modifiers }}
 	<span>&nbsp;</span>
-	<span class="attr-name" data-tooltip={typeof handler == 'function' ? handler() : handler}>
+	<span class="attr-name" data-tooltip={typeof handler === 'function' ? handler() : handler}>
 		on:
 		<Indexer text={event} />
 		{#if modifiers && modifiers.length}|{modifiers.join('|')}{/if}

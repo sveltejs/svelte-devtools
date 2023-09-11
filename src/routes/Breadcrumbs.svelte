@@ -7,7 +7,7 @@
 	let shortened: boolean;
 
 	async function setSelectedBreadcrumb(node: typeof $selected) {
-		if (breadcrumbs.find((o) => o.id == node?.id)) return;
+		if (breadcrumbs.find((o) => o.id === node?.id)) return;
 
 		breadcrumbs = [];
 		while (node && node.tagName) {

@@ -16,7 +16,7 @@ const nodes = new Map();
 function insertNode(node: any, target: any, anchorId: number) {
 	node.parent = target;
 
-	const index = anchorId ? target.children.findIndex((o: any) => o.id == anchorId) : -1;
+	const index = anchorId ? target.children.findIndex((o: any) => o.id === anchorId) : -1;
 
 	if (index !== -1) {
 		target.children.splice(index, 0, node);
@@ -35,18 +35,18 @@ function resolveEventBubble(node: any) {
 
 		listener.handler = () => {
 			let target = node;
-			while ((target = target.parent)) if (target.type == 'component') break;
+			while ((target = target.parent)) if (target.type === 'component') break;
 
 			const listeners = target.detail.listeners;
 			if (!listeners) return null;
 
-			const parentListener = listeners.find((o: any) => o.event == listener.event);
+			const parentListener = listeners.find((o: any) => o.event === listener.event);
 			if (!parentListener) return null;
 
 			const handler = parentListener.handler;
 			if (!handler) return null;
 
-			return '// From parent\n' + (typeof handler == 'function' ? handler() : handler);
+			return '// From parent\n' + (typeof handler === 'function' ? handler() : handler);
 		};
 	}
 }
@@ -72,11 +72,11 @@ port.onMessage.addListener(({ type, payload }) => {
 			node.invalidate = () => {};
 			resolveEventBubble(node);
 
-			const targetNode = nodes.get(target);
+			const map_node = nodes.get(target);
 			nodes.set(node.id, node);
 
-			if (targetNode) {
-				insertNode(node, targetNode, anchor);
+			if (map_node) {
+				insertNode(node, map_node, anchor);
 				return;
 			}
 
@@ -97,7 +97,7 @@ port.onMessage.addListener(({ type, payload }) => {
 			nodes.delete(current.id);
 			if (!current.parent) break;
 
-			const index = current.parent.children.findIndex((o: any) => o.id == current.id);
+			const index = current.parent.children.findIndex((o: any) => o.id === current.id);
 			current.parent.children.splice(index, 1);
 			current.parent.invalidate();
 			break;
@@ -109,7 +109,7 @@ port.onMessage.addListener(({ type, payload }) => {
 			Object.assign(current, payload.node);
 			resolveEventBubble(current);
 
-			// if ($selected?.id == node.id) selected.update((o) => o);
+			// if ($selected?.id === node.id) selected.update((o) => o);
 
 			return current.invalidate();
 		}

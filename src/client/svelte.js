@@ -195,7 +195,7 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 		block.d = (detaching) => {
 			const node = nodes.map.get(current_node_id);
 			if (node) {
-				if (node.tagName == 'await') {
+				if (node.tagName === 'await') {
 					last_promise = node.parentBlock;
 				}
 				nodes.remove(node);
