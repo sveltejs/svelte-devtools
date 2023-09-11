@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Indexer from '../components/Indexer.svelte';
+	import Indexer from '$lib/components/Indexer.svelte';
 	import ElementAttributes from './ElementAttributes.svelte';
 
 	import type { ComponentProps } from 'svelte';

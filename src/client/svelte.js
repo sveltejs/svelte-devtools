@@ -1,73 +1,65 @@
 import { listeners } from './listener.js';
 // import { updateProfile } from './profiler.js';
 
-/** @type {any} */
-let currentBlock;
+/** @type {undefined | SvelteBlockDetail} */
+let current_block;
 let pointer = 0;
 
-/** @param {string | Node} id */
+/** @param {number | Node} id */
 export function getNode(id) {
 	return nodes.map.get(id);
 }
 
-/**
- * @typedef {DocumentEventMap['SvelteRegisterBlock']['detail']} SvelteBlock
- */
-
 const nodes = {
-	/** @type {SvelteBlock[]} */
+	/** @type {SvelteBlockDetail[]} */
 	root: [],
 
-	/** @type {Map<string | Node, SvelteBlock>} */
+	/** @type {Map<any, SvelteBlockDetail>} */
 	map: new Map(),
 
-	/** @param {{ anchor?: Node; target?: Node; node: SvelteBlock }} opts */
-	add({ node, anchor, target }) {
-		console.log({ node, anchor, target });
-
+	/** @param {{ node: SvelteBlockDetail; target?: Node; anchor?: Node }} opts */
+	add({ node, target, anchor }) {
 		this.map.set(node.id, node);
 		this.map.set(node.detail, node);
 
-		let targetNode = target && this.map.get(target);
-		if (!targetNode || targetNode.parentBlock != node.parentBlock) {
-			targetNode = node.parentBlock;
+		let map_target = target && this.map.get(target);
+		if (!map_target || map_target.parentBlock != node.parentBlock) {
+			map_target = node.parentBlock;
 		}
 
-		node.parent = targetNode;
+		node.parent = map_target;
 
-		const anchorNode = this.map.get(anchor);
+		const map_anchor = this.map.get(anchor);
 
-		if (targetNode) {
-			let index = -1;
-			if (anchorNode) index = targetNode.children.indexOf(anchorNode);
-
-			if (index !== -1) {
-				targetNode.children.splice(index, 0, node);
-			} else {
-				targetNode.children.push(node);
-			}
+		if (map_target) {
+			const index = map_target.children.findIndex((n) => n === map_anchor);
+			if (index === -1) map_target.children.push(node);
+			else map_target.children.splice(index, 0, node);
 		} else {
 			this.root.push(node);
 		}
 
-		listeners.add(node, anchorNode);
+		listeners.add(node, map_anchor);
 	},
 
+	/** @param {SvelteBlockDetail} node */
 	remove(node) {
 		if (!node) return;
 
 		this.map.delete(node.id);
 		this.map.delete(node.detail);
 
-		const index = node.parent.children.indexOf(node);
-		node.parent.children.splice(index, 1);
-		node.parent = null;
+		if (node.parent) {
+			node.parent.children = node.parent.children.filter((n) => n !== node);
+			node.parent = undefined;
+		}
 
 		listeners.remove(node);
 	},
 };
 
 document.addEventListener('SvelteRegisterComponent', ({ detail }) => {
+	console.log('SvelteRegisterComponent', detail);
 	const { component, tagName } = detail;
 
 	const node = nodes.map.get(component.$$.fragment);
@@ -79,7 +71,7 @@ document.addEventListener('SvelteRegisterComponent', ({ detail }) => {
 
 		listeners.update(node);
 	} else {
-		// @ts-expect-error - TODO fix
+		// @ts-expect-error - component special case
 		nodes.map.set(component.$$.fragment, {
 			type: 'component',
 			detail: component,
@@ -88,125 +80,142 @@ document.addEventListener('SvelteRegisterComponent', ({ detail }) => {
 	}
 });
 
-let lastPromiseParent;
+/** @type {any} */
+let last_promise;
 document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
-	console.log(detail);
+	console.log('SvelteRegisterBlock', detail);
+
 	const { type, id, block, ...rest } = detail;
-	const nodeId = pointer++;
+	const current_node_id = pointer++;
 
-	// if (block.m) {
-	// 	// const mountFn = block.m;
-	// 	block.m = (target, anchor) => {
-	// 		const parentBlock = currentBlock;
-	// 		let node = {
-	// 			id: nodeId,
-	// 			type: 'block',
-	// 			detail: rest,
-	// 			tagName: type === 'pending' ? 'await' : type,
-	// 			parentBlock,
-	// 			children: [],
-	// 		};
+	if (block.m) {
+		const original = block.m;
+		block.m = (target, anchor) => {
+			const parent = current_block;
+			const node = {
+				id: current_node_id,
+				type: 'block',
+				detail: rest,
+				tagName: type === 'pending' ? 'await' : type,
+				parentBlock: parent,
+				children: [],
+			};
 
-	// 		switch (type) {
-	// 			case 'then':
-	// 			case 'catch':
-	// 				if (!node.parentBlock) node.parentBlock = lastPromiseParent;
-	// 				break;
+			switch (type) {
+				case 'then':
+				case 'catch':
+					if (!node.parentBlock) node.parentBlock = last_promise;
+					break;
 
-	// 			case 'slot':
-	// 				node.type = 'slot';
-	// 				break;
+				case 'slot':
+					node.type = 'slot';
+					break;
 
-	// 			case 'component':
-	// 				const componentNode = nodes.map.get(block);
-	// 				if (componentNode) {
-	// 					nodes.map.delete(block);
-	// 					Object.assign(node, componentNode);
-	// 				} else {
-	// 					Object.assign(node, {
-	// 						type: 'component',
-	// 						tagName: 'Unknown',
-	// 						detail: {},
-	// 					});
-	// 					nodes.map.set(block, node);
-	// 				}
+				case 'component': {
+					const component = nodes.map.get(block);
+					if (component) {
+						nodes.map.delete(block);
+						Object.assign(node, component);
+					} else {
+						console.log('is unknown!', detail);
+						Object.assign(node, {
+							type: 'component',
+							tagName: 'Unknown',
+							detail: {},
+						});
+						// @ts-expect-error - component special case
+						nodes.map.set(block, node);
+					}
 
-	// 				Promise.resolve().then(
-	// 					() =>
-	// 						node.detail.$$ && Object.keys(node.detail.$$.bound).length && listeners.update(node),
-	// 				);
-	// 				break;
-	// 		}
+					// @ts-expect-error - component special case
+					listeners.update(node);
 
-	// 		if (type === 'each') {
-	// 			let group = nodes.map.get(parentBlock.id + id);
-	// 			if (!group) {
-	// 				group = {
-	// 					id: pointer++,
-	// 					type: 'block',
-	// 					detail: {
-	// 						ctx: {},
-	// 						source: detail.source,
-	// 					},
-	// 					tagName: 'each',
-	// 					parentBlock,
-	// 					children: [],
-	// 				};
-	// 				nodes.map.set(parentBlock.id + id, group);
-	// 				nodes.add({ node: group, target, anchor });
-	// 			}
-	// 			node.parentBlock = group;
-	// 			node.type = 'iteration';
-	// 			nodes.add({ node, target: group, anchor });
-	// 		} else {
-	// 			nodes.add({ node, target, anchor });
-	// 		}
+					// Promise.resolve().then(() => {
+					// 	return node.detail.$$ && Object.keys(node.detail.$$.bound).length && listeners.update(node);
+					// });
+					break;
+				}
+			}
 
-	// 		currentBlock = node;
-	// 		// updateProfile(node, 'mount', mountFn, target, anchor);
-	// 		currentBlock = parentBlock;
-	// 	};
-	// }
+			if (type === 'each') {
+				const group =
+					(parent && nodes.map.get(parent.id + id)) ||
+					// @ts-expect-error - each block fallback
+					/** @type {SvelteBlockDetail} */ ({
+						version: '',
+						id: pointer++,
+						type: 'block',
+						tagName: 'each',
+						parentBlock: parent,
+						children: [],
+						detail: {
+							ctx: {},
+							source: detail.source,
+						},
+					});
+				parent && nodes.map.set(parent.id + id, group);
+				nodes.add({ node: group, target, anchor });
 
-	// if (block.p) {
-	// 	// const patchFn = block.p;
-	// 	block.p = (changed, ctx) => {
-	// 		const parentBlock = currentBlock;
-	// 		currentBlock = nodes.map.get(nodeId);
+				node.parentBlock = group;
+				node.type = 'iteration';
 
-	// 		listeners.update(currentBlock);
+				// @ts-expect-error - try to fix
+				nodes.add({ node, target: group, anchor });
+			} else {
+				// @ts-expect-error - try to fix
+				nodes.add({ node, target, anchor });
+			}
 
-	// 		// updateProfile(currentBlock, 'patch', patchFn, changed, ctx);
+			// @ts-expect-error - fix node declaration above
+			current_block = node;
 
-	// 		currentBlock = parentBlock;
-	// 	};
-	// }
+			// updateProfile(node, 'mount', mountFn, target, anchor);
+			original(target, anchor);
 
-	// if (block.d) {
-	// 	// const detachFn = block.d;
-	// 	block.d = (detaching) => {
-	// 		const node = nodes.map.get(nodeId);
+			current_block = parent;
+		};
+	}
 
-	// 		if (node) {
-	// 			if (node.tagName == 'await') lastPromiseParent = node.parentBlock;
+	if (block.p) {
+		const original = block.p;
+		block.p = (changed, ctx) => {
+			const parent = current_block;
+			current_block = nodes.map.get(current_node_id);
+			current_block && listeners.update(current_block);
 
-	// 			nodes.remove(node);
-	// 		}
+			// updateProfile(currentBlock, 'patch', patchFn, changed, ctx);
+			original(changed, ctx);
 
-	// 		// updateProfile(node, 'detach', detachFn, detaching);
-	// 	};
-	// }
+			current_block = parent;
+		};
+	}
+
+	if (block.d) {
+		const original = block.d;
+		block.d = (detaching) => {
+			const node = nodes.map.get(current_node_id);
+			if (node) {
+				if (node.tagName == 'await') {
+					last_promise = node.parentBlock;
+				}
+				nodes.remove(node);
+			}
+
+			// updateProfile(node, 'detach', detachFn, detaching);
+			original(detaching);
+		};
+	}
 });
 
 document.addEventListener('SvelteDOMInsert', ({ detail }) => {
-	console.log('SDI', detail);
+	console.log('SvelteDOMInsert', detail);
 
 	deep_insert(detail); // { node, target, anchor }
 
-	/** @type {typeof nodes['add']} */
+	/** @param {Omit<DocumentEventMap['SvelteDOMInsert']['detail'], 'version'>} opts */
 	function deep_insert({ node: element, target, anchor }) {
 		const type =
-			element.nodeType === 1
+			element.nodeType === Node.ELEMENT_NODE
 				? 'element'
 				: element.nodeValue && element.nodeValue !== ' '
 				? 'text'
@@ -215,20 +224,20 @@ document.addEventListener('SvelteDOMInsert', ({ detail }) => {
 		nodes.add({
 			anchor,
 			target,
+			// @ts-expect-error - missing properties are irrelevant
 			node: {
 				id: pointer++,
 				type,
 				detail: element,
 				tagName: element.nodeName.toLowerCase(),
-				parentBlock: currentBlock,
+				parentBlock: current_block,
 				children: [],
 			},
 		});
 
-		for (const child of element.childNodes) {
-			if (nodes.map.has(child)) continue;
-			deep_insert({ node: child, target: element });
-		}
+		element.childNodes.forEach((child) => {
+			!nodes.map.has(child) && deep_insert({ node: child, target: element });
+		});
 	}
 });
 
@@ -239,22 +248,16 @@ document.addEventListener('SvelteDOMRemove', ({ detail }) => {
 
 document.addEventListener('SvelteDOMAddEventListener', ({ detail }) => {
 	const { node, ...rest } = detail;
-	if (!node.__listeners) node.__listeners = [];
-	node.__listeners.push(rest);
+	node['SDT:listeners'] = node['SDT:listeners'] || [];
+	node['SDT:listeners'].push(rest);
 });
 
 document.addEventListener('SvelteDOMRemoveEventListener', ({ detail }) => {
 	const { node, event, handler, modifiers } = detail;
-
-	if (!node.__listeners) return;
-
-	const index = node.__listeners.findIndex(
-		(o) => o.event == event && o.handler == handler && o.modifiers == modifiers,
+	if (!node['SDT:listeners'] || node['SDT:listeners'].length) return;
+	node['SDT:listeners'] = node['SDT:listeners'].filter(
+		(l) => l.event !== event || l.handler !== handler || l.modifiers !== modifiers,
 	);
-
-	if (index === -1) return;
-
-	node.__listeners.splice(index, 1);
 });
 
 document.addEventListener('SvelteDOMSetData', ({ detail }) => {

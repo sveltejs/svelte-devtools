@@ -3,7 +3,7 @@ import { hovered, root, selected } from './store';
 const port = chrome.runtime.connect();
 const tabId = chrome.devtools.inspectedWindow.tabId;
 
-port.postMessage({ source: 'svelte-devtools', tabId, type: 'init' });
+port.postMessage({ source: 'svelte-devtools', tabId, type: 'ext/init' });
 
 export const background = {
 	send(type: `${'ext' | 'page'}/${string}`, payload?: any) {
@@ -59,6 +59,11 @@ port.onMessage.addListener(({ type, payload }) => {
 			return root.set([]);
 		}
 
+		case 'ext/inspect': {
+			const current = nodes.get(payload.node.id);
+			return selected.set(current);
+		}
+
 		case 'courier/node:add': {
 			const { node, target, anchor } = payload;
 
@@ -100,17 +105,13 @@ port.onMessage.addListener(({ type, payload }) => {
 
 		case 'courier/node:update': {
 			const current = nodes.get(payload.node.id);
+			if (!current) return; // TODO: investigate why this happens
 			Object.assign(current, payload.node);
 			resolveEventBubble(current);
 
 			// if ($selected?.id == node.id) selected.update((o) => o);
 
 			return current.invalidate();
-		}
-
-		case 'inspect': {
-			const current = nodes.get(payload.node.id);
-			return selected.set(current);
 		}
 
 		// case 'courier:profile.update': {

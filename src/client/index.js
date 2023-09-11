@@ -1,15 +1,10 @@
-import { addNodeListener } from './listener.js';
+import { addListener } from './listener.js';
 import { highlight } from './highlight.js';
 import { getNode } from './svelte.js';
 
 // window.__svelte_devtools_inject_state = (id, key, value) => {
 // 	const { detail: component } = getNode(id) || {};
 // 	component.$inject_state({ [key]: value });
-// };
-
-// window.__svelte_devtools_select_element = function (element) {
-// 	let node = getNode(element);
-// 	if (node) window.postMessage({ type: 'inspect', node: serializeNode(node) });
 // };
 
 window.addEventListener('message', ({ source, data }) => {
@@ -19,6 +14,7 @@ window.addEventListener('message', ({ source, data }) => {
 	switch (data.type) {
 		case 'ext/select': {
 			const node = getNode(data.payload);
+			// @ts-expect-error - saved for `inspect()`
 			if (node) window.$s = node.detail;
 			return;
 		}
@@ -28,7 +24,27 @@ window.addEventListener('message', ({ source, data }) => {
 		}
 
 		// case 'ext/inspect': {
-		// 	return data.payload ? startPicker() : stopPicker();
+		// 	console.log(data.payload, data.payload instanceof HTMLElement);
+		// 	/** @param {MouseEvent} event  */
+		// 	const move = ({ target }) => highlight({ type: 'element', detail: target });
+		// 	if (data.payload instanceof HTMLElement) {
+		// 		const node = getNode(data.payload);
+		// 		if (node) window.postMessage({ type: 'inspect', node: serialize(node) });
+		// 	} else if (data.payload === 'start') {
+		// 		document.addEventListener('mousemove', move, true);
+		// 		document.addEventListener(
+		// 			'click',
+		// 			({ target }) => {
+		// 				document.removeEventListener('mousemove', move, true);
+		// 				const node = getNode(/** @type {Node} */ (target));
+		// 				if (node) window.postMessage({ type: 'inspect', node: serialize(node) });
+		// 			},
+		// 			{ capture: true, once: true },
+		// 		);
+		// 		return;
+		// 	}
+		// 	document.removeEventListener('mousemove', move, true);
+		// 	return highlight(undefined);
 		// }
 
 		// case 'ext/profiler': {
@@ -74,10 +90,11 @@ function serialize(node) {
 				};
 			}
 
+			console.log('serializing component', node);
+
 			const { $$: internal } = node.detail;
 			const props = Object.keys(internal.props);
-			let ctx = clone(node.detail.$capture_state());
-			if (ctx === undefined) ctx = {};
+			const ctx = clone(node.detail.$capture_state()) || {};
 
 			return {
 				id: node.id,
@@ -98,7 +115,12 @@ function serialize(node) {
 		}
 
 		case 'element': {
-			const { attributes, __listeners = [] } = node.detail;
+			const attributes = node.detail.attributes || [];
+
+			/** @type {NonNullable<SvelteListenerDetail['node']['SDT:listeners']>} */
+			const listeners = node.detail['SDT:listeners'] || [];
+
+			console.log({ attributes, listeners });
 
 			return {
 				id: node.id,
@@ -109,7 +131,7 @@ function serialize(node) {
 						key: attr.name,
 						value: attr.value,
 					})),
-					listeners: __listeners.map((o) => ({ ...o, handler: o.handler.toString() })),
+					listeners: listeners.map((o) => ({ ...o, handler: o.handler.toString() })),
 				},
 			};
 		}
@@ -139,6 +161,15 @@ function serialize(node) {
 				},
 			};
 		}
+
+		default: {
+			return {
+				id: node.id,
+				type: node.type,
+				tagName: node.tagName,
+				detail: {},
+			};
+		}
 	}
 }
 
@@ -150,12 +181,11 @@ function send(type, payload) {
 	window.postMessage({ source: 'svelte-devtools', type, payload });
 }
 
-addNodeListener({
+addListener({
 	add(node, anchor) {
 		console.log('adding root node', { node, anchor });
 		send('courier/node:add', {
 			node: serialize(node),
-			// @ts-expect-error
 			target: node.parent?.id ?? null,
 			anchor: anchor?.id ?? null,
 		});

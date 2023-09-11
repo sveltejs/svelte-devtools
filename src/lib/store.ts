@@ -10,18 +10,14 @@ export const visibility = writable<{ [key: string]: boolean }>({
 	anchor: false,
 });
 
-interface DebugNode {
-	id: number;
-	type: string;
-	detail: any;
-	tagName: string;
+type DebugNode = Omit<SvelteBlockDetail, 'parent' | 'children'> & {
 	invalidate(): void;
 	expanded: boolean;
-	parent: DebugNode;
-	children: any[];
 
+	parent: DebugNode;
+	children: DebugNode[];
 	dom?: HTMLLIElement;
-}
+};
 export const selected = writable<undefined | DebugNode>(undefined);
 export const hovered = writable<undefined | DebugNode>(undefined);
 export const root = writable<DebugNode[]>([]);

@@ -4,7 +4,7 @@ const dom = {
 	y: document.createElement('div'),
 };
 
-/** @param {DocumentEventMap['SvelteRegisterBlock']['detail']} [node] */
+/** @param {Pick<SvelteBlockDetail, 'type' | 'detail'>} [node] */
 export function highlight(node) {
 	if (!node || node.type !== 'element' || !node.detail) {
 		dom.area.remove();
@@ -48,28 +48,4 @@ export function highlight(node) {
 	document.body.appendChild(dom.area);
 	document.body.appendChild(dom.x);
 	document.body.appendChild(dom.y);
-}
-
-/** @type {null | HTMLElement} */
-let target = null;
-function handleMousemove(e) {
-	target = e.target;
-	highlight({ type: 'element', detail: target });
-}
-
-export function stopPicker() {
-	document.removeEventListener('mousemove', handleMousemove, true);
-	highlight(undefined);
-}
-
-export function startPicker() {
-	document.addEventListener('mousemove', handleMousemove, true);
-	document.addEventListener(
-		'click',
-		() => {
-			stopPicker();
-			window.__svelte_devtools_select_element(target);
-		},
-		{ capture: true, once: true },
-	);
 }

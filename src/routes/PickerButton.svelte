@@ -9,7 +9,7 @@
 	function click() {
 		if (active) {
 			active = false;
-			background.send('ext/stopPicker');
+			background.send('ext/inspect', 'stop');
 			return;
 		}
 
@@ -24,7 +24,7 @@
 			}, 120);
 		});
 		active = true;
-		background.send('ext/startPicker');
+		background.send('ext/inspect', 'start');
 	}
 </script>
 

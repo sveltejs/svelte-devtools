@@ -1,41 +1,18 @@
-/**
- * @typedef {{
- * 	id: string;
- * 	type: string;
- * 	tagName: string;
- * }} Node
- */
-
-/** @type {typeof listeners[]} */
-const nodes = [];
-
-/** @param {typeof nodes[number]} listener */
-export function addNodeListener(listener) {
-	nodes.push(listener);
-}
-
-/** @param {typeof nodes[number]} listener */
-export function removeNodeListener(listener) {
-	const index = nodes.indexOf(listener);
-	if (index === -1) return false;
-	return !!nodes.splice(index, 1);
-}
-
 export const listeners = {
 	/**
-	 * @param {Node} node
-	 * @param {Node} anchor
+	 * @param {SvelteBlockDetail} node
+	 * @param {SvelteBlockDetail} [anchor]
 	 */
 	add(node, anchor) {
 		nodes.forEach(({ add }) => add(node, anchor));
 	},
 
-	/** @param {Node} node */
+	/** @param {SvelteBlockDetail} node */
 	update(node) {
 		node && nodes.forEach(({ update }) => update(node));
 	},
 
-	/** @param {Node} node */
+	/** @param {SvelteBlockDetail} node */
 	remove(node) {
 		nodes.forEach(({ remove }) => remove(node));
 	},
@@ -45,3 +22,18 @@ export const listeners = {
 		nodes.forEach(({ profile }) => profile(frame));
 	},
 };
+
+/** @type {typeof listeners[]} */
+const nodes = [];
+
+/** @param {typeof nodes[number]} listener */
+export function addListener(listener) {
+	nodes.push(listener);
+}
+
+/** @param {typeof nodes[number]} listener */
+export function removeListener(listener) {
+	const index = nodes.indexOf(listener);
+	if (index === -1) return false;
+	return !!nodes.splice(index, 1);
+}
