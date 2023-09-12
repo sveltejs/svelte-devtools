@@ -32,7 +32,7 @@ pnpm install
 pnpm build
 ```
 
-This should build the codebase and output a zip file under `web-ext-artifacts`.
+This will build the codebase and output all the required files in the `build` directory. To load the extension for development, follow these steps:
 
 1. Navigate to the extensions settings page
 2. Turn on the 'Developer mode' switch

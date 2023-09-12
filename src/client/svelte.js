@@ -59,7 +59,6 @@ const nodes = {
 };
 
 document.addEventListener('SvelteRegisterComponent', ({ detail }) => {
-	console.log('SvelteRegisterComponent', detail);
 	const { component, tagName } = detail;
 
 	const node = nodes.map.get(component.$$.fragment);
@@ -83,8 +82,6 @@ document.addEventListener('SvelteRegisterComponent', ({ detail }) => {
 /** @type {any} */
 let last_promise;
 document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
-	console.log('SvelteRegisterBlock', detail);
-
 	const { type, id, block, ...rest } = detail;
 	const current_node_id = pointer++;
 
@@ -92,14 +89,16 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 		const original = block.m;
 		block.m = (target, anchor) => {
 			const parent = current_block;
-			const node = {
+
+			// @ts-expect-error - don't need 'block' | 'source' | 'ctx'
+			const node = /** @type {SvelteBlockDetail} */ ({
 				id: current_node_id,
 				type: 'block',
 				detail: rest,
 				tagName: type === 'pending' ? 'await' : type,
 				parentBlock: parent,
 				children: [],
-			};
+			});
 
 			switch (type) {
 				case 'then':
@@ -117,17 +116,12 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 						nodes.map.delete(block);
 						Object.assign(node, component);
 					} else {
-						console.log('is unknown!', detail);
-						Object.assign(node, {
-							type: 'component',
-							tagName: 'Unknown',
-							detail: {},
-						});
-						// @ts-expect-error - component special case
+						node.type = 'component';
+						node.tagName = 'Unknown';
+						node.detail = {};
 						nodes.map.set(block, node);
 					}
 
-					// @ts-expect-error - component special case
 					listeners.update(node);
 
 					// Promise.resolve().then(() => {
@@ -162,11 +156,9 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 				// @ts-expect-error - try to fix
 				nodes.add({ node, target: group, anchor });
 			} else {
-				// @ts-expect-error - try to fix
 				nodes.add({ node, target, anchor });
 			}
 
-			// @ts-expect-error - fix node declaration above
 			current_block = node;
 
 			// updateProfile(node, 'mount', mountFn, target, anchor);
@@ -208,8 +200,6 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 });
 
 document.addEventListener('SvelteDOMInsert', ({ detail }) => {
-	console.log('SvelteDOMInsert', detail);
-
 	deep_insert(detail); // { node, target, anchor }
 
 	/** @param {Omit<DocumentEventMap['SvelteDOMInsert']['detail'], 'version'>} opts */

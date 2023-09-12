@@ -32,7 +32,7 @@
 		{/each}
 	</ul>
 {:else}
-	<div class="empty">None</div>
+	<div style:padding-left="1rem" style:color="rgb(118, 118, 118)">None</div>
 {/if}
 
 <style>
@@ -40,17 +40,6 @@
 		display: grid;
 		gap: 0.25rem;
 		padding-left: 1rem;
-		margin: 0.25rem;
 		font-size: 0.75rem;
-	}
-
-	.empty {
-		margin: 0.5rem 0 0 1rem;
-		color: rgb(118, 118, 118);
-	}
-
-	ul,
-	div {
-		margin-bottom: 1.5rem;
 	}
 </style>

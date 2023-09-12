@@ -19,7 +19,7 @@
 	on:dblclick={() => (expanded = !expanded)}
 >
 	{#if source}
-		{source}
+		<span>{source}</span>
 	{:else}
 		<span>&lbrace;#</span>
 		<Indexer text={tagName} />
@@ -33,6 +33,7 @@
 </div>
 {#if expanded}
 	<slot />
+
 	<div class="tag-close tag-name" class:hover {style}>
 		<span>&lbrace;/</span>
 		<Indexer text={tagName} />
@@ -42,12 +43,9 @@
 
 <style>
 	div {
-		/* height: 1.333rem; */
-		line-height: 1.5;
-	}
-
-	div {
+		display: flex;
 		color: rgb(151, 164, 179);
+		line-height: 1.5;
 	}
 
 	:global(.dark) div {

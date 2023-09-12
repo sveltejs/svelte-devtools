@@ -2,16 +2,23 @@
 	import { query } from '$lib/store';
 
 	export let text = '';
+	export let color = '';
 
 	$: i = text ? text.indexOf($query) : -1;
 </script>
 
-{#if i === -1 || $query.length < 2}
-	<span>{text}</span>
-{:else}
-	{@const pre = text.slice(0, i)}
-	{@const highlight = text.slice(i, i + $query.length)}
-	{@const post = text.slice(i + $query.length)}
+<div style:color>
+	{#if i === -1 || $query.length < 2}
+		<span>{text}</span>
+	{:else}
+		<span>{text.slice(0, i)}</span>
+		<mark>{text.slice(i, i + $query.length)}</mark>
+		<span>{text.slice(i + $query.length)}</span>
+	{/if}
+</div>
 
-	<span>{pre}</span><mark>{highlight}</mark><span>{post}</span>
-{/if}
+<style>
+	div {
+		display: flex;
+	}
+</style>

@@ -44,7 +44,7 @@
 		bind:this={node.dom}
 		on:animationend={() => (flash = false)}
 		on:click|stopPropagation={() => selected.set(node)}
-		on:mouseenter|stopPropagation={() => {
+		on:mousemove|stopPropagation={() => {
 			hovered.set(node);
 			background.send('ext/highlight', node.id);
 		}}
@@ -143,9 +143,9 @@
 		z-index: 1;
 		width: 0.125rem;
 		position: absolute;
-		top: 0.25rem;
-		bottom: 0.25rem;
-		left: var(--left);
+		top: 0.2rem;
+		bottom: 0.15rem;
+		left: calc(var(--left) - 0.75rem);
 		background: #e0e0e2;
 	}
 
@@ -169,7 +169,6 @@
 	li :global(.selected *),
 	li :global(.hover.selected) {
 		background: rgb(0, 116, 232);
-		color: #ffffff;
 	}
 
 	li :global(> .selected::after) {
@@ -187,13 +186,11 @@
 		background: rgb(53, 59, 72);
 	}
 
-	:global(.dark) span,
 	/* :global(.dark) li.selected, */
 	:global(.dark) li :global(.selected),
 	:global(.dark) li :global(.selected *),
 	:global(.dark) li :global(.hover.selected) {
 		background: rgb(32, 78, 138);
-		color: #ffffff;
 	}
 
 	@keyframes flash {

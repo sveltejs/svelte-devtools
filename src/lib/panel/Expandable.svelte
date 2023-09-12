@@ -41,6 +41,8 @@
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <li
 	data-tooltip={error || null}
+	style:--left="-0.5rem"
+	style:--y-pad="0.125rem"
 	class:expanded
 	class:expandable={scope(() => {
 		if (value == null || value !== value) return false;

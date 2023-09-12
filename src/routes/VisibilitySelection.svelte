@@ -36,7 +36,7 @@
 
 <style>
 	section {
-		z-index: 1;
+		z-index: 9;
 		position: absolute;
 		top: 100%;
 		left: 0;

@@ -53,6 +53,10 @@ window.addEventListener('message', ({ source, data }) => {
 	}
 });
 
+/**
+ * @param {unknown} value
+ * @returns {any}
+ */
 function clone(value, seen = new Map()) {
 	switch (typeof value) {
 		case 'function':
@@ -64,13 +68,12 @@ function clone(value, seen = new Map()) {
 			if (Array.isArray(value)) return value.map((o) => clone(o, seen));
 			if (seen.has(value)) return {};
 
+			/** @type {Record<string, any>} */
 			const o = {};
 			seen.set(value, o);
-
 			for (const [key, v] of Object.entries(value)) {
 				o[key] = clone(v, seen);
 			}
-
 			return o;
 		}
 		default:
@@ -78,36 +81,26 @@ function clone(value, seen = new Map()) {
 	}
 }
 
+/** @param {SvelteBlockDetail} node  */
 function serialize(node) {
 	switch (node.type) {
 		case 'component': {
-			if (!node.detail.$$) {
-				return {
-					id: node.id,
-					type: node.type,
-					tagName: node.tagName,
-					detail: {},
-				};
-			}
-
-			console.log('serializing component', node);
-
-			const { $$: internal } = node.detail;
-			const props = Object.keys(internal.props);
-			const ctx = clone(node.detail.$capture_state()) || {};
+			const { $$: internal = {} } = node.detail;
+			const ctx = clone(node.detail.$capture_state?.() || internal.ctx || {});
+			const props = Object.keys(internal.props || {}).flatMap((key) => {
+				const value = ctx[key];
+				delete ctx[key];
+				return value === undefined ? [] : { key, value, bounded: key in internal.bound };
+			});
 
 			return {
 				id: node.id,
 				type: node.type,
 				tagName: node.tagName,
 				detail: {
-					attributes: props.flatMap((key) => {
-						const value = ctx[key];
-						delete ctx[key];
-						return value === undefined ? [] : { key, value, bounded: key in internal.bound };
-					}),
-					listeners: Object.entries(internal.callbacks).flatMap(([event, value]) =>
-						value.map((o) => ({ event, handler: o.toString() })),
+					attributes: props,
+					listeners: Object.entries(internal.callbacks || {}).flatMap(([event, value]) =>
+						value.map(/** @param {Function} f */ (f) => ({ event, handler: f.toString() })),
 					),
 					ctx: Object.entries(ctx).map(([key, value]) => ({ key, value })),
 				},
@@ -115,22 +108,18 @@ function serialize(node) {
 		}
 
 		case 'element': {
-			const attributes = node.detail.attributes || [];
+			/** @type {Attr[]} from {NamedNodeMap} */
+			const attributes = Array.from(node.detail.attributes || []);
 
 			/** @type {NonNullable<SvelteListenerDetail['node']['SDT:listeners']>} */
 			const listeners = node.detail['SDT:listeners'] || [];
-
-			console.log({ attributes, listeners });
 
 			return {
 				id: node.id,
 				type: node.type,
 				tagName: node.tagName,
 				detail: {
-					attributes: Array.from(attributes).map((attr) => ({
-						key: attr.name,
-						value: attr.value,
-					})),
+					attributes: attributes.map(({ name: key, value }) => ({ key, value })),
 					listeners: listeners.map((o) => ({ ...o, handler: o.handler.toString() })),
 				},
 			};
@@ -156,8 +145,8 @@ function serialize(node) {
 				type: node.type,
 				tagName: node.tagName,
 				detail: {
-					ctx: cloned.map(([key, value]) => ({ key, value })),
 					source: source.substring(source.indexOf('{'), source.indexOf('}') + 1),
+					ctx: cloned.map(([key, value]) => ({ key, value })),
 				},
 			};
 		}
@@ -183,7 +172,6 @@ function send(type, payload) {
 
 addListener({
 	add(node, anchor) {
-		console.log('adding root node', { node, anchor });
 		send('courier/node:add', {
 			node: serialize(node),
 			target: node.parent?.id ?? null,
@@ -192,17 +180,14 @@ addListener({
 	},
 
 	remove(node) {
-		console.log('removing root node', { node });
 		send('courier/node:remove', { node: serialize(node) });
 	},
 
 	update(node) {
-		console.log('updating root node', { node });
 		send('courier/node:update', { node: serialize(node) });
 	},
 
 	profile(/** frame */) {
-		// console.log('profiling frame', { frame });
 		// send('courier/profile:update', { frame });
 	},
 });

@@ -45,6 +45,7 @@ declare global {
 			| 'element'
 			| 'else'
 			| 'if'
+			| 'iteration'
 			| 'key'
 			| 'pending'
 			| 'slot'

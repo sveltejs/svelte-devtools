@@ -52,6 +52,12 @@
 		right: 0;
 		height: 0.2rem;
 	}
+	.resize + div {
+		display: grid;
+		gap: 0.625rem;
+		align-content: flex-start;
+		padding-top: 1rem;
+	}
 	.resize.x + div {
 		overflow-x: hidden;
 	}
