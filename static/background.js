@@ -14,33 +14,15 @@ chrome.runtime.onConnect.addListener((port) => {
 /** @type {Parameters<chrome.runtime.Port['onMessage']['addListener']>[0]} */
 function handleToolsMessage(msg, port) {
 	switch (msg.type) {
-		case 'init': {
-			chrome.tabs.executeScript(msg.tabId, {
-				code: msg.profilerEnabled
-					? `window.sessionStorage.SvelteDevToolsProfilerEnabled = "true"`
-					: 'delete window.sessionStorage.SvelteDevToolsProfilerEnabled',
-				runAt: 'document_start',
-			});
-
-			ports.set(msg.tabId, port);
-
-			port.onDisconnect.addListener(() => {
-				ports.delete(msg.tabId);
-
-				chrome.tabs.onUpdated.removeListener(attach);
-				chrome.tabs.sendMessage(msg.tabId, {
-					type: 'clear',
-					tabId: msg.tabId,
-				});
-			});
-
-			return chrome.tabs.onUpdated.addListener(attach);
-		}
+		case 'init':
+			setup(msg.tabId, port, msg.profilerEnabled);
+			break;
 		case 'reload':
-			return void chrome.tabs.reload(msg.tabId, { bypassCache: true });
+			chrome.tabs.reload(msg.tabId, { bypassCache: true });
+			break;
 		default:
-			// relay messages from devtools page to content scripts
-			return void chrome.tabs.sendMessage(msg.tabId, msg);
+			chrome.tabs.sendMessage(msg.tabId, msg);
+			break;
 	}
 }
 
@@ -58,4 +40,33 @@ function attach(tabId, changed) {
 		file: '/courier.js',
 		runAt: 'document_start',
 	});
+}
+
+/**
+ *
+ * @param {number} tabId
+ * @param {chrome.runtime.Port} port
+ * @param {boolean} profilerEnabled
+ */
+function setup(tabId, port, profilerEnabled) {
+	chrome.tabs.executeScript(tabId, {
+		code: profilerEnabled
+			? `window.sessionStorage.SvelteDevToolsProfilerEnabled = "true"`
+			: 'delete window.sessionStorage.SvelteDevToolsProfilerEnabled',
+		runAt: 'document_start',
+	});
+
+	ports.set(tabId, port);
+
+	port.onDisconnect.addListener(() => {
+		ports.delete(tabId);
+
+		chrome.tabs.onUpdated.removeListener(attach);
+		chrome.tabs.sendMessage(tabId, {
+			type: 'clear',
+			tabId: tabId,
+		});
+	});
+
+	chrome.tabs.onUpdated.addListener(attach);
 }

@@ -14,7 +14,7 @@
 	"background": {
 		"scripts": ["background.js"]
 	},
-	"devtools_page": "register.html",
+	"devtools_page": "devtools/index.html",
 	"permissions": ["tabs", "<all_urls>"],
 	"web_accessible_resources": ["courier.js"]
 }
