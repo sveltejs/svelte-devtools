@@ -1,9 +1,9 @@
 <script lang="ts">
 	export let type: 'horizontal' | 'vertical';
-	export let margin: `${string}rem` = '0rem';
+	export let spacing: `${string}rem` = '0rem';
 </script>
 
-<div class={type} style="--spacing: {margin}"></div>
+<div class={type} style="--spacing: {spacing}"></div>
 
 <style>
 	div {

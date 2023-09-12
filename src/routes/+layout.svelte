@@ -84,23 +84,23 @@
 		<!-- <Profiler /> -->
 
 		<Toolbar>
-			<ProfileButton />
+			<!-- TODO: reenable profiler -->
+			<!-- <ProfileButton /> -->
 
 			<!-- toggle highlighting page elements -->
-			<PickerButton />
+			<!-- TODO: reenable picker -->
+			<!-- <PickerButton /> -->
 
 			<VisibilitySelection />
 
-			<Divider type="vertical" margin="0.25rem" />
+			<Divider type="vertical" spacing="0.25rem" />
 			<SearchBox />
-			<Divider type="vertical" margin="0.25rem" />
+			<Divider type="vertical" spacing="0.25rem" />
 
 			<!-- svelte-ignore missing-declaration -->
 			<Button
 				disabled={$selected?.id === undefined}
-				on:click={() => {
-					chrome.devtools.inspectedWindow.eval('inspect(window.$s)');
-				}}
+				on:click={() => chrome.devtools.inspectedWindow.eval('inspect(window.$s)')}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
 					<path
