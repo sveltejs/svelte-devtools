@@ -3,13 +3,12 @@
 	import Element from './Element.svelte';
 	import Block from './Block.svelte';
 	import Slot from './Slot.svelte';
-	import Iteration from './Iteration.svelte';
 	import Anchor from './Anchor.svelte';
 
 	import { background } from '$lib/runtime';
 	import { visibility, hovered, selected } from '$lib/store';
 
-	export let node: any;
+	export let node: NonNullable<typeof $selected>;
 	export let depth = 1;
 
 	let _timeout: null | NodeJS.Timeout;
@@ -28,6 +27,9 @@
 		flash = flash || node.children.length !== lastLength;
 		lastLength = node.children.length;
 	}
+
+	// TODO: report, something really weird with the language server
+	const iterate = () => node.children;
 </script>
 
 {#if $visibility[node.type]}
@@ -44,7 +46,7 @@
 		bind:this={node.dom}
 		on:animationend={() => (flash = false)}
 		on:click|stopPropagation={() => selected.set(node)}
-		on:mousemove|stopPropagation={() => {
+		on:mouseenter|stopPropagation={() => {
 			hovered.set(node);
 			background.send('ext/highlight', node.id);
 		}}
@@ -56,15 +58,13 @@
 				hover={current}
 				attributes={node.detail.attributes}
 				listeners={node.detail.listeners}
-				hasChildren={node.children.length}
+				hasChildren={!!node.children.length}
 				{style}
 				bind:expanded={node.expanded}
 			>
 				<ul class:active style:--left="{left}px">
 					{#each node.children as child (child.id)}
-						{@const level = node.type === 'iteration' ? depth : depth + 1}
-
-						<svelte:self node={child} depth={level} />
+						<svelte:self node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Element>
@@ -79,22 +79,29 @@
 			>
 				<ul class:active style:--left="{left}px">
 					{#each node.children as child (child.id)}
-						{@const level = node.type === 'iteration' ? depth : depth + 1}
-
-						<svelte:self node={child} depth={level} />
+						<svelte:self node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Block>
 		{:else if node.type === 'iteration'}
-			<Iteration selected={active} hover={current} {style}>
-				<ul class:active style:--left="{left}px">
-					{#each node.children as child (child.id)}
-						{@const level = node.type === 'iteration' ? depth : depth + 1}
+			<ul class:active style:--left="{left}px">
+				<!-- TODO: figure this out
+				<span
+					class:selected={current}
+					class:hover={active}
+					style:z-index="1"
+					style:position="absolute"
+					style:left="{left - 4}px"
+					style:transform="translateX(-100%)"
+				>
+					&#8618;
+				</span>
+				-->
 
-						<svelte:self node={child} depth={level} />
-					{/each}
-				</ul>
-			</Iteration>
+				{#each node.children as child (child.id)}
+					<svelte:self node={child} depth={depth + 1} />
+				{/each}
+			</ul>
 		{:else if node.type === 'slot'}
 			<Slot
 				tagName={node.tagName}
@@ -105,9 +112,7 @@
 			>
 				<ul class:active style:--left="{left}px">
 					{#each node.children as child (child.id)}
-						{@const level = node.type === 'iteration' ? depth : depth + 1}
-
-						<svelte:self node={child} depth={level} />
+						<svelte:self node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Slot>
@@ -120,7 +125,7 @@
 		{/if}
 	</li>
 {:else}
-	{#each node.children as node (node.id)}
+	{#each iterate() as node (node.id)}
 		<svelte:self {node} {depth} />
 	{/each}
 {/if}
@@ -131,6 +136,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
+		line-height: 1.5;
 		font-size: 0.75rem;
 	}
 

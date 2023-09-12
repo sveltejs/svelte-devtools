@@ -1,14 +1,8 @@
 <script lang="ts">
+	import type { Profiler } from '$lib/store';
 	import { createEventDispatcher } from 'svelte';
 
-	export let children: Array<{
-		type: 'mount' | 'patch' | 'detach';
-		node: { id: string; type: string; tagName: string };
-		duration: number;
-		start: number;
-		end: number;
-	}>;
-
+	export let children: Profiler[];
 	export let duration: number;
 
 	const dispatch = createEventDispatcher();

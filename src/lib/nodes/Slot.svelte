@@ -40,6 +40,5 @@
 <style>
 	div {
 		display: flex;
-		line-height: 1.5;
 	}
 </style>

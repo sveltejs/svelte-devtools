@@ -99,7 +99,6 @@
 	div {
 		display: flex;
 		flex-wrap: wrap;
-		line-height: 1.5;
 	}
 
 	.tag-name {

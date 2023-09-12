@@ -6,7 +6,7 @@ let main = {
 	end: -1,
 	children: /** @type {any[]} */ ([]),
 };
-let current = main;
+// let current = main;
 
 export const profiler = {
 	enabled: false,
@@ -18,7 +18,7 @@ export const profiler = {
 			end: -1,
 			children: [],
 		};
-		current = main;
+		// current = main;
 		this.enabled = true;
 	},
 

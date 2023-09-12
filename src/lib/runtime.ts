@@ -114,7 +114,7 @@ port.onMessage.addListener(({ type, payload }) => {
 			return current.invalidate();
 		}
 
-		// case 'courier:profile.update': {
+		// case 'courier/profile:update': {
 		// 	resolveFrame(frame);
 		// 	profileFrame.set(frame);
 		// 	break;

@@ -9,13 +9,13 @@
 	import { profileFrame } from '$lib/store';
 
 	let selected: null | ComponentProps<ProfilerFrame>['children'][0] = null;
-	let top: null | number = null;
+	let top: null | ComponentProps<ProfilerFrame>['children'][0] = null;
 
 	function round(n: number) {
 		return Math.round(n * 100) / 100;
 	}
 
-	$: children = top ? [top] : $profileFrame.children || [];
+	$: children = top ? [top] : $profileFrame?.children || [];
 	$: duration = children.reduce((acc, o) => acc + o.duration, 0);
 </script>
 
@@ -31,7 +31,7 @@
 	{/if}
 	<Button
 		on:click={() => {
-			$profileFrame = {};
+			$profileFrame = undefined;
 			top = null;
 			selected = null;
 		}}

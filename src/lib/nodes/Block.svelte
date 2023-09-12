@@ -45,7 +45,6 @@
 	div {
 		display: flex;
 		color: rgb(151, 164, 179);
-		line-height: 1.5;
 	}
 
 	:global(.dark) div {
