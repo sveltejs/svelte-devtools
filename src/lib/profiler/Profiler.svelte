@@ -1,10 +1,11 @@
 <script>
-	import { profileFrame } from '../store.js';
 	import Frame from './Frame.svelte';
-	import Panel from '../panel/Panel.svelte';
-	import Toolbar from '../toolbar/Toolbar.svelte';
-	import Button from '../toolbar/Button.svelte';
-	import ProfileButton from '../toolbar/ProfileButton.svelte';
+	import Panel from '$lib/panel/Panel.svelte';
+	import Toolbar from '$lib/toolbar/Toolbar.svelte';
+	import Button from '$lib/toolbar/Button.svelte';
+	import ProfileButton from '$lib/toolbar/ProfileButton.svelte';
+
+	import { profileFrame } from '$lib/store';
 
 	let selected;
 	let top;

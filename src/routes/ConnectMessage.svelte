@@ -1,5 +1,5 @@
 <script>
-	import { reload } from './store.js';
+	import { reload } from '$lib/store.js';
 </script>
 
 <div class="root">

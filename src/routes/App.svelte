@@ -1,15 +1,17 @@
 <script>
-	import { hoveredNodeId, rootNodes, profilerEnabled } from './store.js';
-	import Toolbar from './toolbar/Toolbar.svelte';
-	import Search from './toolbar/Search.svelte';
-	import ProfileButton from './toolbar/ProfileButton.svelte';
-	import PickerButton from './toolbar/PickerButton.svelte';
-	import VisibilityButton from './toolbar/VisibilityButton.svelte';
-	import ComponentView from './panel/ComponentView.svelte';
-	import Profiler from './profiler/Profiler.svelte';
+	import ComponentView from '$lib/panel/ComponentView.svelte';
+	import Node from '$lib/nodes/Node.svelte';
+	import PickerButton from '$lib/toolbar/PickerButton.svelte';
+	import ProfileButton from '$lib/toolbar/ProfileButton.svelte';
+	import Profiler from '$lib/profiler/Profiler.svelte';
+	import Search from '$lib/toolbar/Search.svelte';
+	import Toolbar from '$lib/toolbar/Toolbar.svelte';
+	import VisibilityButton from '$lib/toolbar/VisibilityButton.svelte';
+
 	import Breadcrumbs from './Breadcrumbs.svelte';
 	import ConnectMessage from './ConnectMessage.svelte';
-	import Node from './nodes/Node.svelte';
+
+	import { hoveredNodeId, rootNodes, profilerEnabled } from '$lib/store';
 </script>
 
 {#if $profilerEnabled}

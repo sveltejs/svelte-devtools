@@ -1,6 +1,6 @@
 <script>
 	import { tick } from 'svelte';
-	import { selectedNode, hoveredNodeId, visibility } from './store.js';
+	import { selectedNode, hoveredNodeId, visibility } from '$lib/store.js';
 
 	let root;
 	let breadcrumbList = [];
