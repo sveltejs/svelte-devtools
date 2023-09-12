@@ -1,7 +1,8 @@
+/** @type {Map<number, chrome.runtime.Port>} */
 const ports = new Map();
 
 chrome.runtime.onConnect.addListener((port) => {
-	if (port.sender.url == chrome.runtime.getURL('/devtools/panel.html')) {
+	if (port.sender?.url === chrome.runtime.getURL('/index.html')) {
 		port.onMessage.addListener(handleToolsMessage);
 	} else {
 		// This is not an expected connection, so we just log an error and close it
@@ -10,9 +11,9 @@ chrome.runtime.onConnect.addListener((port) => {
 	}
 });
 
+/** @type {Parameters<chrome.runtime.Port['onMessage']['addListener']>[0]} */
 function handleToolsMessage(msg, port) {
 	switch (msg.type) {
-		// 'init' and 'reload' messages do not need to be delivered to content script
 		case 'init':
 			setup(msg.tabId, port, msg.profilerEnabled);
 			break;
@@ -25,23 +26,28 @@ function handleToolsMessage(msg, port) {
 	}
 }
 
-// Receive messages from content scripts
-chrome.runtime.onMessage.addListener((msg, sender) => handlePageMessage(msg, sender.tab.id));
+// relay messages from content scripts to devtools page
+chrome.runtime.onMessage.addListener((msg, sender) => {
+	const port = sender.tab?.id && ports.get(sender.tab.id);
+	if (port) port.postMessage(msg);
+});
 
-function handlePageMessage(msg, tabId) {
-	const tools = ports.get(tabId);
-	if (tools) tools.postMessage(msg);
-}
+/** @type {Parameters<chrome.tabs.TabUpdatedEvent['addListener']>[0]} */
+function attach(tabId, changed) {
+	if (!ports.has(tabId) || changed.status !== 'loading') return;
 
-function attachScript(tabId, changed) {
-	const firefox = !window.chrome && !changed.url;
-	if (!ports.has(tabId) || changed.status !== 'loading' || firefox) return;
 	chrome.tabs.executeScript(tabId, {
-		file: '/privilegedContent.js',
+		file: '/courier.js',
 		runAt: 'document_start',
 	});
 }
 
+/**
+ *
+ * @param {number} tabId
+ * @param {chrome.runtime.Port} port
+ * @param {boolean} profilerEnabled
+ */
 function setup(tabId, port, profilerEnabled) {
 	chrome.tabs.executeScript(tabId, {
 		code: profilerEnabled
@@ -54,13 +60,13 @@ function setup(tabId, port, profilerEnabled) {
 
 	port.onDisconnect.addListener(() => {
 		ports.delete(tabId);
-		chrome.tabs.onUpdated.removeListener(attachScript);
-		// Inform content script that it background closed and it needs to clean up
+
+		chrome.tabs.onUpdated.removeListener(attach);
 		chrome.tabs.sendMessage(tabId, {
 			type: 'clear',
 			tabId: tabId,
 		});
 	});
 
-	chrome.tabs.onUpdated.addListener(attachScript);
+	chrome.tabs.onUpdated.addListener(attach);
 }

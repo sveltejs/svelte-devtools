@@ -1,46 +1,17 @@
-import svelte from 'rollup-plugin-svelte';
-import resolve from '@rollup/plugin-node-resolve';
-import css from 'rollup-plugin-css-only';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { defineConfig } from 'rollup';
 
-export default [
+export default defineConfig([
 	{
-		input: 'src/index.js',
-		external: ['chrome'],
+		input: 'static/background.js',
 		output: {
-			file: 'dest/devtools/bundle.js',
-			name: 'App',
-			format: 'iife',
-			globals: {
-				chrome: 'chrome',
-			},
+			file: 'build/background.js',
 		},
-		plugins: [
-			svelte({
-				preprocess: {
-					markup: (input) => {
-						const code = input.content
-							.replace(/(>|})\s+(?![^]*?<\/(?:script|style)>|[^<]*?>|[^{]*?})/g, '$1')
-							.replace(/(?<!<[^>]*?|{[^}]*?)\s+(<|{)(?![^]*<\/(?:script|style)>)/g, '$1');
-						return { code };
-					},
-				},
-			}),
-			resolve(),
-			css({ output: 'styles.css' }),
-		],
-	},
-	{
-		input: 'src/background.js',
-		output: {
-			file: 'dest/background.js',
-		},
-		plugins: [],
 	},
 	{
 		input: 'src/client/index.js',
 		output: {
-			file: 'dest/privilegedContent.js',
-			name: 'SvelteDevtools',
+			file: 'build/courier.js',
 			format: 'iife',
 			banner: `if (!window.tag) {
   window.tag = document.createElement('script')
@@ -76,23 +47,6 @@ export default [
   window.addEventListener('unload', () => sendMessage({ type: 'clear' }))
 }`,
 		},
-		plugins: [resolve()],
+		plugins: [nodeResolve()],
 	},
-	{
-		input: 'test/src/index.js',
-		output: {
-			file: 'test/public/bundle.js',
-			name: 'App',
-			format: 'iife',
-		},
-		plugins: [
-			svelte({
-				compilerOptions: {
-					dev: true,
-				},
-			}),
-			resolve(),
-			css({ output: 'styles.css' }),
-		],
-	},
-];
+]);

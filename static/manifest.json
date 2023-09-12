@@ -10,10 +10,11 @@
 		"96": "icons/96.png",
 		"128": "icons/128.png"
 	},
-	"permissions": ["tabs", "<all_urls>"],
+
 	"background": {
 		"scripts": ["background.js"]
 	},
 	"devtools_page": "devtools/index.html",
-	"web_accessible_resources": ["privilegedContent.js"]
+	"permissions": ["tabs", "<all_urls>"],
+	"web_accessible_resources": ["courier.js"]
 }
