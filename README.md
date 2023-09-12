@@ -33,19 +33,19 @@ import * as fs from 'fs';
 import svelte from 'rollup-plugin-svelte';
 
 export default {
-  input: 'src/main.js',
-  output: {
-    file: 'public/bundle.js',
-    format: 'iife'
-  },
-  plugins: [
-    svelte({
-      compilerOptions: {
-        dev: true
-      }
-    })
-  ]
-}
+	input: 'src/main.js',
+	output: {
+		file: 'public/bundle.js',
+		format: 'iife',
+	},
+	plugins: [
+		svelte({
+			compilerOptions: {
+				dev: true,
+			},
+		}),
+	],
+};
 ```
 
 ### Webpack

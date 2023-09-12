@@ -24,7 +24,7 @@
 			<VisibilityButton />
 			<Search />
 		</Toolbar>
-		<ul on:mouseleave={(e) => ($hoveredNodeId = null)}>
+		<ul on:mouseleave={() => ($hoveredNodeId = null)}>
 			{#each $rootNodes as node (node.id)}
 				<Node {node} />
 			{/each}

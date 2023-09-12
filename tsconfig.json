@@ -1,0 +1,36 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+
+		"checkJs": true,
+		"strict": true,
+		"composite": true,
+		"noEmit": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+
+		"skipLibCheck": true,
+		"isolatedModules": true,
+		"useDefineForClassFields": true,
+		"forceConsistentCasingInFileNames": true,
+
+		"paths": {
+			"$lib": ["./src/lib"],
+			"$lib/*": ["./src/lib/*"]
+		}
+	},
+	"include": [
+		"vite.config.ts",
+		// disable temporarily
+		// "src/**/*.d.ts",
+		// "src/**/*.ts",
+		// "src/**/*.js",
+		// "src/**/*.svelte",
+		"static/**/*.js"
+	],
+	"exclude": ["static/courier.js"]
+}
