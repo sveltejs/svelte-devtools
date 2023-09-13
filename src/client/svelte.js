@@ -1,5 +1,5 @@
 import { listeners } from './listener.js';
-// import { updateProfile } from './profiler.js';
+// import { profiler } from './profiler.js';
 
 /** @type {undefined | SvelteBlockDetail} */
 let current_block;
@@ -122,11 +122,10 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 						nodes.map.set(block, node);
 					}
 
-					listeners.update(node);
-
-					// Promise.resolve().then(() => {
-					// 	return node.detail.$$ && Object.keys(node.detail.$$.bound).length && listeners.update(node);
-					// });
+					Promise.resolve().then(() => {
+						const invalidate = node.detail.$$?.invalidate || {};
+						Object.keys(invalidate.length).length && listeners.update(node);
+					});
 					break;
 				}
 			}
@@ -161,7 +160,7 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 
 			current_block = node;
 
-			// updateProfile(node, 'mount', mountFn, target, anchor);
+			// profiler.update(node, 'mount', original, target, anchor);
 			original(target, anchor);
 
 			current_block = parent;
@@ -175,7 +174,7 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 			current_block = nodes.map.get(current_node_id);
 			current_block && listeners.update(current_block);
 
-			// updateProfile(currentBlock, 'patch', patchFn, changed, ctx);
+			// profiler.update(current_block, 'patch', original, changed, ctx);
 			original(changed, ctx);
 
 			current_block = parent;
@@ -193,7 +192,7 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 				nodes.remove(node);
 			}
 
-			// updateProfile(node, 'detach', detachFn, detaching);
+			// profiler.update(node, 'detach', original, detaching);
 			original(detaching);
 		};
 	}
@@ -238,14 +237,14 @@ document.addEventListener('SvelteDOMRemove', ({ detail }) => {
 
 document.addEventListener('SvelteDOMAddEventListener', ({ detail }) => {
 	const { node, ...rest } = detail;
-	node['SDT:listeners'] = node['SDT:listeners'] || [];
-	node['SDT:listeners'].push(rest);
+	node.__listeners = node.__listeners || [];
+	node.__listeners.push(rest);
 });
 
 document.addEventListener('SvelteDOMRemoveEventListener', ({ detail }) => {
 	const { node, event, handler, modifiers } = detail;
-	if (!node['SDT:listeners'] || node['SDT:listeners'].length) return;
-	node['SDT:listeners'] = node['SDT:listeners'].filter(
+	if (!node.__listeners || node.__listeners.length) return;
+	node.__listeners = node.__listeners.filter(
 		(l) => l.event !== event || l.handler !== handler || l.modifiers !== modifiers,
 	);
 });

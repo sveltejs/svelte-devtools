@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const dom = {
 	area: document.createElement('div'),
 	x: document.createElement('div'),

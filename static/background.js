@@ -2,8 +2,12 @@
 const ports = new Map();
 
 chrome.runtime.onConnect.addListener((port) => {
-	if (port.sender?.url === chrome.runtime.getURL('/index.html')) {
-		// messages are from the devtools page and not content script (courier.js)
+	if (port.sender?.url !== chrome.runtime.getURL('/index.html')) {
+		console.error(`Unexpected connection from ${port.sender?.url || '<unknown>'}`);
+		return port.disconnect();
+	}
+
+	// messages are from the devtools page and not content script (courier.js)
 		port.onMessage.addListener((message, sender) => {
 			switch (message.type) {
 				case 'ext/init': {
@@ -31,14 +35,10 @@ chrome.runtime.onConnect.addListener((port) => {
 					return chrome.tabs.sendMessage(message.tabId, message);
 			}
 		});
-	} else {
-		port.disconnect();
-	}
 });
 
-// relay messages from `chrome.scripting` to devtools page
+// relay messages from content scripts to devtools page
 chrome.runtime.onMessage.addListener((message, sender) => {
-	if (sender.id !== chrome.runtime.id) return; // unexpected sender
 	const port = sender.tab?.id && ports.get(sender.tab.id);
 	if (port) port.postMessage(message);
 });

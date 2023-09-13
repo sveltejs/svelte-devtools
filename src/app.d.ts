@@ -65,7 +65,7 @@ declare global {
 
 	type SvelteListenerDetail = {
 		node: Node & {
-			'SDT:listeners'?: Omit<SvelteListenerDetail, 'node'>[];
+			__listeners?: Omit<SvelteListenerDetail, 'node'>[];
 		};
 		event: string;
 		handler: EventListenerOrEventListenerObject;
