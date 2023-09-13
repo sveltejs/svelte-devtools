@@ -1,4 +1,3 @@
-import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { defineConfig } from 'rollup';
 
 export default defineConfig([
@@ -47,6 +46,5 @@ export default defineConfig([
   window.addEventListener('unload', () => sendMessage({ type: 'clear' }))
 }`,
 		},
-		plugins: [nodeResolve()],
 	},
 ]);

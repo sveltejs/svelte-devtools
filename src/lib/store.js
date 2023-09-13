@@ -1,3 +1,5 @@
+// @ts-nocheck - TODO enable this
+
 import { writable, get } from 'svelte/store';
 
 export const visibility = writable({

@@ -2,29 +2,20 @@
 const ports = new Map();
 
 chrome.runtime.onConnect.addListener((port) => {
-	if (port.sender?.url === chrome.runtime.getURL('/index.html')) {
-		port.onMessage.addListener(handleToolsMessage);
-	} else {
-		// This is not an expected connection, so we just log an error and close it
-		console.error('Unexpected connection. Port ', port);
-		port.disconnect();
+	if (port.sender?.url !== chrome.runtime.getURL('/index.html')) {
+		console.error(`Unexpected connection from ${port.sender?.url || '<unknown>'}`);
+		return port.disconnect();
 	}
-});
 
-/** @type {Parameters<chrome.runtime.Port['onMessage']['addListener']>[0]} */
-function handleToolsMessage(msg, port) {
-	switch (msg.type) {
-		case 'init':
-			setup(msg.tabId, port, msg.profilerEnabled);
-			break;
-		case 'reload':
-			chrome.tabs.reload(msg.tabId, { bypassCache: true });
-			break;
-		default:
-			chrome.tabs.sendMessage(msg.tabId, msg);
-			break;
-	}
-}
+	port.onMessage.addListener((msg, sender) => {
+		if (msg.type === 'init') {
+			return setup(msg.tabId, sender, msg.profilerEnabled);
+		} else if (msg.type === 'reload') {
+			return chrome.tabs.reload(msg.tabId, { bypassCache: true });
+		}
+		return chrome.tabs.sendMessage(msg.tabId, msg);
+	});
+});
 
 // relay messages from content scripts to devtools page
 chrome.runtime.onMessage.addListener((msg, sender) => {
