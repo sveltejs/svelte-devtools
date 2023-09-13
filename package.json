@@ -17,11 +17,11 @@
 	"packageManager": "pnpm@8.7.0",
 	"devDependencies": {
 		"@sveltejs/vite-plugin-svelte": "^2.4.5",
-		"@types/chrome": "^0.0.244",
+		"@types/chrome": "^0.0.245",
 		"@types/node": "^20.6.0",
 		"mauss": "^0.7.2",
 		"prettier": "^3.0.3",
-		"prettier-plugin-sort-package-json": "^0.1.1",
+		"prettier-plugin-sort-package-json": "^0.2.0",
 		"prettier-plugin-svelte": "^3.0.3",
 		"rollup": "^3.29.1",
 		"svelte": "^4.2.0",

@@ -9,8 +9,8 @@ devDependencies:
     specifier: ^2.4.5
     version: 2.4.5(svelte@4.2.0)(vite@4.4.9)
   '@types/chrome':
-    specifier: ^0.0.244
-    version: 0.0.244
+    specifier: ^0.0.245
+    version: 0.0.245
   '@types/node':
     specifier: ^20.6.0
     version: 20.6.0
@@ -21,8 +21,8 @@ devDependencies:
     specifier: ^3.0.3
     version: 3.0.3
   prettier-plugin-sort-package-json:
-    specifier: ^0.1.1
-    version: 0.1.1(prettier@3.0.3)
+    specifier: ^0.2.0
+    version: 0.2.0(prettier@3.0.3)
   prettier-plugin-svelte:
     specifier: ^3.0.3
     version: 3.0.3(prettier@3.0.3)(svelte@4.2.0)
@@ -337,8 +337,8 @@ packages:
       - supports-color
     dev: true
 
-  /@types/chrome@0.0.244:
-    resolution: {integrity: sha512-pC8kBWuUqGhG6S5d3E44a2f1TA2XHX/sXfCIrrDpA4K65Ozzw3mYQjuvMOTdSUCx4HjJhp4zuZh6fKOH3UdA1g==}
+  /@types/chrome@0.0.245:
+    resolution: {integrity: sha512-bBdONkLO8wMbJK6iG0Q8ShFuh67Grnod+5OpClJaa8MuKJXP/Kjl3f8wRYeMOnQ0Q8HDgpUlopu8bvl9siR8/A==}
     dependencies:
       '@types/filesystem': 0.0.32
       '@types/har-format': 1.2.12
@@ -769,8 +769,8 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /prettier-plugin-sort-package-json@0.1.1(prettier@3.0.3):
-    resolution: {integrity: sha512-mnnLmKyL/bigGISn2xLObeGS5a/tdbR2ll6Ek1QLPBUfket4ydpYhZJxllHlxJkzwOT1ooRw9yWM7SkNXvB9oQ==}
+  /prettier-plugin-sort-package-json@0.2.0(prettier@3.0.3):
+    resolution: {integrity: sha512-jg+CfEHpmXyMJxoBSQh+IObmCxqt7KyHOuXGQm9D4heeyipEhlTJZfiS9SlfhBKrtf/yA8WZwHmynUG9xfF/rA==}
     peerDependencies:
       prettier: ^3.0.0
     dependencies:
