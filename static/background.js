@@ -8,33 +8,33 @@ chrome.runtime.onConnect.addListener((port) => {
 	}
 
 	// messages are from the devtools page and not content script (courier.js)
-		port.onMessage.addListener((message, sender) => {
-			switch (message.type) {
-				case 'ext/init': {
-					ports.set(message.tabId, sender);
+	port.onMessage.addListener((message, sender) => {
+		switch (message.type) {
+			case 'ext/init': {
+				ports.set(message.tabId, sender);
 
-					port.onDisconnect.addListener(() => {
-						ports.delete(message.tabId);
+				port.onDisconnect.addListener(() => {
+					ports.delete(message.tabId);
 
-						chrome.tabs.onUpdated.removeListener(attach);
-						chrome.tabs.sendMessage(message.tabId, {
-							type: 'ext/clear',
-							tabId: message.tabId,
-						});
+					chrome.tabs.onUpdated.removeListener(attach);
+					chrome.tabs.sendMessage(message.tabId, {
+						type: 'ext/clear',
+						tabId: message.tabId,
 					});
+				});
 
-					return chrome.tabs.onUpdated.addListener(attach);
-				}
-
-				case 'ext/reload':
-					return chrome.runtime.reload();
-				case 'page/refresh':
-					return chrome.tabs.reload(message.tabId, { bypassCache: true });
-				default:
-					// relay messages from devtools page to `chrome.scripting`
-					return chrome.tabs.sendMessage(message.tabId, message);
+				return chrome.tabs.onUpdated.addListener(attach);
 			}
-		});
+
+			case 'ext/reload':
+				return chrome.runtime.reload();
+			case 'page/refresh':
+				return chrome.tabs.reload(message.tabId, { bypassCache: true });
+			default:
+				// relay messages from devtools page to `chrome.scripting`
+				return chrome.tabs.sendMessage(message.tabId, message);
+		}
+	});
 });
 
 // relay messages from content scripts to devtools page

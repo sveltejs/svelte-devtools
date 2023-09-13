@@ -15,48 +15,46 @@ window.__svelte_devtools_select_element = function (element) {
 	if (node) send('inspect', { node: serialize(node) });
 };
 
-window.addEventListener('message', ({ data,source }) => {
+window.addEventListener('message', ({ data, source }) => {
 	// only accept messages from our application or script
 	if (source !== window || data?.source !== 'svelte-devtools') return;
 
+	if (data.type === 'ext/select') {
+		const node = getNode(data.payload);
+		// @ts-expect-error - saved for `inspect()`
+		if (node) window.$s = node.detail;
+	} else if (data.type === 'ext/highlight') {
+		const node = getNode(data.payload);
+		return highlight(node);
+	}
 
-if (data.type === 'ext/select') {
-	const node = getNode(data.payload);
-			// @ts-expect-error - saved for `inspect()`
-			if (node) window.$s = node.detail;
-		}
-		else if (data.type==='ext/highlight') {
-			const node = getNode(data.payload);
-			return highlight(node);
-		}
+	// case 'ext/inspect': {
+	// 	console.log(data.payload, data.payload instanceof HTMLElement);
+	// 	/** @param {MouseEvent} event  */
+	// 	const move = ({ target }) => highlight({ type: 'element', detail: target });
+	// 	if (data.payload instanceof HTMLElement) {
+	// 		const node = getNode(data.payload);
+	// 		if (node) window.postMessage({ type: 'inspect', node: serialize(node) });
+	// 	} else if (data.payload === 'start') {
+	// 		document.addEventListener('mousemove', move, true);
+	// 		document.addEventListener(
+	// 			'click',
+	// 			({ target }) => {
+	// 				document.removeEventListener('mousemove', move, true);
+	// 				const node = getNode(/** @type {Node} */ (target));
+	// 				if (node) window.postMessage({ type: 'inspect', node: serialize(node) });
+	// 			},
+	// 			{ capture: true, once: true },
+	// 		);
+	// 		return;
+	// 	}
+	// 	document.removeEventListener('mousemove', move, true);
+	// 	return highlight(undefined);
+	// }
 
-		// case 'ext/inspect': {
-		// 	console.log(data.payload, data.payload instanceof HTMLElement);
-		// 	/** @param {MouseEvent} event  */
-		// 	const move = ({ target }) => highlight({ type: 'element', detail: target });
-		// 	if (data.payload instanceof HTMLElement) {
-		// 		const node = getNode(data.payload);
-		// 		if (node) window.postMessage({ type: 'inspect', node: serialize(node) });
-		// 	} else if (data.payload === 'start') {
-		// 		document.addEventListener('mousemove', move, true);
-		// 		document.addEventListener(
-		// 			'click',
-		// 			({ target }) => {
-		// 				document.removeEventListener('mousemove', move, true);
-		// 				const node = getNode(/** @type {Node} */ (target));
-		// 				if (node) window.postMessage({ type: 'inspect', node: serialize(node) });
-		// 			},
-		// 			{ capture: true, once: true },
-		// 		);
-		// 		return;
-		// 	}
-		// 	document.removeEventListener('mousemove', move, true);
-		// 	return highlight(undefined);
-		// }
-
-		// case 'ext/profiler': {
-		// 	return data.payload ? startProfiler() : stopProfiler();
-		// }
+	// case 'ext/profiler': {
+	// 	return data.payload ? startProfiler() : stopProfiler();
+	// }
 
 	// switch (data.type) {
 	// 	case 'setSelected':
@@ -83,7 +81,6 @@ if (data.type === 'ext/select') {
 	// 	case 'stopProfiler':
 	// 		profiler.stop();
 	// 		break;
-	
 });
 
 /**
@@ -169,7 +166,6 @@ function serialize(node) {
 			};
 		}
 	}
-
 
 	return res;
 }
