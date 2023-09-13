@@ -25,10 +25,10 @@
 	},
 	"include": [
 		"vite.config.ts",
+		"src/**/*.d.ts",
 		// disable temporarily
-		// "src/**/*.d.ts",
 		// "src/**/*.ts",
-		// "src/**/*.js",
+		"src/**/*.js",
 		// "src/**/*.svelte",
 		"static/**/*.js"
 	],

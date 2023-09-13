@@ -16,7 +16,6 @@
 	},
 	"packageManager": "pnpm@8.7.0",
 	"devDependencies": {
-		"@rollup/plugin-node-resolve": "^15.2.1",
 		"@sveltejs/vite-plugin-svelte": "^2.4.5",
 		"@types/chrome": "^0.0.245",
 		"@types/node": "^20.6.0",
@@ -26,7 +25,6 @@
 		"rollup": "^3.28.1",
 		"svelte": "^4.2.0",
 		"svelte-check": "^3.5.0",
-		"svelte-listener": "github:RedHatter/svelte-listener",
 		"typescript": "^5.2.2",
 		"vite": "^4.4.9"
 	}
