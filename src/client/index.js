@@ -142,7 +142,7 @@ function serialize(node) {
 			const attributes = Array.from(node.detail.attributes || []);
 
 			/** @type {NonNullable<SvelteListenerDetail['node']['__listeners']>} */
-			const listeners = res.detail.__listeners || [];
+			const listeners = node.detail.__listeners || [];
 
 			res.detail = {
 				attributes: attributes.map(({ name: key, value }) => ({ key, value })),

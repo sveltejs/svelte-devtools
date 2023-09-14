@@ -34,8 +34,9 @@ chrome.runtime.onConnect.addListener((port) => {
 	});
 });
 
-// relay messages from content scripts to devtools page
+// relay messages from `chrome.scripting` to devtools page
 chrome.runtime.onMessage.addListener((message, sender) => {
+	if (sender.id !== chrome.runtime.id) return; // unexpected sender
 	const port = sender.tab?.id && ports.get(sender.tab.id);
 	if (port) port.postMessage(message);
 });
@@ -88,7 +89,9 @@ function attach(tabId, changed) {
 				}
 			});
 
-			window.addEventListener('unload', () => chrome.runtime.sendMessage({ type: 'ext/clear' }));
+			window.addEventListener('unload', () => {
+				chrome.runtime.sendMessage({ type: 'ext/clear' });
+			});
 		},
 	});
 }

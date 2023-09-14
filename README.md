@@ -1,13 +1,6 @@
-<h1 align="center">Svelte DevTools</h1>
+# Svelte DevTools
 
-<div align="center">
-  <a href="https://chrome.google.com/webstore/detail/svelte-devtools/ckolcbmkjpjmangdbmnkpjigpkddpogn">
-    <img src="https://img.shields.io/chrome-web-store/users/ckolcbmkjpjmangdbmnkpjigpkddpogn?color=blue&label=Chrome" alt="Chrome Web Store" />
-  </a>
-  <a href="https://addons.mozilla.org/en-US/firefox/addon/svelte-devtools">
-    <img src="https://img.shields.io/amo/users/svelte-devtools?color=orange&label=Firefox" alt="Mozilla Add-on" />
-  </a>
-</div>
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/users/ckolcbmkjpjmangdbmnkpjigpkddpogn?color=blue&label=Chrome)](https://chrome.google.com/webstore/detail/svelte-devtools/ckolcbmkjpjmangdbmnkpjigpkddpogn) [![Mozilla Add-on](https://img.shields.io/amo/users/svelte-devtools?color=orange&label=Firefox)](https://addons.mozilla.org/en-US/firefox/addon/svelte-devtools)
 
 Svelte DevTools is a Chrome extension for the [Svelte](https://svelte.dev/) framework. It allows you to inspect the Svelte state and component hierarchies in the Developer Tools.
 
@@ -23,7 +16,7 @@ This extensions officially supports Svelte 4.0 and above.
 
 ## Development
 
-Clone this repository and run the package script.
+Clone this repository, setup and run the build script
 
 ```sh
 git clone https://github.com/sveltejs/svelte-devtools.git
