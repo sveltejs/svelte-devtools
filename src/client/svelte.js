@@ -123,8 +123,8 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 					}
 
 					Promise.resolve().then(() => {
-						const invalidate = node.detail.$$?.invalidate || {};
-						Object.keys(invalidate.length).length && listeners.update(node);
+						const invalidate = node.detail.$$?.bound || {};
+						Object.keys(invalidate).length && listeners.update(node);
 					});
 					break;
 				}

@@ -1,6 +1,6 @@
 chrome.devtools.panels.create(
 	'Svelte',
-	chrome.devtools.panels.themeName == 'dark'
+	chrome.devtools.panels.themeName === 'dark'
 		? '/icons/svelte-logo-dark.svg'
 		: '/icons/svelte-logo-light.svg',
 	'/index.html',

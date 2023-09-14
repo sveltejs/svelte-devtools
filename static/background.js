@@ -7,18 +7,21 @@ chrome.runtime.onConnect.addListener((port) => {
 		return port.disconnect();
 	}
 
-	port.onMessage.addListener((msg, sender) => {
-		if (msg.type === 'init') {
-			return setup(msg.tabId, sender, msg.profilerEnabled);
-		} else if (msg.type === 'reload') {
-			return chrome.tabs.reload(msg.tabId, { bypassCache: true });
+	// messages are from the devtools page and not content script (courier.js)
+	port.onMessage.addListener((message, sender) => {
+		if (message.type === 'init') {
+			return setup(message.tabId, sender);
+		} else if (message.type === 'reload') {
+			return chrome.tabs.reload(message.tabId, { bypassCache: true });
 		}
-		return chrome.tabs.sendMessage(msg.tabId, msg);
+		// relay messages from devtools page to `chrome.scripting`
+		return chrome.tabs.sendMessage(message.tabId, message);
 	});
 });
 
-// relay messages from content scripts to devtools page
+// relay messages from `chrome.scripting` to devtools page
 chrome.runtime.onMessage.addListener((msg, sender) => {
+	if (sender.id !== chrome.runtime.id) return; // unexpected sender
 	const port = sender.tab?.id && ports.get(sender.tab.id);
 	if (port) port.postMessage(msg);
 });
@@ -27,29 +30,57 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
 function attach(tabId, changed) {
 	if (!ports.has(tabId) || changed.status !== 'loading') return;
 
-	chrome.tabs.executeScript(tabId, {
-		file: '/courier.js',
-		runAt: 'document_start',
+	chrome.scripting.executeScript({
+		target: { tabId },
+
+		// no lexical context, `func` is serialized and deserialized.
+		// a limbo world where both `chrome` and `window` are defined
+		// with many unexpected and out of the ordinary behaviors, do
+		// minimal work here and delegate to `courier.js` in the page.
+		func: () => {
+			const source = chrome.runtime.getURL('/courier.js');
+			if (document.querySelector(`script[src="${source}"]`)) return;
+
+			// attach script manually instead of declaring through `files`
+			// because `detail` in the dispatched custom events is `null`
+			const script = document.createElement('script');
+			script.setAttribute('src', source);
+			document.body.appendChild(script);
+
+			chrome.runtime.onMessage.addListener((message, sender) => {
+				if (sender.id !== chrome.runtime.id) return; // unexpected sender
+				window.postMessage(message); // relay to content script (courier.js)
+			});
+
+			window.addEventListener('message', ({ source, data }) => {
+				// only accept messages from our application or script
+				if (source === window && data?.source === 'svelte-devtools') {
+					chrome.runtime.sendMessage(data);
+				}
+			});
+
+			window.addEventListener('unload', () => {
+				chrome.runtime.sendMessage({ type: 'ext/clear' });
+			});
+		},
 	});
 }
 
 /**
- *
  * @param {number} tabId
- * @param {chrome.runtime.Port} port
- * @param {boolean} profilerEnabled
+ * @param {chrome.runtime.Port} sender
  */
-function setup(tabId, port, profilerEnabled) {
-	chrome.tabs.executeScript(tabId, {
-		code: profilerEnabled
-			? `window.sessionStorage.SvelteDevToolsProfilerEnabled = "true"`
-			: 'delete window.sessionStorage.SvelteDevToolsProfilerEnabled',
-		runAt: 'document_start',
-	});
+function setup(tabId, sender) {
+	// chrome.tabs.executeScript(tabId, {
+	// 	code: profilerEnabled
+	// 		? `window.sessionStorage.SvelteDevToolsProfilerEnabled = "true"`
+	// 		: 'delete window.sessionStorage.SvelteDevToolsProfilerEnabled',
+	// 	runAt: 'document_start',
+	// });
 
-	ports.set(tabId, port);
+	ports.set(tabId, sender);
 
-	port.onDisconnect.addListener(() => {
+	sender.onDisconnect.addListener(() => {
 		ports.delete(tabId);
 
 		chrome.tabs.onUpdated.removeListener(attach);
