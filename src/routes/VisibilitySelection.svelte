@@ -2,7 +2,6 @@
 	import Button from '$lib/components/Button.svelte';
 	import Relative from '$lib/components/Relative.svelte';
 
-	import { ntv } from 'mauss/std';
 	import { visibility } from '$lib/store';
 
 	let opened = false;
@@ -24,7 +23,7 @@
 
 	{#if opened}
 		<section>
-			{#each ntv.keys($visibility) as key}
+			{#each Object.keys($visibility) as key}
 				<label>
 					<input type="checkbox" bind:checked={$visibility[key]} />
 					<span>{key}s</span>

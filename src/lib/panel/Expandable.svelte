@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Editable from './Editable.svelte';
 
-	import { scope } from 'mauss';
 	import { createEventDispatcher } from 'svelte';
 
 	export let key: string;
@@ -35,6 +34,14 @@
 	let expanded = false;
 
 	$: type = typeof value;
+	$: expandable =
+		value != null &&
+		value === value &&
+		type === 'object' &&
+		((Array.isArray(value) && value.length) ||
+			value.__is === 'function' ||
+			value.__is === 'symbol' ||
+			Object.keys(value).length);
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -44,11 +51,7 @@
 	style:--left="-0.5rem"
 	style:--y-pad="0.125rem"
 	class:expanded
-	class:expandable={scope(() => {
-		if (value == null || value !== value) return false;
-		if (Array.isArray(value)) return value.length;
-		if (type === 'object') return value.__is || Object.keys(value).length;
-	})}
+	class:expandable
 	on:click|stopPropagation={() => (expanded = !expanded)}
 >
 	<span>{key}:</span>
