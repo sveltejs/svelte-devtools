@@ -26,10 +26,9 @@
 	"include": [
 		"vite.config.ts",
 		"src/**/*.d.ts",
-		// disable temporarily
-		// "src/**/*.ts",
+		"src/**/*.ts",
 		"src/**/*.js",
-		// "src/**/*.svelte",
+		"src/**/*.svelte",
 		"static/**/*.js"
 	],
 	"exclude": ["static/courier.js"]

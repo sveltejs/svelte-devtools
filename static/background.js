@@ -9,21 +9,36 @@ chrome.runtime.onConnect.addListener((port) => {
 
 	// messages are from the devtools page and not content script (courier.js)
 	port.onMessage.addListener((message, sender) => {
-		if (message.type === 'init') {
-			return setup(message.tabId, sender);
-		} else if (message.type === 'reload') {
+		if (message.type === 'ext/init') {
+			ports.set(message.tabId, sender);
+
+			port.onDisconnect.addListener(() => {
+				ports.delete(message.tabId);
+
+				chrome.tabs.onUpdated.removeListener(attach);
+				chrome.tabs.sendMessage(message.tabId, {
+					type: 'ext/clear',
+					tabId: message.tabId,
+				});
+			});
+
+			return chrome.tabs.onUpdated.addListener(attach);
+		} else if (message.type === 'ext/reload') {
+			return chrome.runtime.reload();
+		} else if (message.type === 'page/refresh') {
 			return chrome.tabs.reload(message.tabId, { bypassCache: true });
 		}
+
 		// relay messages from devtools page to `chrome.scripting`
 		return chrome.tabs.sendMessage(message.tabId, message);
 	});
 });
 
 // relay messages from `chrome.scripting` to devtools page
-chrome.runtime.onMessage.addListener((msg, sender) => {
+chrome.runtime.onMessage.addListener((message, sender) => {
 	if (sender.id !== chrome.runtime.id) return; // unexpected sender
 	const port = sender.tab?.id && ports.get(sender.tab.id);
-	if (port) port.postMessage(msg);
+	if (port) port.postMessage(message);
 });
 
 /** @type {Parameters<chrome.tabs.TabUpdatedEvent['addListener']>[0]} */
@@ -47,9 +62,24 @@ function attach(tabId, changed) {
 			script.setAttribute('src', source);
 			document.body.appendChild(script);
 
+			// // TODO: reenable profiler
+			// if (message.type === 'ext/profiler' && message.payload) {
+			// 	// start profiler
+			// }
+
 			chrome.runtime.onMessage.addListener((message, sender) => {
 				if (sender.id !== chrome.runtime.id) return; // unexpected sender
 				window.postMessage(message); // relay to content script (courier.js)
+
+				// switch (message.type) {
+				// 	case 'startProfiler':
+				// 		window.sessionStorage.SvelteDevToolsProfilerEnabled = 'true';
+				// 		break;
+				// 	case 'stopProfiler':
+				// 	case 'ext/clear':
+				// 		delete window.sessionStorage.SvelteDevToolsProfilerEnabled;
+				// 		break;
+				// }
 			});
 
 			window.addEventListener('message', ({ source, data }) => {
@@ -64,31 +94,4 @@ function attach(tabId, changed) {
 			});
 		},
 	});
-}
-
-/**
- * @param {number} tabId
- * @param {chrome.runtime.Port} sender
- */
-function setup(tabId, sender) {
-	// chrome.tabs.executeScript(tabId, {
-	// 	code: profilerEnabled
-	// 		? `window.sessionStorage.SvelteDevToolsProfilerEnabled = "true"`
-	// 		: 'delete window.sessionStorage.SvelteDevToolsProfilerEnabled',
-	// 	runAt: 'document_start',
-	// });
-
-	ports.set(tabId, sender);
-
-	sender.onDisconnect.addListener(() => {
-		ports.delete(tabId);
-
-		chrome.tabs.onUpdated.removeListener(attach);
-		chrome.tabs.sendMessage(tabId, {
-			type: 'clear',
-			tabId: tabId,
-		});
-	});
-
-	chrome.tabs.onUpdated.addListener(attach);
 }

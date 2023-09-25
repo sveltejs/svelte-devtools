@@ -1,34 +1,34 @@
-<script>
-	export let disabled;
-	export let active;
-	export let type = 'button';
+<script lang="ts">
+	export let type: 'button' | 'reset' | 'submit' = 'button';
+	export let disabled = false;
+	export let active = false;
 </script>
 
-<button on:click {disabled} {type} class:active>
+<button {type} {disabled} class:active on:click>
 	<slot />
 </button>
 
 <style>
 	button {
-		position: relative;
 		z-index: 1;
-		margin: 0.083rem /* 1px */;
-		padding: 0.417rem /* 5px */;
-		outline: none;
+		cursor: pointer;
+		position: relative;
+
+		padding: 0.375rem;
+		margin: 0.125rem;
 		border: none;
-		border-radius: 0.167rem /* 2px */;
+		border-radius: 0.2rem;
+		outline: none;
+
 		background-color: transparent;
 		color: rgb(12, 12, 13);
 		line-height: 0;
-		cursor: pointer;
 	}
-
 	button.active {
 		color: rgb(0, 96, 223);
 	}
-
 	button:hover {
-		background-color: rgb(237, 237, 240);
+		background: rgb(237, 237, 240);
 	}
 
 	button:active:hover {
@@ -70,9 +70,8 @@
 	}
 
 	button :global(svg) {
-		width: 1.333rem;
-		height: 1.333rem;
-		vertical-align: middle;
+		width: 1.25rem;
+		height: 1.25rem;
 		fill: currentColor;
 	}
 </style>

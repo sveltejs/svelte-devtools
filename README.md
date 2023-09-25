@@ -12,7 +12,7 @@ After installing you will see a new tab in Developer Tools. This tab displays a 
 
 The `svelte-devtools` extension requires your Svelte application to be compiled with the `dev` option set to `true`. If you're using [SvelteKit](https://kit.svelte.dev/), this is done automatically, outside of that you will need to set it manually.
 
-This extensions officially supports Svelte 4.0 and above.
+This extension officially supports Svelte 4.0 and above.
 
 ## Development
 

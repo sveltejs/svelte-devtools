@@ -1,16 +1,17 @@
-<script>
-	import { visibility, hoveredNodeId, selectedNode } from '../store.js';
+<script lang="ts">
+	import Indexer from '$lib/components/Indexer.svelte';
 	import Element from './Element.svelte';
 	import Block from './Block.svelte';
 	import Slot from './Slot.svelte';
-	import Iteration from './Iteration.svelte';
-	import Text from './Text.svelte';
 	import Anchor from './Anchor.svelte';
 
-	export let node;
+	import { background } from '$lib/runtime';
+	import { visibility, hovered, selected } from '$lib/store';
+
+	export let node: NonNullable<typeof $selected>;
 	export let depth = 1;
 
-	let _timeout = null;
+	let _timeout: null | NodeJS.Timeout;
 	node.invalidate = () => {
 		if (_timeout) return;
 
@@ -20,54 +21,111 @@
 		}, 100);
 	};
 
-	$: nodeType = {
-		element: Element,
-		component: Element,
-		block: Block,
-		slot: Slot,
-		iteration: Iteration,
-		text: Text,
-		anchor: Anchor,
-	}[node.type];
-
 	let lastLength = node.children.length;
 	let flash = false;
 	$: {
-		flash = flash || node.children.length != lastLength;
+		flash = flash || node.children.length !== lastLength;
 		lastLength = node.children.length;
 	}
+
+	// TODO: report, something really weird with the language server
+	const iterate = () => node.children;
 </script>
 
 {#if $visibility[node.type]}
+	{@const active = $selected?.id === node.id}
+	{@const current = $hovered?.id === node.id}
+	{@const style = `padding-left: ${depth * 12}px`}
+	{@const left = depth * 12 + 4}
+
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-mouse-events-have-key-events -->
+	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 	<li
-		bind:this={node.dom}
 		class:flash
-		on:animationend={(e) => (flash = false)}
-		on:mouseover|stopPropagation={(e) => ($hoveredNodeId = node.id)}
-		on:click|stopPropagation={(e) => ($selectedNode = node)}
+		bind:this={node.dom}
+		on:animationend={() => (flash = false)}
+		on:click|stopPropagation={() => selected.set(node)}
+		on:mouseenter|stopPropagation={() => {
+			hovered.set(node);
+			background.send('ext/highlight', node.id);
+		}}
 	>
-		<svelte:component
-			this={nodeType}
-			tagName={node.tagName}
-			bind:collapsed={node.collapsed}
-			{...node.detail}
-			hasChildren={node.children.length != 0}
-			hover={$hoveredNodeId == node.id}
-			selected={$selectedNode.id == node.id}
-			style={`padding-left: ${depth * 12}px`}
-		>
-			{#if $selectedNode.id == node.id}
-				<span style={`left: ${depth * 12 + 6}px`} />
-			{/if}
-			<ul>
+		{#if node.type === 'component' || node.type === 'element'}
+			<Element
+				tagName={node.tagName}
+				selected={active}
+				hover={current}
+				attributes={node.detail.attributes}
+				listeners={node.detail.listeners}
+				hasChildren={!!node.children.length}
+				{style}
+				bind:expanded={node.expanded}
+			>
+				<ul class:active style:--left="{left}px">
+					{#each node.children as child (child.id)}
+						<svelte:self node={child} depth={depth + 1} />
+					{/each}
+				</ul>
+			</Element>
+		{:else if node.type === 'block'}
+			<Block
+				tagName={node.tagName}
+				selected={active}
+				hover={current}
+				source={node.detail.source}
+				{style}
+				bind:expanded={node.expanded}
+			>
+				<ul class:active style:--left="{left}px">
+					{#each node.children as child (child.id)}
+						<svelte:self node={child} depth={depth + 1} />
+					{/each}
+				</ul>
+			</Block>
+		{:else if node.type === 'iteration'}
+			<ul class:active style:--left="{left}px">
+				<!-- TODO: figure this out
+				<span
+					class:selected={current}
+					class:hover={active}
+					style:z-index="1"
+					style:position="absolute"
+					style:left="{left - 4}px"
+					style:transform="translateX(-100%)"
+				>
+					&#8618;
+				</span>
+				-->
+
 				{#each node.children as child (child.id)}
-					<svelte:self node={child} depth={node.type == 'iteration' ? depth : depth + 1} />
+					<svelte:self node={child} depth={depth + 1} />
 				{/each}
 			</ul>
-		</svelte:component>
+		{:else if node.type === 'slot'}
+			<Slot
+				tagName={node.tagName}
+				selected={active}
+				hover={current}
+				{style}
+				bind:expanded={node.expanded}
+			>
+				<ul class:active style:--left="{left}px">
+					{#each node.children as child (child.id)}
+						<svelte:self node={child} depth={depth + 1} />
+					{/each}
+				</ul>
+			</Slot>
+		{:else if node.type === 'text'}
+			<div {style}>
+				<Indexer text={node.detail.nodeValue} />
+			</div>
+		{:else if node.type === 'anchor'}
+			<Anchor {style} />
+		{/if}
 	</li>
 {:else}
-	{#each node.children as node (node.id)}
+	{#each iterate() as node (node.id)}
 		<svelte:self {node} {depth} />
 	{/each}
 {/if}
@@ -75,16 +133,36 @@
 <style>
 	li {
 		position: relative;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		line-height: 1.5;
+		font-size: 0.75rem;
 	}
 
-	span {
-		position: absolute;
-		top: 1.6rem;
-		bottom: 1.6rem;
-		z-index: 1;
-		width: 0.167rem /* 2px */;
-		background-color: #e0e0e2;
+	ul {
+		width: 100%;
+		position: relative;
 	}
+	ul.active::before {
+		content: '';
+		z-index: 1;
+		width: 0.125rem;
+		position: absolute;
+		top: 0.2rem;
+		bottom: 0.15rem;
+		left: calc(var(--left) - 0.75rem);
+		background: #e0e0e2;
+	}
+
+	/* li:hover,
+	li.hovered {
+		background: #f0f9fe;
+	}
+	li.selected {
+		background: rgb(0, 116, 232);
+		color: #ffffff;
+	} */
 
 	li.flash :global(> :first-child),
 	li.flash :global(> :first-child *),
@@ -93,36 +171,37 @@
 		animation: flash 0.8s ease-in-out;
 	}
 
-	@keyframes flash {
-		10% {
-			background-color: rgb(250, 217, 242);
-		}
-	}
-
 	li :global(.selected),
 	li :global(.selected *),
 	li :global(.hover.selected) {
-		background-color: rgb(0, 116, 232);
-		color: #ffffff;
+		background: rgb(0, 116, 232);
 	}
 
 	li :global(> .selected::after) {
-		content: ' == $s';
+		content: '=== $s';
+		margin-left: 0.5rem;
 	}
 
 	li :global(.hover) {
-		background-color: #f0f9fe;
+		background: #f0f9fe;
 	}
 
-	:global(.dark) span,
+	:global(.dark) li:hover,
+	/* :global(.dark) li.hovered, */
+	:global(.dark) li :global(.hover) {
+		background: rgb(53, 59, 72);
+	}
+
+	/* :global(.dark) li.selected, */
 	:global(.dark) li :global(.selected),
 	:global(.dark) li :global(.selected *),
 	:global(.dark) li :global(.hover.selected) {
-		background-color: rgb(32, 78, 138);
-		color: #ffffff;
+		background: rgb(32, 78, 138);
 	}
 
-	:global(.dark) li :global(.hover) {
-		background-color: rgb(53, 59, 72);
+	@keyframes flash {
+		10% {
+			background: rgb(250, 217, 242);
+		}
 	}
 </style>

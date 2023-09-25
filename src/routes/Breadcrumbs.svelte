@@ -1,48 +1,51 @@
-<script>
+<script lang="ts">
 	import { tick } from 'svelte';
-	import { selectedNode, hoveredNodeId, visibility } from '$lib/store.js';
+	import { selected, hovered, visibility } from '$lib/store';
 
-	let root;
-	let breadcrumbList = [];
-	let shorttend;
+	let base: undefined | HTMLUListElement;
+	let breadcrumbs: NonNullable<typeof $selected>[] = [];
+	let shortened: boolean;
 
-	async function setSelectedBreadcrumb(node) {
-		if (breadcrumbList.find((o) => o.id == node.id)) return;
+	async function setSelectedBreadcrumb(node: typeof $selected) {
+		if (breadcrumbs.find((o) => o.id === node?.id)) return;
 
-		breadcrumbList = [];
+		breadcrumbs = [];
 		while (node && node.tagName) {
-			breadcrumbList.unshift(node);
+			breadcrumbs.unshift(node);
 			node = node.parent;
 		}
 
-		shorttend = false;
+		shortened = false;
 
 		await tick();
-		while (root && root.scrollWidth > root.clientWidth) {
-			breadcrumbList.shift();
-			shorttend = true;
-			breadcrumbList = breadcrumbList;
+		while (base && base.scrollWidth > base.clientWidth) {
+			breadcrumbs.shift();
+			shortened = true;
+			breadcrumbs = breadcrumbs;
 			await tick();
 		}
 	}
 
-	$: setSelectedBreadcrumb($selectedNode);
+	$: setSelectedBreadcrumb($selected);
 </script>
 
-{#if breadcrumbList.length > 1}
-	<ul bind:this={root}>
-		{#if shorttend}
+{#if breadcrumbs.length > 1}
+	<ul bind:this={base}>
+		{#if shortened}
 			<li>
 				&hellip;
 				<div />
 			</li>
 		{/if}
-		{#each breadcrumbList as node}
+		{#each breadcrumbs as node}
 			{#if $visibility[node.type]}
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<!-- svelte-ignore a11y-mouse-events-have-key-events -->
+				<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 				<li
-					on:click={(e) => ($selectedNode = node)}
-					on:mouseover={(e) => ($hoveredNodeId = node.id)}
-					class:selected={node.id == $selectedNode.id}
+					class:selected={node.id === $selected?.id}
+					on:click={() => selected.set(node)}
+					on:mouseover={() => hovered.set(node)}
 				>
 					{node.tagName}
 					<div />

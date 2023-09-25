@@ -1,55 +1,62 @@
 <script>
-	import { reload } from '$lib/store.js';
+	import { background } from '$lib/runtime';
 </script>
 
-<div class="root">
-	<p>
-		To connect to&nbsp;
-		<b>Svelte</b>
-		&nbsp;perform a hard refresh (ctrl+F5) or&nbsp;
-		<span on:click={reload} class="button">click here</span>
-		.
+<main>
+	<h1 style:font-size="3rem">Svelte DevTools</h1>
+	<p style:display="inline-flex" style:font-size="1.25rem">
+		<span>No Svelte app detected</span>
+
+		<button on:click={() => background.send('page/refresh')}>reload</button>
 	</p>
-	<h1>Not working? Did you...</h1>
-	<ul>
-		<li>Use Svelte version 3.12.0 or above?</li>
-		<li>Build with dev mode enabled?</li>
-	</ul>
-</div>
+
+	<footer>
+		<p style:font-size="1rem">Not working? Did you...</p>
+		<ul>
+			<li>Build with dev mode enabled?</li>
+			<li>Use Svelte version 4.0.0 or above?</li>
+		</ul>
+	</footer>
+</main>
 
 <style>
-	.root {
-		position: absolute;
-		top: 40%;
-		left: 50%;
-		transform: translate(-50%, -50%);
+	main {
+		width: 100%;
+		display: grid;
+		gap: 1rem;
+		justify-items: center;
+		align-content: center;
+		justify-content: center;
+	}
+	main * {
+		margin: 0;
 	}
 
-	.button {
-		color: blue;
+	button {
 		cursor: pointer;
+		margin-left: 1rem;
+		border-radius: 0.2rem;
+		outline: 2px solid transparent;
+		color: #040d14;
+		font-family: monospace;
+		transition-duration: var(--t-duration);
+	}
+	button:hover {
+		outline-color: rgba(208, 212, 215, 0.8);
 	}
 
-	.button:hover {
-		opacity: 0.6;
+	footer {
+		width: 100%;
+		display: grid;
+		gap: 0.75rem;
+		padding-top: 3rem;
 	}
-
-	h1 {
-		margin-top: 2.5rem /* 30px */;
-		margin-bottom: 0.667rem /* 8px */;
-		font-size: 1.4em;
-	}
-
 	ul {
-		padding-left: 1.667rem /* 20px */;
+		padding-left: 1.5rem;
 		list-style-type: disc;
+		font-size: 0.875rem;
 	}
-
-	li {
-		margin-bottom: 0.667rem /* 8px */;
-	}
-
-	:global(.dark) .button {
-		color: rgb(117, 191, 255);
+	li:not(:first-child) {
+		margin-top: 0.5rem;
 	}
 </style>
