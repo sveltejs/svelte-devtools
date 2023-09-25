@@ -3,13 +3,13 @@ import { addListener } from './listener.js';
 // import { profiler } from './profiler.js';
 import { getNode } from './svelte.js';
 
-// @ts-expect-error - possibly find an alternative
+// @ts-ignore - possibly find an alternative
 window.__svelte_devtools_inject_state = function (id, key, value) {
 	const { detail: component } = getNode(id) || {};
 	component && component.$inject_state({ [key]: value });
 };
 
-// @ts-expect-error - possibly find an alternative
+// @ts-ignore - possibly find an alternative
 window.__svelte_devtools_select_element = function (element) {
 	const node = getNode(element);
 	if (node) send('inspect', { node: serialize(node) });
@@ -27,6 +27,8 @@ window.addEventListener('message', ({ data, source }) => {
 		const node = getNode(data.payload);
 		return highlight(node);
 	}
+
+	// --- TODO: cleanup/implement below ---
 
 	// case 'ext/inspect': {
 	// 	console.log(data.payload, data.payload instanceof HTMLElement);
@@ -57,14 +59,6 @@ window.addEventListener('message', ({ data, source }) => {
 	// }
 
 	// switch (data.type) {
-	// 	case 'setSelected':
-	// 		// @ts-expect-error - saved for `inspect()`
-	// 		if (node) window.$s = node.detail;
-	// 		break;
-
-	// 	case 'setHover':
-	// 		highlight(node);
-	// 		break;
 
 	// 	case 'startPicker':
 	// 		startPicker();
