@@ -35,7 +35,7 @@
 
 <style>
 	ul {
-		overflow: hidden;
+		overflow: auto;
 		display: flex;
 		align-items: center;
 		border-top: 1px solid rgb(224, 224, 226);
