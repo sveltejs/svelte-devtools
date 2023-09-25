@@ -16,13 +16,17 @@
 		on:blur={({ target }) => {
 			editing = false;
 			// @ts-expect-error - target and value exists
-			dispatch('change', target.value);
+			const updated = target.value;
+			value = JSON.parse(updated);
+			dispatch('change', updated);
 		}}
 		on:keydown={({ key, target }) => {
 			if (key !== 'Enter') return;
 			editing = false;
 			// @ts-expect-error - target and value exists
-			dispatch('change', target.value);
+			const updated = target.value;
+			value = JSON.parse(updated);
+			dispatch('change', updated);
 		}}
 	/>
 {:else}

@@ -71,7 +71,8 @@
 		border: none;
 		background: none;
 		color: inherit;
-		font-size: inherit;
+		font-family: monospace;
+		font-size: 0.75rem;
 	}
 
 	.next,

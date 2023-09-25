@@ -21,4 +21,8 @@
 	div {
 		display: flex;
 	}
+	span {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 </style>
