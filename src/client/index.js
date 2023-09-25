@@ -135,6 +135,7 @@ function serialize(node) {
 				),
 				ctx: Object.entries(ctx).map(([key, value]) => ({ key, value })),
 			};
+			break;
 		}
 
 		case 'element': {
@@ -148,12 +149,14 @@ function serialize(node) {
 				attributes: attributes.map(({ name: key, value }) => ({ key, value })),
 				listeners: listeners.map((o) => ({ ...o, handler: o.handler.toString() })),
 			};
+			break;
 		}
 
 		case 'text': {
 			res.detail = {
 				nodeValue: node.detail.nodeValue,
 			};
+			break;
 		}
 
 		case 'iteration':
@@ -164,6 +167,7 @@ function serialize(node) {
 				ctx: cloned.map(([key, value]) => ({ key, value })),
 				source: source.slice(source.indexOf('{'), source.indexOf('}') + 1),
 			};
+			break;
 		}
 	}
 
