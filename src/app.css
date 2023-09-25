@@ -25,13 +25,14 @@ body.dark {
 
 /* dark mode scrollbar */
 body.dark ::-webkit-scrollbar {
-	width: 0.875rem;
-	height: 0.875rem;
+	width: 0.75rem;
+	height: 0.5rem;
 	background-color: transparent;
 }
 body.dark ::-webkit-scrollbar-thumb {
 	background-color: rgb(51, 51, 51);
 	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 0.25rem;
 }
 
 /* basic resets */
