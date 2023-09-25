@@ -1,61 +1,45 @@
-<script>
-	import CollapsableValue from './CollapsableValue.svelte';
+<script lang="ts">
+	import Expandable from './Expandable.svelte';
 
-	export let header;
-	export let entries = [];
-	export let id;
-	export let readOnly = false;
+	export let entries: Array<{ key: string; value: string }> = [];
+	export let id: number;
+	export let readonly = false;
 
-	let errorMessages = {};
-	function change(key, value) {
+	const errors: Record<string, string | undefined> = {};
+	function change(key: string, value: any) {
 		chrome.devtools.inspectedWindow.eval(
 			`__svelte_devtools_inject_state(${id}, '${key}', ${value})`,
-			(result, error) =>
-				(errorMessages[key] =
+			(_, error) => {
+				errors[key] =
 					error && error.isException
 						? error.value.substring(0, error.value.indexOf('\n'))
-						: undefined),
+						: undefined;
+			},
 		);
 	}
 </script>
 
-<h1>{header}</h1>
-
 {#if entries.length}
 	<ul>
 		{#each entries as { key, value } (key)}
-			<CollapsableValue
-				errorMessage={errorMessages[key]}
-				{readOnly}
+			<Expandable
+				{readonly}
 				{key}
 				{value}
+				error={errors[key]}
 				on:change={(e) => change(key, e.detail)}
 			/>
 		{/each}
 	</ul>
 {:else}
-	<div class="empty">None</div>
+	<div style:padding-left="1rem" style:color="rgb(118, 118, 118)">None</div>
 {/if}
 
 <style>
-	.empty {
-		margin: 0.667rem /* 8px */ 0 0 1rem /* 12px */;
-		color: rgb(118, 118, 118);
-	}
-
-	h1 {
-		margin: 0.667rem /* 8px */ 0 0 0.667rem /* 8px */;
-		color: rgb(118, 118, 118);
-		font-weight: bold;
-		font-size: 0.917rem;
-	}
-
 	ul {
-		margin: 0.417rem /* 5px */;
-	}
-
-	ul,
-	div {
-		margin-bottom: 1.667rem /* 20px */;
+		display: grid;
+		gap: 0.25rem;
+		padding-left: 1rem;
+		font-size: 0.75rem;
 	}
 </style>

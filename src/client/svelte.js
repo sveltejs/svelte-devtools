@@ -90,7 +90,7 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 		block.m = (target, anchor) => {
 			const parent = current_block;
 
-			// @ts-expect-error - don't need 'block' | 'source' | 'ctx'
+			// @ts-expect-error - only the necessities
 			const node = /** @type {SvelteBlockDetail} */ ({
 				id: current_node_id,
 				type: 'block',
@@ -152,7 +152,7 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 				node.parentBlock = group;
 				node.type = 'iteration';
 
-				// @ts-expect-error - try to fix
+				// @ts-expect-error - overloaded nodes
 				nodes.add({ node, target: group, anchor });
 			} else {
 				nodes.add({ node, target, anchor });

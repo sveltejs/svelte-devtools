@@ -1,51 +1,44 @@
-<script>
-	import Collapse from './Collapse.svelte';
-	import SearchTerm from './SearchTerm.svelte';
+<script lang="ts">
+	import Indexer from '../components/Indexer.svelte';
 
-	export let style;
-	export let hover;
-	export let selected;
-	export let tagName;
-	export let collapsed;
+	export let style: string;
+	export let hover: boolean;
+	export let selected: boolean;
+	export let tagName: string;
+	export let expanded: boolean;
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
-	class="tag-open tag-name"
+	{style}
+	class:expanded
 	class:hover
 	class:selected
-	{style}
-	on:dblclick={(e) => (collapsed = !collapsed)}
+	class="expandable tag-open tag-name"
+	on:dblclick={() => (expanded = !expanded)}
 >
-	<Collapse {selected} bind:collapsed />
-	&lt;
-	<SearchTerm text={tagName} />
-	&gt;
-	{#if collapsed}
-		&hellip;&lt;/
-		<SearchTerm text={tagName} />
-		&gt;
+	<span>&lt;</span>
+	<Indexer text={tagName} color="#c586c0" />
+	<span>&gt;</span>
+
+	{#if !expanded}
+		<span>&hellip;&lt;/</span>
+		<Indexer text={tagName} color="#c586c0" />
+		<span>&gt;</span>
 	{/if}
 </div>
-{#if !collapsed}
+{#if expanded}
 	<slot />
+
 	<div class="tag-close tag-name" class:hover {style}>
-		&lt;/
-		<SearchTerm text={tagName} />
-		&gt;
+		<span>&lt;/</span>
+		<Indexer text={tagName} color="#c586c0" />
+		<span>&gt;</span>
 	</div>
 {/if}
 
 <style>
 	div {
-		height: 1.333rem /* 16px */;
-		line-height: 1.333rem /* 16px */;
-	}
-
-	div {
-		color: rgb(0, 116, 232);
-	}
-
-	:global(.dark) div {
-		color: rgb(117, 191, 255);
+		display: flex;
 	}
 </style>

@@ -1,29 +1,38 @@
-<script>
-	import SearchTerm from './SearchTerm.svelte';
+<script lang="ts">
+	import Indexer from '../components/Indexer.svelte';
 
-	export let attributes;
-	export let listeners;
+	export let attributes: Array<{
+		key: string;
+		value: string;
+		bounded?: boolean;
+		flash?: boolean;
+	}>;
+	export let listeners: Array<{
+		event: any;
+		handler: any;
+		modifiers: any;
+	}>;
 </script>
 
-{#each attributes as { key, value, isBound, flash } (key)}
-	&nbsp;
-	<span class:flash>
+{#each attributes as { key, value, bounded, flash } (key)}
+	<span>&nbsp;</span>
+	<span class:flash style:display="flex">
 		<span class="attr-name">
-			{#if isBound}bind:{/if}
-			<SearchTerm text={key} />
+			{#if bounded}bind:{/if}
+			<Indexer text={key} />
 		</span>
-		=
+		<span>=</span>
 		<span class="attr-value">
-			<SearchTerm text={value} />
+			<Indexer text={value} />
 		</span>
 	</span>
 {/each}
 
 {#each listeners as { event, handler, modifiers }}
-	&nbsp;
-	<span class="attr-name" data-tooltip={typeof handler == 'function' ? handler() : handler}>
+	<span>&nbsp;</span>
+	<span class="attr-name" data-tooltip={typeof handler === 'function' ? handler() : handler}>
 		on:
-		<SearchTerm text={event} />
+		<Indexer text={event} />
 		{#if modifiers && modifiers.length}|{modifiers.join('|')}{/if}
 	</span>
 {/each}
