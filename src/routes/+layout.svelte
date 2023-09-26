@@ -29,6 +29,10 @@
 		}
 		if (invalid) invalid.invalidate();
 	}
+
+	function interactive({ type }: (typeof $root)[number]) {
+		return $visibility[type] && type !== 'text' && type !== 'anchor';
+	}
 </script>
 
 <svelte:window
@@ -47,25 +51,22 @@
 			$selected.expanded = false;
 			$selected.invalidate();
 		} else if (key === 'ArrowUp') {
-			const nodes = $selected.parent === undefined ? $root : $selected.parent.children;
-			const siblings = nodes.filter(
-				(o) => $visibility[o.type] && o.type !== 'text' && o.type !== 'anchor',
-			);
-			const index = siblings.findIndex((o) => o.id === $selected?.id);
-			$selected = index > 0 ? siblings[index - 1] : $selected.parent ?? $selected;
+			let nodes = ($selected.parent?.children || $root).filter(interactive);
+			let sibling = nodes[nodes.findIndex((o) => o.id === $selected?.id) - 1];
+			while (sibling?.expanded) {
+				nodes = sibling.children.filter(interactive);
+				sibling = nodes[nodes.length - 1];
+			}
+			$selected = sibling ?? $selected.parent ?? $selected;
 		} else if (key === 'ArrowDown') {
-			const children = $selected.children.filter(
-				(o) => $visibility[o.type] && o.type !== 'text' && o.type !== 'anchor',
-			);
+			const children = $selected.children.filter(interactive);
 
-			if ($selected.expanded || children.length === 0) {
+			if (!$selected.expanded || children.length === 0) {
 				let next = $selected;
 				let current = $selected;
 				do {
 					const nodes = current.parent ? current.parent.children : $root;
-					const siblings = nodes.filter(
-						(o) => $visibility[o.type] && o.type !== 'text' && o.type !== 'anchor',
-					);
+					const siblings = nodes.filter(interactive);
 					const index = siblings.findIndex((o) => o.id === current.id);
 					next = siblings[index + 1];
 					current = current.parent;
