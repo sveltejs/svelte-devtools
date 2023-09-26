@@ -2,32 +2,36 @@
 	import Button from '$lib/components/Button.svelte';
 	import { root, selected, query } from '$lib/store';
 
-	function search(list: any[]) {
+	let position = -1;
+	const submit = {
+		prev() {
+			if (position <= 0) position = results.length;
+			selected.set(results[--position]);
+		},
+		next() {
+			if (position >= results.length - 1) position = -1;
+			selected.set(results[++position]);
+		},
+	};
+
+	function search(list: any[]): any[] {
+		position = -1;
+		const nodes = [];
 		for (const node of list) {
 			if (
 				node.tagName.includes($query) ||
 				(node.detail && JSON.stringify(node.detail).includes($query))
 			)
-				results.push(node);
-			search(node.children);
+				nodes.push(node);
+			nodes.push(...search(node.children));
 		}
+		return nodes;
 	}
 
-	let results: typeof $root = [];
-	let position = -1;
-	$: if ($query.length > 1) {
-		results = [];
-		position = -1;
-		search($root);
-	}
+	$: results = $query.length ? search($root) : [];
 </script>
 
-<form
-	on:submit|preventDefault={() => {
-		if (position >= results.length - 1) position = -1;
-		selected.set(results[++position]);
-	}}
->
+<form on:submit|preventDefault>
 	<svg viewBox="0 0 16 16" width="1rem" fill="rgba(135, 135, 137, 0.9)">
 		<path d="M15.707 14.293l-5-5-1.414 1.414 5 5a1 1 0 0 0 1.414-1.414z" />
 		<path
@@ -36,22 +40,22 @@
 		/>
 	</svg>
 
-	<input placeholder="Search" bind:value={$query} />
+	<input
+		placeholder="Search"
+		bind:value={$query}
+		on:keydown={({ key, shiftKey }) => {
+			if (key === 'Enter') submit[shiftKey ? 'prev' : 'next']();
+		}}
+	/>
 
 	{#if position > -1}
 		<span style:font-size="0.625rem">{position + 1} of {results.length}</span>
 	{/if}
 
-	<Button type="submit" disabled={!results.length}>
+	<Button disabled={!results.length} on:click={submit.next}>
 		<div class="next" />
 	</Button>
-	<Button
-		disabled={!results.length}
-		on:click={() => {
-			if (position <= 0) position = results.length;
-			selected.set(results[--position]);
-		}}
-	>
+	<Button disabled={!results.length} on:click={submit.prev}>
 		<div class="prev" />
 	</Button>
 </form>
