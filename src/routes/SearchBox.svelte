@@ -14,7 +14,7 @@
 		},
 	};
 
-	function search(list: any[]): any[] {
+	function search(list: typeof $root): typeof $root {
 		position = -1;
 		const nodes = [];
 		for (const node of list) {
@@ -28,7 +28,7 @@
 		return nodes;
 	}
 
-	$: results = $query.length ? search($root) : [];
+	$: results = $query.length > 1 ? search($root) : [];
 </script>
 
 <form on:submit|preventDefault>
@@ -48,7 +48,7 @@
 		}}
 	/>
 
-	{#if position > -1}
+	{#if results.length && position > -1}
 		<span style:font-size="0.625rem">{position + 1} of {results.length}</span>
 	{/if}
 
