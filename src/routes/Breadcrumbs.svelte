@@ -10,7 +10,6 @@
 		return ancestors.reverse();
 	}
 
-	let breadcrumbs: NonNullable<typeof $selected>[] = [];
 	$: breadcrumbs = trail($selected);
 </script>
 
@@ -18,16 +17,14 @@
 	<ul>
 		{#each breadcrumbs as node}
 			{#if $visibility[node.type]}
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<!-- svelte-ignore a11y-mouse-events-have-key-events -->
-				<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-				<li
+				<button
 					class:selected={node.id === $selected?.id}
 					on:click={() => selected.set(node)}
+					on:focus={() => hovered.set(node)}
 					on:mouseover={() => hovered.set(node)}
 				>
 					{node.tagName}
-				</li>
+				</button>
 			{/if}
 		{/each}
 	</ul>
@@ -42,17 +39,21 @@
 		font-size: 0.75rem;
 	}
 
-	li {
+	button {
 		cursor: pointer;
 		position: relative;
 		display: flex;
 		align-items: center;
 		padding: 0.375rem 0.5rem;
+		border: none;
+		background: var(--background);
+		color: var(--color);
+		font-size: inherit;
 	}
-	li:hover {
+	button:hover {
 		background: rgba(255, 255, 255, 0.1);
 	}
-	li.selected {
+	button.selected {
 		background: rgba(255, 255, 255, 0.05);
 	}
 
