@@ -101,8 +101,8 @@
 
 			<!-- svelte-ignore missing-declaration -->
 			<Button
-				disabled={$selected?.id === undefined}
-				on:click={() => chrome.devtools.inspectedWindow.eval('inspect(window.$s)')}
+				disabled={$selected?.id === undefined || $selected?.type !== 'element'}
+				on:click={() => chrome.devtools.inspectedWindow.eval('inspect($n).scrollIntoView()')}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
 					<path
