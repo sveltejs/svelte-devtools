@@ -2,7 +2,7 @@
 	export let axis: 'x' | 'y';
 
 	let resizing = false;
-	let size = 425;
+	let size = 400;
 </script>
 
 <svelte:window

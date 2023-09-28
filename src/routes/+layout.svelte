@@ -28,6 +28,8 @@
 			(invalid = current).expanded = true;
 		}
 		if (invalid) invalid.invalidate();
+	} else if ($root.length) {
+		selected.set($root[0]);
 	}
 </script>
 
