@@ -178,7 +178,7 @@
 	}
 
 	li :global(> .selected::after) {
-		content: '== $s';
+		content: '== $n';
 		margin-left: 0.5rem;
 	}
 

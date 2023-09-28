@@ -22,7 +22,7 @@ window.addEventListener('message', ({ data, source }) => {
 	if (data.type === 'ext/select') {
 		const node = getNode(data.payload);
 		// @ts-expect-error - saved for `inspect()`
-		if (node) window.$s = node.detail;
+		if (node) window.$n = node.detail;
 	} else if (data.type === 'ext/highlight') {
 		const node = getNode(data.payload);
 		return highlight(node);
