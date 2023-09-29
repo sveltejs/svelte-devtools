@@ -39,8 +39,7 @@
 
 <svelte:window
 	on:keydown={({ target, key }) => {
-		if (target !== document.body) return;
-		if (!$selected?.invalidate) return;
+		if (target !== document.body || !$selected) return;
 
 		if (key === 'Enter') {
 			$selected.expanded = !$selected.expanded;

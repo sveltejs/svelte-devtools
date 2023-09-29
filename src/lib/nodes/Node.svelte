@@ -11,15 +11,7 @@
 	export let node: NonNullable<typeof $selected>;
 	export let depth = 1;
 
-	let _timeout: null | NodeJS.Timeout;
-	node.invalidate = () => {
-		if (_timeout) return;
-
-		_timeout = setTimeout(() => {
-			_timeout = null;
-			node = node;
-		}, 100);
-	};
+	node.invalidate = () => (node = node);
 
 	let lastLength = node.children.length;
 	let flash = false;
@@ -27,9 +19,6 @@
 		flash = flash || node.children.length !== lastLength;
 		lastLength = node.children.length;
 	}
-
-	// TODO: report, something really weird with the language server
-	const iterate = () => node.children;
 </script>
 
 {#if $visibility[node.type]}
@@ -125,8 +114,8 @@
 		{/if}
 	</li>
 {:else}
-	{#each iterate() as node (node.id)}
-		<svelte:self {node} {depth} />
+	{#each node.children as child (child.id)}
+		<svelte:self node={child} {depth} />
 	{/each}
 {/if}
 
