@@ -116,10 +116,16 @@ function serialize(node) {
 		case 'component': {
 			const { $$: internal = {} } = node.detail;
 			const ctx = clone(node.detail.$capture_state?.() || {});
+			const bindings = Object.values(internal.bound || {}).map(
+				/** @param {Function} f */ (f) => f.name,
+			);
 			const props = Object.keys(internal.props || {}).flatMap((key) => {
 				const value = ctx[key];
-				delete ctx[key];
-				return value === undefined ? [] : { key, value, isBound: key in internal.bound };
+				delete ctx[key]; // deduplicate for ctx
+				if (value === undefined) return [];
+
+				const bounded = bindings.some((f) => f.includes(key));
+				return { key, value, bounded };
 			});
 
 			res.detail = {
