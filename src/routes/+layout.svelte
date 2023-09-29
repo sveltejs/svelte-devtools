@@ -113,7 +113,12 @@
 			</Button>
 		</Toolbar>
 
-		<ul on:mouseleave={() => hovered.set(undefined)}>
+		<ul
+			on:mouseleave={() => {
+				background.send('ext/highlight', null);
+				hovered.set(undefined);
+			}}
+		>
 			{#each $root as node (node.id)}
 				<Node {node} />
 			{/each}
