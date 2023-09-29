@@ -1,4 +1,4 @@
-import { hovered, root, selected } from './store';
+import { type DebugNode, hovered, root, selected } from './store';
 
 const port = chrome.runtime.connect();
 const tabId = chrome.devtools.inspectedWindow.tabId;
@@ -11,21 +11,7 @@ export const background = {
 	},
 };
 
-const nodes = new Map();
-
-function insertNode(node: any, target: any, anchorId: number) {
-	node.parent = target;
-
-	const index = anchorId ? target.children.findIndex((o: any) => o.id === anchorId) : -1;
-
-	if (index !== -1) {
-		target.children.splice(index, 0, node);
-	} else {
-		target.children.push(node);
-	}
-
-	target.invalidate();
-}
+const nodes = new Map<null | number, DebugNode>();
 
 function resolveEventBubble(node: any) {
 	if (!node.detail || !node.detail.listeners) return;
@@ -65,47 +51,47 @@ port.onMessage.addListener(({ type, payload }) => {
 		}
 
 		case 'courier/node:add': {
-			const { node, target, anchor } = payload;
+			const { node, target, anchor } = payload as {
+				node: DebugNode;
+				target: null | number;
+				anchor: null | number;
+			};
 
 			node.children = [];
 			node.expanded = false;
 			node.invalidate = () => {};
 			resolveEventBubble(node);
 
-			const map_node = nodes.get(target);
-			nodes.set(node.id, node);
+			const current = nodes.get(node.id);
+			const parent = nodes.get(target) || current?.parent;
+			if (!nodes.has(node.id)) nodes.set(node.id, node);
+			if (!parent) return root.update((n) => [...n, node]);
 
-			if (map_node) {
-				insertNode(node, map_node, anchor);
-				return;
-			}
+			const index = parent.children.findIndex((n) => n.id === anchor);
+			if (index === -1) parent.children.push(node);
+			else parent.children.splice(index, 0, node);
+			parent.children = parent.children.filter(
+				(n, i, p) => p.findIndex((d) => d.id === n.id) === i,
+			);
 
-			if (node._timeout) return;
-
-			node._timeout = setTimeout(() => {
-				delete node._timeout;
-				const targetNode = nodes.get(target);
-				if (targetNode) insertNode(node, targetNode, anchor);
-				else root.update((o) => [...o, node]);
-			}, 100);
-
-			break;
+			return (node.parent = parent).invalidate();
 		}
 
 		case 'courier/node:remove': {
-			const current = nodes.get(payload.node.id);
-			nodes.delete(current.id);
-			if (!current.parent) break;
+			const node = payload.node as SvelteBlockDetail;
+			const current = nodes.get(node.id);
+			if (current) nodes.delete(current.id);
+			if (!current?.parent) return;
 
-			const index = current.parent.children.findIndex((o: any) => o.id === current.id);
+			const index = current.parent.children.findIndex((o) => o.id === current.id);
 			current.parent.children.splice(index, 1);
-			current.parent.invalidate();
-			break;
+			return current.parent.invalidate();
 		}
 
 		case 'courier/node:update': {
-			const current = nodes.get(payload.node.id);
-			if (!current) return; // TODO: investigate why this happens
+			const node = payload.node as SvelteBlockDetail;
+			const current = nodes.get(node.id);
+			if (!current) return;
 			Object.assign(current, payload.node);
 			resolveEventBubble(current);
 

@@ -84,20 +84,19 @@
 				</ul>
 			</Block>
 		{:else if node.type === 'iteration'}
-			<ul class:active style:--left="{left}px">
-				<!-- TODO: figure this out
-				<span
-					class:selected={current}
-					class:hover={active}
-					style:z-index="1"
-					style:position="absolute"
-					style:left="{left - 4}px"
-					style:transform="translateX(-100%)"
-				>
-					&#8618;
-				</span>
-				-->
+			<span
+				class:selected={current}
+				class:hover={active}
+				style:z-index="1"
+				style:position="absolute"
+				style:top="0"
+				style:left="{left - 4}px"
+				style:transform="translateX(-100%)"
+			>
+				&#8618;
+			</span>
 
+			<ul class:active style:--left="{left + 2}px">
 				{#each node.children as child (child.id)}
 					<svelte:self node={child} depth={depth + 1} />
 				{/each}

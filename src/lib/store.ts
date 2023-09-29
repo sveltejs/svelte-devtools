@@ -10,7 +10,7 @@ export const visibility = writable<{ [key: string]: boolean }>({
 	anchor: false,
 });
 
-type DebugNode = Omit<SvelteBlockDetail, 'parent' | 'children'> & {
+export type DebugNode = Omit<SvelteBlockDetail, 'parent' | 'children'> & {
 	invalidate(): void;
 	expanded: boolean;
 
