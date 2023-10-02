@@ -47,6 +47,7 @@ function attach(tabId, changed) {
 
 	chrome.scripting.executeScript({
 		target: { tabId },
+		injectImmediately: true,
 
 		// no lexical context, `func` is serialized and deserialized.
 		// a limbo world where both `chrome` and `window` are defined
