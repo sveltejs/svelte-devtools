@@ -36,8 +36,8 @@
 		on:animationend={() => (flash = false)}
 		on:click|stopPropagation={() => selected.set(node)}
 		on:mouseenter|stopPropagation={() => {
-			hovered.set(node);
 			background.send('ext/highlight', node.id);
+			hovered.set(node);
 		}}
 	>
 		{#if node.type === 'component' || node.type === 'element'}
