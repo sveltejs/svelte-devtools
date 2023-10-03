@@ -15,11 +15,9 @@ chrome.runtime.onConnect.addListener((port) => {
 			port.onDisconnect.addListener(() => {
 				ports.delete(message.tabId);
 
-				chrome.tabs.onUpdated.removeListener(attach);
-				chrome.tabs.sendMessage(message.tabId, {
-					type: 'ext/clear',
-					tabId: message.tabId,
-				});
+				if (ports.size === 0) {
+					chrome.tabs.onUpdated.removeListener(attach);
+				}
 			});
 
 			return chrome.tabs.onUpdated.addListener(attach);
