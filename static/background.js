@@ -47,6 +47,7 @@ function attach(tabId, changed) {
 
 	chrome.scripting.executeScript({
 		target: { tabId },
+		injectImmediately: true,
 
 		// no lexical context, `func` is serialized and deserialized.
 		// a limbo world where both `chrome` and `window` are defined
@@ -60,7 +61,7 @@ function attach(tabId, changed) {
 			// because `detail` in the dispatched custom events is `null`
 			const script = document.createElement('script');
 			script.setAttribute('src', source);
-			document.body.appendChild(script);
+			document.documentElement.appendChild(script);
 
 			// // TODO: reenable profiler
 			// if (message.type === 'ext/profiler' && message.payload) {
