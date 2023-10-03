@@ -61,7 +61,7 @@ function attach(tabId, changed) {
 			// because `detail` in the dispatched custom events is `null`
 			const script = document.createElement('script');
 			script.setAttribute('src', source);
-			document.body.appendChild(script);
+			document.documentElement.appendChild(script);
 
 			// // TODO: reenable profiler
 			// if (message.type === 'ext/profiler' && message.payload) {
