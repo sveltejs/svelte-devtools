@@ -18,28 +18,26 @@ const nodes = {
 	map: new Map(),
 
 	/** @param {{ node: SvelteBlockDetail; target?: Node; anchor?: Node }} opts */
-	add({ node, target, anchor }) {
+	add({ node, target: source, anchor }) {
 		this.map.set(node.id, node);
 		this.map.set(node.detail, node);
 
-		let map_target = target && this.map.get(target);
-		if (!map_target || map_target.parentBlock != node.parentBlock) {
-			map_target = node.parentBlock;
+		let target = source && this.map.get(source);
+		if (!target || target.parentBlock != node.parentBlock) {
+			target = node.parentBlock;
 		}
+		node.parent = target;
 
-		node.parent = map_target;
-
-		const map_anchor = this.map.get(anchor);
-
-		if (map_target) {
-			const index = map_target.children.findIndex((n) => n === map_anchor);
-			if (index === -1) map_target.children.push(node);
-			else map_target.children.splice(index, 0, node);
+		const sibling = this.map.get(anchor);
+		if (target) {
+			const index = target.children.findIndex((n) => n === sibling);
+			if (index === -1) target.children.push(node);
+			else target.children.splice(index, 0, node);
 		} else {
 			this.root.push(node);
 		}
 
-		listeners.add(node, map_anchor);
+		listeners.add(node, sibling);
 	},
 
 	/** @param {SvelteBlockDetail} node */
