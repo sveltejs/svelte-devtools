@@ -116,6 +116,11 @@ declare global {
 				data: unknown;
 			}
 		>;
+
+		SvelteDevTools: CusomEvent<{
+			type: string;
+			payload: string;
+		}>;
 	}
 }
 
