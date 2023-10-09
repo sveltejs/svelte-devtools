@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 
 	if (message.type === 'ext/icon:set') {
 		const selected = message.payload ? 'default' : 'disabled';
-		chrome.action.setIcon({
+		return chrome.action.setIcon({
 			path: {
 				16: `icons/${selected}-16.png`,
 				24: `icons/${selected}-24.png`,
@@ -50,7 +50,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 	}
 
 	const port = sender.tab?.id && ports.get(sender.tab.id);
-	if (port) port.postMessage(message);
+	if (port) return port.postMessage(message);
 });
 
 /** @type {Parameters<chrome.tabs.TabUpdatedEvent['addListener']>[0]} */
