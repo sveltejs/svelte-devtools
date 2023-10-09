@@ -11,7 +11,15 @@
 		"128": "icons/default-128.png"
 	},
 
-	"action": {},
+	"action": {
+		"default_icon": {
+			"16": "icons/disabled-16.png",
+			"24": "icons/disabled-24.png",
+			"48": "icons/disabled-48.png",
+			"96": "icons/disabled-96.png",
+			"128": "icons/disabled-128.png"
+		}
+	},
 	"background": {
 		"service_worker": "background.js"
 	},
@@ -19,9 +27,7 @@
 	"host_permissions": ["*://*/*"],
 	"permissions": ["activeTab", "scripting"],
 	"web_accessible_resources": [
-		{
-			"resources": ["courier.js"],
-			"matches": ["*://*/*"]
-		}
+		{ "matches": ["*://*/*"], "resources": ["courier.js"] },
+		{ "matches": ["*://*/*"], "resources": ["sensor.js"], "world": "MAIN" }
 	]
 }

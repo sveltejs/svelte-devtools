@@ -16,11 +16,11 @@ chrome.runtime.onConnect.addListener((port) => {
 				ports.delete(message.tabId);
 
 				if (ports.size === 0) {
-					chrome.tabs.onUpdated.removeListener(attach);
+					chrome.tabs.onUpdated.removeListener(courier);
 				}
 			});
 
-			return chrome.tabs.onUpdated.addListener(attach);
+			return chrome.tabs.onUpdated.addListener(courier);
 		} else if (message.type === 'ext/reload') {
 			return chrome.runtime.reload();
 		} else if (message.type === 'page/refresh') {
@@ -35,12 +35,26 @@ chrome.runtime.onConnect.addListener((port) => {
 // relay messages from `chrome.scripting` to devtools page
 chrome.runtime.onMessage.addListener((message, sender) => {
 	if (sender.id !== chrome.runtime.id) return; // unexpected sender
+
+	if (message.type === 'ext/icon:set') {
+		const selected = message.payload ? 'default' : 'disabled';
+		chrome.action.setIcon({
+			path: {
+				16: `icons/${selected}-16.png`,
+				24: `icons/${selected}-24.png`,
+				48: `icons/${selected}-48.png`,
+				96: `icons/${selected}-96.png`,
+				128: `icons/${selected}-128.png`,
+			},
+		});
+	}
+
 	const port = sender.tab?.id && ports.get(sender.tab.id);
 	if (port) port.postMessage(message);
 });
 
 /** @type {Parameters<chrome.tabs.TabUpdatedEvent['addListener']>[0]} */
-function attach(tabId, changed) {
+function courier(tabId, changed) {
 	if (!ports.has(tabId) || changed.status !== 'loading') return;
 
 	chrome.scripting.executeScript({
@@ -90,6 +104,30 @@ function attach(tabId, changed) {
 
 			window.addEventListener('unload', () => {
 				chrome.runtime.sendMessage({ type: 'ext/clear' });
+			});
+		},
+	});
+}
+
+chrome.tabs.onActivated.addListener(({ tabId }) => sensor(tabId));
+chrome.tabs.onUpdated.addListener(
+	(tabId, changed) => changed.status === 'loading' && sensor(tabId),
+);
+
+/** @param {number} tabId */
+async function sensor(tabId) {
+	chrome.scripting.executeScript({
+		target: { tabId },
+
+		func: () => {
+			const source = chrome.runtime.getURL('/sensor.js');
+			document.querySelector(`script[src="${source}"]`)?.remove();
+			const script = document.createElement('script');
+			script.setAttribute('src', source);
+			document.documentElement.appendChild(script);
+
+			document.addEventListener('SvelteDevTools', ({ detail }) => {
+				chrome.runtime.sendMessage(detail);
 			});
 		},
 	});
