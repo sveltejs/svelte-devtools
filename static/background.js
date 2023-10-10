@@ -38,15 +38,8 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 
 	if (message.type === 'ext/icon:set') {
 		const selected = message.payload ? 'default' : 'disabled';
-		return chrome.action.setIcon({
-			path: {
-				16: `icons/${selected}-16.png`,
-				24: `icons/${selected}-24.png`,
-				48: `icons/${selected}-48.png`,
-				96: `icons/${selected}-96.png`,
-				128: `icons/${selected}-128.png`,
-			},
-		});
+		const icons = [16, 24, 48, 96, 128].map((s) => [s, `icons/${selected}-${s}.png`]);
+		return chrome.action.setIcon({ path: Object.fromEntries(icons) });
 	}
 
 	const port = sender.tab?.id && ports.get(sender.tab.id);
@@ -135,14 +128,7 @@ function sensor(tabId) {
 		.catch(() => {
 			// for internal URLs like `chrome://` or `edge://` and extension gallery
 			// https://chromium.googlesource.com/chromium/src/+/ee77a52baa1f8a98d15f9749996f90e9d3200f2d/chrome/common/extensions/chrome_extensions_client.cc#131
-			chrome.action.setIcon({
-				path: {
-					16: 'icons/disabled-16.png',
-					24: 'icons/disabled-24.png',
-					48: 'icons/disabled-48.png',
-					96: 'icons/disabled-96.png',
-					128: 'icons/disabled-128.png',
-				},
-			});
+			const icons = [16, 24, 48, 96, 128].map((s) => [s, `icons/disabled-${s}.png`]);
+			chrome.action.setIcon({ path: Object.fromEntries(icons) });
 		});
 }
