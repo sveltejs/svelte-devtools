@@ -115,11 +115,9 @@ chrome.tabs.onUpdated.addListener(
 );
 
 /** @param {number} tabId */
-async function sensor(tabId) {
-	const { url } = await chrome.tabs.get(tabId);
-	if (url) {
-		// only execute script for valid tabs with URLs
-		chrome.scripting.executeScript({
+function sensor(tabId) {
+	chrome.scripting
+		.executeScript({
 			target: { tabId },
 
 			func: () => {
@@ -133,17 +131,18 @@ async function sensor(tabId) {
 					chrome.runtime.sendMessage(detail);
 				});
 			},
+		})
+		.catch(() => {
+			// for internal URLs like `chrome://` or `edge://` and extension gallery
+			// https://chromium.googlesource.com/chromium/src/+/ee77a52baa1f8a98d15f9749996f90e9d3200f2d/chrome/common/extensions/chrome_extensions_client.cc#131
+			chrome.action.setIcon({
+				path: {
+					16: 'icons/disabled-16.png',
+					24: 'icons/disabled-24.png',
+					48: 'icons/disabled-48.png',
+					96: 'icons/disabled-96.png',
+					128: 'icons/disabled-128.png',
+				},
+			});
 		});
-	} else {
-		// for internal pages like `chrome://extensions/`
-		chrome.action.setIcon({
-			path: {
-				16: 'icons/disabled-16.png',
-				24: 'icons/disabled-24.png',
-				48: 'icons/disabled-48.png',
-				96: 'icons/disabled-96.png',
-				128: 'icons/disabled-128.png',
-			},
-		});
-	}
 }
