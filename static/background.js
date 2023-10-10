@@ -116,19 +116,34 @@ chrome.tabs.onUpdated.addListener(
 
 /** @param {number} tabId */
 async function sensor(tabId) {
-	chrome.scripting.executeScript({
-		target: { tabId },
+	const { url } = await chrome.tabs.get(tabId);
+	if (url) {
+		// only execute script for valid tabs with URLs
+		chrome.scripting.executeScript({
+			target: { tabId },
 
-		func: () => {
-			const source = chrome.runtime.getURL('/sensor.js');
-			document.querySelector(`script[src="${source}"]`)?.remove();
-			const script = document.createElement('script');
-			script.setAttribute('src', source);
-			document.documentElement.appendChild(script);
+			func: () => {
+				const source = chrome.runtime.getURL('/sensor.js');
+				document.querySelector(`script[src="${source}"]`)?.remove();
+				const script = document.createElement('script');
+				script.setAttribute('src', source);
+				document.documentElement.appendChild(script);
 
-			document.addEventListener('SvelteDevTools', ({ detail }) => {
-				chrome.runtime.sendMessage(detail);
-			});
-		},
-	});
+				document.addEventListener('SvelteDevTools', ({ detail }) => {
+					chrome.runtime.sendMessage(detail);
+				});
+			},
+		});
+	} else {
+		// for internal pages like `chrome://extensions/`
+		chrome.action.setIcon({
+			path: {
+				16: 'icons/disabled-16.png',
+				24: 'icons/disabled-24.png',
+				48: 'icons/disabled-48.png',
+				96: 'icons/disabled-96.png',
+				128: 'icons/disabled-128.png',
+			},
+		});
+	}
 }
