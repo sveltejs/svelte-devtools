@@ -45,8 +45,8 @@
 				tagName={node.tagName}
 				selected={active}
 				hover={current}
-				attributes={node.detail.attributes}
-				listeners={node.detail.listeners}
+				attributes={node.detail?.attributes || []}
+				listeners={node.detail?.listeners || []}
 				hasChildren={!!node.children.length}
 				{style}
 				bind:expanded={node.expanded}
@@ -62,7 +62,7 @@
 				tagName={node.tagName}
 				selected={active}
 				hover={current}
-				source={node.detail.source}
+				source={node.detail?.source}
 				{style}
 				bind:expanded={node.expanded}
 			>
@@ -107,7 +107,7 @@
 			</Slot>
 		{:else if node.type === 'text'}
 			<div {style}>
-				<Indexer text={node.detail.nodeValue} />
+				<Indexer text={node.detail?.nodeValue} />
 			</div>
 		{:else if node.type === 'anchor'}
 			<Anchor {style} />
