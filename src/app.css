@@ -1,4 +1,6 @@
 :root {
+	tab-size: 2;
+
 	--background: rgb(255, 255, 255);
 	--color: rgb(74, 74, 79);
 

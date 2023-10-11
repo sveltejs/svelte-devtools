@@ -46,7 +46,7 @@ function resolveEventBubble(node: any) {
 			const handler = parentListener.handler;
 			if (!handler) return null;
 
-			return '// From parent\n' + (typeof handler === 'function' ? handler() : handler);
+			return `// From parent\n${handler}`;
 		};
 	}
 }
