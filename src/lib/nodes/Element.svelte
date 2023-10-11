@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Indexer from '$lib/components/Indexer.svelte';
 	import ElementAttributes from './ElementAttributes.svelte';
+	import Ellipsis from './Ellipsis.svelte';
 
 	import type { ComponentProps } from 'svelte';
 
@@ -67,7 +68,9 @@
 		<ElementAttributes attributes={cached} {listeners} />
 		<span>&gt;</span>
 		{#if !expanded}
-			<span>&hellip;&lt;/</span>
+			<Ellipsis on:click={() => (expanded = true)} />
+
+			<span>&lt;/</span>
 			<span class="tag-name">
 				<Indexer text={tagName} />
 			</span>

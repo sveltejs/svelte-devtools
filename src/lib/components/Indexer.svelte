@@ -2,18 +2,21 @@
 	import { query } from '$lib/store';
 
 	export let text = '';
-	export let color = '';
+	export let style = '';
+	export let hover = false;
 
-	$: i = text ? text.indexOf($query) : -1;
+	$: i = text.indexOf($query);
 </script>
 
-<div style:color>
+<div {style} class:hover>
 	{#if i === -1 || $query.length < 2}
 		<span>{text}</span>
 	{:else}
-		<span>{text.slice(0, i)}</span>
+		{#if i !== 0}<span>{text.slice(0, i)}</span>{/if}
 		<mark>{text.slice(i, i + $query.length)}</mark>
-		<span>{text.slice(i + $query.length)}</span>
+		{#if i + $query.length < text.length}
+			<span>{text.slice(i + $query.length)}</span>
+		{/if}
 	{/if}
 </div>
 

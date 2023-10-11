@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Indexer from '../components/Indexer.svelte';
+	import Ellipsis from './Ellipsis.svelte';
 
 	export let style: string;
 	export let hover: boolean;
@@ -17,24 +18,17 @@
 	class="expandable tag-open tag-name"
 	on:dblclick={() => (expanded = !expanded)}
 >
-	<span>&lt;</span>
-	<Indexer text={tagName} color="#c586c0" />
-	<span>&gt;</span>
+	<Indexer text={`<${tagName}>`} style="color: #c586c0" />
 
 	{#if !expanded}
-		<span>&hellip;&lt;/</span>
-		<Indexer text={tagName} color="#c586c0" />
-		<span>&gt;</span>
+		<Ellipsis on:click={() => (expanded = true)} />
+		<Indexer text={`</${tagName}>`} style="color: #c586c0" />
 	{/if}
 </div>
 {#if expanded}
 	<slot />
 
-	<div class="tag-close tag-name" class:hover {style}>
-		<span>&lt;/</span>
-		<Indexer text={tagName} color="#c586c0" />
-		<span>&gt;</span>
-	</div>
+	<Indexer text={`</${tagName}>`} {hover} style="color: #c586c0; {style}" />
 {/if}
 
 <style>
