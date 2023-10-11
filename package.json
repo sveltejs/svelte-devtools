@@ -1,9 +1,5 @@
 {
-	"name": "svelte-devtools",
-	"version": "1.3.0",
-	"description": "Browser devtools extension for debugging Svelte applications.",
-	"repository": "github:sveltejs/svelte-devtools",
-	"license": "MIT",
+	"private": true,
 	"type": "module",
 	"scripts": {
 		"dev:app": "vite build --watch",

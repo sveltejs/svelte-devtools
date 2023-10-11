@@ -1,7 +1,7 @@
 import { type DebugNode, hovered, root, selected } from './store';
 
-const port = chrome.runtime.connect();
 const tabId = chrome.devtools.inspectedWindow.tabId;
+const port = chrome.runtime.connect({ name: `${tabId}` });
 
 port.postMessage({ source: 'svelte-devtools', tabId, type: 'ext/init' });
 

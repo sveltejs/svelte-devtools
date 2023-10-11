@@ -2,15 +2,24 @@
 	"manifest_version": 3,
 	"name": "Svelte DevTools",
 	"version": "2.0.0",
-	"description": "Browser devtools extension for debugging Svelte applications.",
+	"description": "Browser DevTools extension for debugging Svelte applications.",
 	"icons": {
-		"16": "icons/16.png",
-		"24": "icons/24.png",
-		"48": "icons/48.png",
-		"96": "icons/96.png",
-		"128": "icons/128.png"
+		"16": "icons/default-16.png",
+		"24": "icons/default-24.png",
+		"48": "icons/default-48.png",
+		"96": "icons/default-96.png",
+		"128": "icons/default-128.png"
 	},
 
+	"action": {
+		"default_icon": {
+			"16": "icons/disabled-16.png",
+			"24": "icons/disabled-24.png",
+			"48": "icons/disabled-48.png",
+			"96": "icons/disabled-96.png",
+			"128": "icons/disabled-128.png"
+		}
+	},
 	"background": {
 		"service_worker": "background.js"
 	},
@@ -18,9 +27,7 @@
 	"host_permissions": ["*://*/*"],
 	"permissions": ["activeTab", "scripting"],
 	"web_accessible_resources": [
-		{
-			"resources": ["courier.js"],
-			"matches": ["*://*/*"]
-		}
+		{ "matches": ["*://*/*"], "resources": ["courier.js"] },
+		{ "matches": ["*://*/*"], "resources": ["sensor.js"], "world": "MAIN" }
 	]
 }

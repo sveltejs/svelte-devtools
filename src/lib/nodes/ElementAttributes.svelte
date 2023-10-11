@@ -15,11 +15,12 @@
 </script>
 
 {#each attributes as { key, value, bounded, flash } (key)}
+	{@const prefix = bounded ? 'bind:' : ''}
+
 	<span>&nbsp;</span>
 	<span class:flash style:display="flex">
 		<span class="attr-name">
-			{#if bounded}bind:{/if}
-			<Indexer text={key} />
+			<Indexer text="{prefix}{key}" />
 		</span>
 		<span>=</span>
 		<span class="attr-value">
