@@ -38,15 +38,8 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 
 	if (message.type === 'ext/icon:set') {
 		const selected = message.payload ? 'default' : 'disabled';
-		return chrome.action.setIcon({
-			path: {
-				16: `icons/${selected}-16.png`,
-				24: `icons/${selected}-24.png`,
-				48: `icons/${selected}-48.png`,
-				96: `icons/${selected}-96.png`,
-				128: `icons/${selected}-128.png`,
-			},
-		});
+		const icons = [16, 24, 48, 96, 128].map((s) => [s, `icons/${selected}-${s}.png`]);
+		return chrome.action.setIcon({ path: Object.fromEntries(icons) });
 	}
 
 	const port = sender.tab?.id && ports.get(sender.tab.id);
@@ -115,11 +108,9 @@ chrome.tabs.onUpdated.addListener(
 );
 
 /** @param {number} tabId */
-async function sensor(tabId) {
-	const { url } = await chrome.tabs.get(tabId);
-	if (url) {
-		// only execute script for valid tabs with URLs
-		chrome.scripting.executeScript({
+function sensor(tabId) {
+	chrome.scripting
+		.executeScript({
 			target: { tabId },
 
 			func: () => {
@@ -133,17 +124,11 @@ async function sensor(tabId) {
 					chrome.runtime.sendMessage(detail);
 				});
 			},
+		})
+		.catch(() => {
+			// for internal URLs like `chrome://` or `edge://` and extension gallery
+			// https://chromium.googlesource.com/chromium/src/+/ee77a52baa1f8a98d15f9749996f90e9d3200f2d/chrome/common/extensions/chrome_extensions_client.cc#131
+			const icons = [16, 24, 48, 96, 128].map((s) => [s, `icons/disabled-${s}.png`]);
+			chrome.action.setIcon({ path: Object.fromEntries(icons) });
 		});
-	} else {
-		// for internal pages like `chrome://extensions/`
-		chrome.action.setIcon({
-			path: {
-				16: 'icons/disabled-16.png',
-				24: 'icons/disabled-24.png',
-				48: 'icons/disabled-48.png',
-				96: 'icons/disabled-96.png',
-				128: 'icons/disabled-128.png',
-			},
-		});
-	}
 }
