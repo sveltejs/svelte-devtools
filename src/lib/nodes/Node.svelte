@@ -28,7 +28,6 @@
 	{@const left = depth * 12 + 4}
 
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<!-- svelte-ignore a11y-mouse-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 	<li
 		class:flash
@@ -145,15 +144,6 @@
 		background: #e0e0e2;
 	}
 
-	/* li:hover,
-	li.hovered {
-		background: #f0f9fe;
-	}
-	li.selected {
-		background: rgb(0, 116, 232);
-		color: #ffffff;
-	} */
-
 	li.flash :global(> :first-child),
 	li.flash :global(> :first-child *),
 	li :global(.flash),
@@ -176,13 +166,10 @@
 		background: #f0f9fe;
 	}
 
-	/* :global(.dark) li:hover, */
-	/* :global(.dark) li.hovered, */
 	:global(.dark) li :global(.hover) {
 		background: rgb(53, 59, 72);
 	}
 
-	/* :global(.dark) li.selected, */
 	:global(.dark) li :global(.selected),
 	:global(.dark) li :global(.selected *),
 	:global(.dark) li :global(.hover.selected) {
