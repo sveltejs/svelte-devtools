@@ -37,6 +37,7 @@
 
 <style>
 	div {
+		width: 100%;
 		display: flex;
 		color: rgb(151, 164, 179);
 	}

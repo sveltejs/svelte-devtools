@@ -35,7 +35,8 @@
 		bind:this={node.dom}
 		on:animationend={() => (flash = false)}
 		on:click|stopPropagation={() => selected.set(node)}
-		on:mouseenter|stopPropagation={() => {
+		on:mousemove|stopPropagation={() => {
+			if ($hovered?.id === node.id) return;
 			background.send('ext/highlight', node.id);
 			hovered.set(node);
 		}}
@@ -175,7 +176,7 @@
 		background: #f0f9fe;
 	}
 
-	:global(.dark) li:hover,
+	/* :global(.dark) li:hover, */
 	/* :global(.dark) li.hovered, */
 	:global(.dark) li :global(.hover) {
 		background: rgb(53, 59, 72);
