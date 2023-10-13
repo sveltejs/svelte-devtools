@@ -23,8 +23,8 @@ const nodes = {
 		this.map.set(node.detail, node);
 
 		let target = source && this.map.get(source);
-		if (!target || target.parentBlock != node.parentBlock) {
-			target = node.parentBlock;
+		if (!target || target.container != node.container) {
+			target = node.container;
 		}
 		node.parent = target;
 
@@ -94,14 +94,14 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 				type: 'block',
 				detail: rest,
 				tagName: type === 'pending' ? 'await' : type,
-				parentBlock: parent,
+				container: parent,
 				children: [],
 			});
 
 			switch (type) {
 				case 'then':
 				case 'catch':
-					if (!node.parentBlock) node.parentBlock = last_promise;
+					if (!node.container) node.container = last_promise;
 					break;
 
 				case 'slot':
@@ -137,7 +137,7 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 						id: pointer++,
 						type: 'block',
 						tagName: 'each',
-						parentBlock: parent,
+						container: parent,
 						children: [],
 						detail: {
 							ctx: {},
@@ -147,7 +147,7 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 				parent && nodes.map.set(parent.id + id, group);
 				nodes.add({ node: group, target, anchor });
 
-				node.parentBlock = group;
+				node.container = group;
 				node.type = 'iteration';
 
 				// @ts-expect-error - overloaded nodes
@@ -185,7 +185,7 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 			const node = nodes.map.get(current_node_id);
 			if (node) {
 				if (node.tagName === 'await') {
-					last_promise = node.parentBlock;
+					last_promise = node.container;
 				}
 				nodes.remove(node);
 			}
@@ -217,7 +217,7 @@ document.addEventListener('SvelteDOMInsert', ({ detail }) => {
 				type,
 				detail: element,
 				tagName: element.nodeName.toLowerCase(),
-				parentBlock: current_block,
+				container: current_block,
 				children: [],
 			},
 		});

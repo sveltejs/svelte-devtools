@@ -55,9 +55,11 @@ declare global {
 		detail?: any;
 		tagName?: string;
 
-		parent?: SvelteBlockDetail;
-		parentBlock?: SvelteBlockDetail;
 		children: SvelteBlockDetail[];
+		/** `type: 'element' | 'component'` */
+		parent?: SvelteBlockDetail;
+		/** like `parent` but `type: 'component'`  */
+		container?: SvelteBlockDetail;
 
 		block: SvelteComponentDetail['component']['$$']['fragment'];
 		ctx: Array<any>; // TODO: do we need this typed?
