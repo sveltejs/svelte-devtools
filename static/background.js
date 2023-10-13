@@ -12,14 +12,6 @@ chrome.runtime.onConnect.addListener((port) => {
 		if (message.type === 'ext/init') {
 			ports.set(message.tabId, sender);
 
-			port.onDisconnect.addListener(() => {
-				ports.delete(message.tabId);
-
-				if (ports.size === 0) {
-					chrome.tabs.onUpdated.removeListener(courier);
-				}
-			});
-
 			return chrome.tabs.onUpdated.addListener(courier);
 		} else if (message.type === 'ext/reload') {
 			return chrome.runtime.reload();
@@ -29,6 +21,14 @@ chrome.runtime.onConnect.addListener((port) => {
 
 		// relay messages from devtools page to `chrome.scripting`
 		return chrome.tabs.sendMessage(message.tabId, message);
+	});
+
+	port.onDisconnect.addListener((disconnected) => {
+		ports.delete(+disconnected.name);
+
+		if (ports.size === 0) {
+			chrome.tabs.onUpdated.removeListener(courier);
+		}
 	});
 });
 
