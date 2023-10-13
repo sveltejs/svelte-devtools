@@ -47,7 +47,7 @@ export const query = writable('');
 
 export type Profiler = {
 	type: 'mount' | 'patch' | 'detach';
-	node: { id: string; type: string; tagName: string };
+	node: DebugNode;
 	duration: number;
 	start: number;
 	end: number;
