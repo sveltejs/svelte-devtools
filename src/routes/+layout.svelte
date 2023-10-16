@@ -35,6 +35,11 @@
 	function interactive({ type }: (typeof $root)[number]) {
 		return $visibility[type] && type !== 'text' && type !== 'anchor';
 	}
+
+	function reset() {
+		background.send('ext/highlight', null);
+		hovered.set(undefined);
+	}
 </script>
 
 <svelte:window
@@ -112,12 +117,7 @@
 			</Button>
 		</Toolbar>
 
-		<ul
-			on:mouseleave={() => {
-				background.send('ext/highlight', null);
-				hovered.set(undefined);
-			}}
-		>
+		<ul on:mousemove|self={reset} on:mouseleave={reset}>
 			{#each $root as node (node.id)}
 				<Node {node} />
 			{/each}
@@ -161,7 +161,6 @@
 
 	ul {
 		overflow: auto;
-		padding-left: 0.5rem;
 	}
 
 	h2 {
