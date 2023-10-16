@@ -6,7 +6,7 @@
 	export let hover: boolean;
 	export let selected: boolean;
 	export let tagName: string;
-	export let source: string;
+	export let source: string | undefined;
 	export let expanded: boolean;
 </script>
 

@@ -30,11 +30,11 @@
 {/each}
 
 {#each listeners as { event, handler, modifiers }}
+	{@const suffix = modifiers?.length ? `|${modifiers.join('|')}` : ''}
+
 	<span>&nbsp;</span>
-	<span class="attr-name" data-tooltip={typeof handler === 'function' ? handler() : handler}>
-		on:
-		<Indexer text={event} />
-		{#if modifiers && modifiers.length}|{modifiers.join('|')}{/if}
+	<span class="attr-name" data-tooltip={handler}>
+		<Indexer text="on:{event}{suffix}" />
 	</span>
 {/each}
 
