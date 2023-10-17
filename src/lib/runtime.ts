@@ -62,17 +62,13 @@ port.onMessage.addListener(({ type, payload }) => {
 			node.invalidate = () => {};
 			resolveEventBubble(node);
 
-			const current = nodes.get(node.id);
-			const parent = nodes.get(target) || current?.parent;
-			if (!nodes.has(node.id)) nodes.set(node.id, node);
+			const parent = nodes.get(target);
+			nodes.set(node.id, node);
 			if (!parent) return root.update((n) => [...n, node]);
 
 			const index = parent.children.findIndex((n) => n.id === anchor);
 			if (index === -1) parent.children.push(node);
 			else parent.children.splice(index, 0, node);
-			parent.children = parent.children.filter(
-				(n, i, p) => p.findIndex((d) => d.id === n.id) === i,
-			);
 
 			return (node.parent = parent).invalidate();
 		}

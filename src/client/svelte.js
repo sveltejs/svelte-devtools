@@ -129,10 +129,10 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 			}
 
 			if (type === 'each') {
-				const group =
-					(parent && nodes.map.get(parent.id + id)) ||
+				let group = parent && nodes.map.get(parent.id + id);
+				if (!group) {
 					// @ts-expect-error - each block fallback
-					/** @type {SvelteBlockDetail} */ ({
+					group = /** @type {SvelteBlockDetail} */ ({
 						version: '',
 						id: pointer++,
 						type: 'block',
@@ -144,8 +144,9 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 							source: detail.source,
 						},
 					});
-				parent && nodes.map.set(parent.id + id, group);
-				nodes.add({ node: group, target, anchor });
+					parent && nodes.map.set(parent.id + id, group);
+					nodes.add({ node: group, target, anchor });
+				}
 
 				node.container = group;
 				node.type = 'iteration';

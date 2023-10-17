@@ -6,6 +6,7 @@
 
 	import { background } from '$lib/runtime';
 	import { visibility, hovered, selected } from '$lib/store';
+	import Iteration from './Iteration.svelte';
 
 	export let node: NonNullable<typeof $selected>;
 	export let depth = 1;
@@ -70,25 +71,13 @@
 				</ul>
 			</Block>
 		{:else if node.type === 'iteration'}
-			<ul class:active>
-				<!-- TODO: figure out the UI for this
-				<span
-					class:selected={current}
-					class:hover={active}
-					style:z-index="1"
-					style:position="absolute"
-					style:top="0"
-					style:left="{left - 4}px"
-					style:transform="translateX(-100%)"
-				>
-					&#8618;
-				</span>
-				-->
-
-				{#each node.children as child (child.id)}
-					<svelte:self node={child} {depth} />
-				{/each}
-			</ul>
+			<Iteration selected={active} hover={current} bind:expanded={node.expanded}>
+				<ul class:active>
+					{#each node.children as child (child.id)}
+						<svelte:self node={child} depth={depth + 1} />
+					{/each}
+				</ul>
+			</Iteration>
 		{:else if node.type === 'slot'}
 			<Slot tagName={node.tagName} selected={active} hover={current} bind:expanded={node.expanded}>
 				<ul class:active>
@@ -98,11 +87,11 @@
 				</ul>
 			</Slot>
 		{:else if node.type === 'text'}
-			<div style:width="100%">
+			<div>
 				<Indexer text={node.detail?.nodeValue} />
 			</div>
 		{:else if node.type === 'anchor'}
-			<div style:width="100%">#anchor</div>
+			<div>#anchor</div>
 		{/if}
 	</li>
 {:else}
@@ -121,6 +110,7 @@
 		font-size: 0.75rem;
 	}
 	li :global(div) {
+		width: 100%;
 		padding-left: calc(var(--indent) + 6px);
 	}
 
