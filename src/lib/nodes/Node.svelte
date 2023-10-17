@@ -3,7 +3,6 @@
 	import Element from './Element.svelte';
 	import Block from './Block.svelte';
 	import Slot from './Slot.svelte';
-	import Anchor from './Anchor.svelte';
 
 	import { background } from '$lib/runtime';
 	import { visibility, hovered, selected } from '$lib/store';
@@ -24,13 +23,13 @@
 {#if $visibility[node.type]}
 	{@const active = $selected?.id === node.id}
 	{@const current = $hovered?.id === node.id}
-	{@const style = `padding-left: ${depth * 12}px`}
-	{@const left = depth * 12 + 4}
+	{@const indent = depth * 12}
 
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 	<li
 		class:flash
+		style:--indent="{indent}px"
 		bind:this={node.dom}
 		on:animationend={() => (flash = false)}
 		on:click|stopPropagation={() => selected.set(node)}
@@ -47,11 +46,10 @@
 				hover={current}
 				attributes={node.detail?.attributes || []}
 				listeners={node.detail?.listeners || []}
-				hasChildren={!!node.children.length}
-				{style}
+				empty={!node.children.length || node.children.every((n) => !$visibility[n.type])}
 				bind:expanded={node.expanded}
 			>
-				<ul class:active style:--left="{left}px">
+				<ul class:active>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
 					{/each}
@@ -63,53 +61,48 @@
 				selected={active}
 				hover={current}
 				source={node.detail?.source}
-				{style}
 				bind:expanded={node.expanded}
 			>
-				<ul class:active style:--left="{left}px">
+				<ul class:active>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Block>
 		{:else if node.type === 'iteration'}
-			<span
-				class:selected={current}
-				class:hover={active}
-				style:z-index="1"
-				style:position="absolute"
-				style:top="0"
-				style:left="{left - 4}px"
-				style:transform="translateX(-100%)"
-			>
-				&#8618;
-			</span>
+			<ul class:active>
+				<!-- TODO: figure out the UI for this
+				<span
+					class:selected={current}
+					class:hover={active}
+					style:z-index="1"
+					style:position="absolute"
+					style:top="0"
+					style:left="{left - 4}px"
+					style:transform="translateX(-100%)"
+				>
+					&#8618;
+				</span>
+				-->
 
-			<ul class:active style:--left="{left + 2}px">
 				{#each node.children as child (child.id)}
-					<svelte:self node={child} depth={depth + 1} />
+					<svelte:self node={child} {depth} />
 				{/each}
 			</ul>
 		{:else if node.type === 'slot'}
-			<Slot
-				tagName={node.tagName}
-				selected={active}
-				hover={current}
-				{style}
-				bind:expanded={node.expanded}
-			>
-				<ul class:active style:--left="{left}px">
+			<Slot tagName={node.tagName} selected={active} hover={current} bind:expanded={node.expanded}>
+				<ul class:active>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Slot>
 		{:else if node.type === 'text'}
-			<div {style}>
+			<div style:width="100%">
 				<Indexer text={node.detail?.nodeValue} />
 			</div>
 		{:else if node.type === 'anchor'}
-			<Anchor {style} />
+			<div style:width="100%">#anchor</div>
 		{/if}
 	</li>
 {:else}
@@ -127,6 +120,9 @@
 		line-height: 1.5;
 		font-size: 0.75rem;
 	}
+	li :global(div) {
+		padding-left: calc(var(--indent) + 6px);
+	}
 
 	ul {
 		width: 100%;
@@ -139,7 +135,7 @@
 		position: absolute;
 		top: 0.2rem;
 		bottom: 0.15rem;
-		left: calc(var(--left) - 0.75rem);
+		left: calc(var(--indent) - 0.75rem);
 		background: #e0e0e2;
 	}
 

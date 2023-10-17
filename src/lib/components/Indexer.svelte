@@ -2,13 +2,13 @@
 	import { query } from '$lib/store';
 
 	export let text = '';
-	export let style = '';
+	export let color = '';
 	export let hover = false;
 
 	$: i = text.indexOf($query);
 </script>
 
-<div {style} class:hover>
+<p class:hover style:color>
 	{#if i === -1 || $query.length < 2}
 		<span>{text}</span>
 	{:else}
@@ -18,11 +18,13 @@
 			<span>{text.slice(i + $query.length)}</span>
 		{/if}
 	{/if}
-</div>
+</p>
 
 <style>
-	div {
+	p {
 		display: flex;
+		padding-left: 0;
+		margin: 0;
 	}
 	span {
 		overflow: hidden;

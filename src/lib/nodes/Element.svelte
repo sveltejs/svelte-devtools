@@ -6,10 +6,9 @@
 	import type { ComponentProps } from 'svelte';
 
 	export let expanded: boolean;
-	export let hasChildren: boolean;
+	export let empty: boolean;
 	export let hover: boolean;
 	export let selected: boolean;
-	export let style: string;
 	export let tagName: string;
 
 	export let attributes: ComponentProps<ElementAttributes>['attributes'];
@@ -51,10 +50,18 @@
 	});
 </script>
 
-{#if hasChildren}
+{#if empty}
+	<div class:hover class:selected>
+		<span>&lt;</span>
+		<span class="tag-name">
+			<Indexer text={tagName} />
+		</span>
+		<ElementAttributes attributes={cached} {listeners} />
+		<span>&nbsp;/&gt;</span>
+	</div>
+{:else}
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div
-		{style}
 		class:expanded
 		class:hover
 		class:selected
@@ -79,7 +86,7 @@
 	</div>
 	{#if expanded}
 		<slot />
-		<div class:hover {style}>
+		<div class:hover>
 			<span>&lt;/</span>
 			<span class="tag-name">
 				<Indexer text={tagName} />
@@ -87,15 +94,6 @@
 			<span>&gt;</span>
 		</div>
 	{/if}
-{:else}
-	<div class:hover class:selected {style}>
-		<span>&lt;</span>
-		<span class="tag-name">
-			<Indexer text={tagName} />
-		</span>
-		<ElementAttributes attributes={cached} {listeners} />
-		<span>&nbsp;/&gt;</span>
-	</div>
 {/if}
 
 <style>
