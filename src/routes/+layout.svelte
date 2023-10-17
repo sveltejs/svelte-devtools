@@ -32,10 +32,6 @@
 		selected.set($root[0]);
 	}
 
-	function interactive({ type }: (typeof $root)[number]) {
-		return $visibility[type] && type !== 'text' && type !== 'anchor';
-	}
-
 	function reset() {
 		background.send('ext/highlight', null);
 		hovered.set(undefined);
@@ -57,22 +53,22 @@
 			$selected.expanded = false;
 			$selected.invalidate();
 		} else if (key === 'ArrowUp') {
-			let nodes = ($selected.parent?.children || $root).filter(interactive);
+			let nodes = ($selected.parent?.children || $root).filter((n) => $visibility[n.type]);
 			let sibling = nodes[nodes.findIndex((o) => o.id === $selected?.id) - 1];
 			while (sibling?.expanded) {
-				nodes = sibling.children.filter(interactive);
+				nodes = sibling.children.filter((n) => $visibility[n.type]);
 				sibling = nodes[nodes.length - 1];
 			}
 			$selected = sibling ?? $selected.parent ?? $selected;
 		} else if (key === 'ArrowDown') {
-			const children = $selected.children.filter(interactive);
+			const children = $selected.children.filter((n) => $visibility[n.type]);
 
 			if (!$selected.expanded || children.length === 0) {
 				let next = $selected;
 				let current = $selected;
 				do {
 					const nodes = current.parent ? current.parent.children : $root;
-					const siblings = nodes.filter(interactive);
+					const siblings = nodes.filter((n) => $visibility[n.type]);
 					const index = siblings.findIndex((o) => o.id === current.id);
 					next = siblings[index + 1];
 					current = current.parent;
