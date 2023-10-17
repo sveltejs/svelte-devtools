@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Expandable from './Expandable.svelte';
 
-	export let entries: Array<{ key: string; value: string }> = [];
+	export let entries: Array<{ key: string; value: any }> = [];
 	export let id: number;
 	export let readonly = false;
 

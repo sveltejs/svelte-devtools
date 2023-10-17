@@ -6,6 +6,7 @@
 
 <style>
 	div {
+		width: 100%;
 		color: rgb(151, 164, 179);
 	}
 

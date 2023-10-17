@@ -35,6 +35,11 @@
 	function interactive({ type }: (typeof $root)[number]) {
 		return $visibility[type] && type !== 'text' && type !== 'anchor';
 	}
+
+	function reset() {
+		background.send('ext/highlight', null);
+		hovered.set(undefined);
+	}
 </script>
 
 <svelte:window
@@ -112,12 +117,7 @@
 			</Button>
 		</Toolbar>
 
-		<ul
-			on:mouseleave={() => {
-				background.send('ext/highlight', null);
-				hovered.set(undefined);
-			}}
-		>
+		<ul on:mousemove|self={reset} on:mouseleave={reset}>
 			{#each $root as node (node.id)}
 				<Node {node} />
 			{/each}
@@ -128,22 +128,36 @@
 
 	<!-- component details -->
 	<Resizable axis="x">
+		{@const events = $selected?.detail?.listeners?.map((l) => {
+			const suffix = l.modifiers?.length ? `|${l.modifiers.join('|')}` : '';
+			const value = { __is: 'function', source: l.handler };
+			return { key: l.event + suffix, value };
+		})}
+
 		{#if $selected?.type === 'component'}
 			<h2>Props</h2>
-			<PropertyList id={$selected.id} entries={$selected.detail.attributes} />
+			<PropertyList id={$selected.id} entries={$selected.detail?.attributes} />
+
+			<Divider type="horizontal" />
+
+			<h2>Events</h2>
+			<PropertyList id={$selected.id} entries={events} />
 
 			<Divider type="horizontal" />
 
 			<h2>State</h2>
-			<PropertyList id={$selected.id} entries={$selected.detail.ctx} />
+			<PropertyList id={$selected.id} entries={$selected.detail?.ctx} />
 		{:else if $selected?.type === 'block' || $selected?.type === 'iteration'}
 			<h2>State</h2>
-
-			<PropertyList readonly id={$selected.id} entries={$selected.detail.ctx} />
+			<PropertyList readonly id={$selected.id} entries={$selected.detail?.ctx} />
 		{:else if $selected?.type === 'element'}
 			<h2>Attributes</h2>
+			<PropertyList readonly id={$selected.id} entries={$selected.detail?.attributes} />
 
-			<PropertyList readonly id={$selected.id} entries={$selected.detail.attributes} />
+			<Divider type="horizontal" />
+
+			<h2>Events</h2>
+			<PropertyList id={$selected.id} entries={events} />
 		{/if}
 	</Resizable>
 {:else}
@@ -161,7 +175,6 @@
 
 	ul {
 		overflow: auto;
-		padding-left: 0.5rem;
 	}
 
 	h2 {

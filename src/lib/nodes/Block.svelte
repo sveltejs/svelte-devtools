@@ -6,7 +6,7 @@
 	export let hover: boolean;
 	export let selected: boolean;
 	export let tagName: string;
-	export let source: string;
+	export let source: string | undefined;
 	export let expanded: boolean;
 </script>
 
@@ -37,6 +37,7 @@
 
 <style>
 	div {
+		width: 100%;
 		display: flex;
 		color: rgb(151, 164, 179);
 	}
