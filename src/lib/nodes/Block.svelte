@@ -2,23 +2,13 @@
 	import Indexer from '../components/Indexer.svelte';
 	import Ellipsis from './Ellipsis.svelte';
 
-	export let style: string;
-	export let hover: boolean;
-	export let selected: boolean;
 	export let tagName: string;
 	export let source: string | undefined;
 	export let expanded: boolean;
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div
-	{style}
-	class:expanded
-	class:hover
-	class:selected
-	class="expandable tag-open tag-name"
-	on:dblclick={() => (expanded = !expanded)}
->
+<div class:expanded class="expandable tag-open tag-name" on:dblclick={() => (expanded = !expanded)}>
 	{#if source}
 		<span>{source}</span>
 	{:else}
@@ -32,13 +22,13 @@
 {#if expanded}
 	<slot />
 
-	<Indexer text={`{/${tagName}}`} {hover} {style} />
+	<div>
+		<Indexer text={`{/${tagName}}`} />
+	</div>
 {/if}
 
 <style>
 	div {
-		width: 100%;
-		display: flex;
 		color: rgb(151, 164, 179);
 	}
 
