@@ -22,16 +22,13 @@
 </script>
 
 {#if $visibility[node.type]}
-	{@const active = $selected?.id === node.id}
-	{@const current = $hovered?.id === node.id}
-	{@const indent = depth * 12}
-
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 	<li
 		class:flash
-		style:--indent="{indent}px"
-		data-current={current || null}
+		style:--indent="{depth * 12}px"
+		data-current={$selected?.id === node.id || null}
+		data-hovered={$hovered?.id === node.id || null}
 		bind:this={node.dom}
 		on:animationend={() => (flash = false)}
 		on:click|stopPropagation={() => selected.set(node)}
@@ -44,42 +41,36 @@
 		{#if node.type === 'component' || node.type === 'element'}
 			<Element
 				tagName={node.tagName}
-				selected={active}
 				attributes={node.detail?.attributes || []}
 				listeners={node.detail?.listeners || []}
 				empty={!node.children.length || node.children.every((n) => !$visibility[n.type])}
 				bind:expanded={node.expanded}
 			>
-				<ul class:active>
+				<ul>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Element>
 		{:else if node.type === 'block'}
-			<Block
-				tagName={node.tagName}
-				selected={active}
-				source={node.detail?.source}
-				bind:expanded={node.expanded}
-			>
-				<ul class:active>
+			<Block tagName={node.tagName} source={node.detail?.source} bind:expanded={node.expanded}>
+				<ul>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Block>
 		{:else if node.type === 'iteration'}
-			<Iteration selected={active} bind:expanded={node.expanded}>
-				<ul class:active>
+			<Iteration bind:expanded={node.expanded}>
+				<ul>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Iteration>
 		{:else if node.type === 'slot'}
-			<Slot tagName={node.tagName} selected={active} bind:expanded={node.expanded}>
-				<ul class:active>
+			<Slot tagName={node.tagName} bind:expanded={node.expanded}>
+				<ul>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
 					{/each}
@@ -108,19 +99,19 @@
 		line-height: 1.5;
 		font-size: 0.75rem;
 	}
-	li :global(div) {
-		width: 100%;
-		padding-left: calc(var(--indent) + 6px);
-	}
-	li[data-current] > :global(div) {
-		background: #f0f9fe;
-	}
-
 	ul {
 		width: 100%;
 		position: relative;
 	}
-	ul.active::before {
+
+	li :global(div) {
+		width: 100%;
+		padding-left: calc(var(--indent) + 6px);
+	}
+	li[data-hovered] > :global(div) {
+		background: #f0f9fe;
+	}
+	li[data-current] > ul::before {
 		content: '';
 		z-index: 1;
 		width: 0.125rem;
@@ -138,25 +129,24 @@
 		animation: flash 0.8s ease-in-out;
 	}
 
-	li :global(.selected),
-	li :global(.selected *),
-	li[data-current] > :global(div.selected) {
+	/* li :global(.selected *), */
+	li[data-current] > :global(div:first-child),
+	li[data-current][data-hovered] > :global(div) {
 		background: rgb(0, 116, 232);
 	}
-
-	li :global(> .selected::after) {
+	li[data-current] > :global(div:first-child:after) {
 		content: '== $n';
 		margin-left: 0.5rem;
 	}
 
 	:global(.dark) li :global(.hover),
-	:global(.dark) li[data-current] > :global(div) {
+	:global(.dark) li[data-hovered] > :global(div) {
 		background: rgb(53, 59, 72);
 	}
 
-	:global(.dark) li :global(.selected),
-	:global(.dark) li :global(.selected *),
-	:global(.dark) li[data-current] > :global(div.selected) {
+	/* :global(.dark) li :global(.selected *), */
+	:global(.dark) li[data-current] > :global(div:first-child),
+	:global(.dark) li[data-current][data-hovered] > :global(div) {
 		background: rgb(32, 78, 138);
 	}
 

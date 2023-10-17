@@ -2,18 +2,12 @@
 	import Indexer from '../components/Indexer.svelte';
 	import Ellipsis from './Ellipsis.svelte';
 
-	export let selected: boolean;
 	export let tagName: string;
 	export let expanded: boolean;
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div
-	class:expanded
-	class:selected
-	class="expandable tag-open tag-name"
-	on:dblclick={() => (expanded = !expanded)}
->
+<div class:expanded class="expandable tag-open tag-name" on:dblclick={() => (expanded = !expanded)}>
 	<Indexer text={`<${tagName}>`} color="#c586c0" />
 
 	{#if !expanded}

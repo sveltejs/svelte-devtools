@@ -22,7 +22,7 @@
 
 <style>
 	p {
-		display: flex;
+		display: inline;
 		padding-left: 0;
 		margin: 0;
 	}

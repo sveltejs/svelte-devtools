@@ -8,7 +8,6 @@
 	export let tagName: string;
 	export let empty: boolean;
 	export let expanded: boolean;
-	export let selected: boolean;
 
 	export let attributes: ComponentProps<ElementAttributes>['attributes'];
 	export let listeners: ComponentProps<ElementAttributes>['listeners'];
@@ -50,7 +49,7 @@
 </script>
 
 {#if empty}
-	<div class:selected>
+	<div>
 		<span>&lt;</span>
 		<span class="tag-name">
 			<Indexer text={tagName} />
@@ -59,13 +58,7 @@
 		<span>&nbsp;/&gt;</span>
 	</div>
 {:else}
-	<div
-		role="group"
-		class:expanded
-		class:selected
-		class="expandable"
-		on:dblclick={() => (expanded = !expanded)}
-	>
+	<div role="group" class:expanded class="expandable" on:dblclick={() => (expanded = !expanded)}>
 		<span>&lt;</span>
 		<span class="tag-name">
 			<Indexer text={tagName} />
