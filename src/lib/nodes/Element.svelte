@@ -5,11 +5,10 @@
 
 	import type { ComponentProps } from 'svelte';
 
-	export let expanded: boolean;
-	export let empty: boolean;
-	export let hover: boolean;
-	export let selected: boolean;
 	export let tagName: string;
+	export let empty: boolean;
+	export let expanded: boolean;
+	export let selected: boolean;
 
 	export let attributes: ComponentProps<ElementAttributes>['attributes'];
 	export let listeners: ComponentProps<ElementAttributes>['listeners'];
@@ -51,7 +50,7 @@
 </script>
 
 {#if empty}
-	<div class:hover class:selected>
+	<div class:selected>
 		<span>&lt;</span>
 		<span class="tag-name">
 			<Indexer text={tagName} />
@@ -60,10 +59,9 @@
 		<span>&nbsp;/&gt;</span>
 	</div>
 {:else}
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div
+		role="group"
 		class:expanded
-		class:hover
 		class:selected
 		class="expandable"
 		on:dblclick={() => (expanded = !expanded)}
@@ -86,7 +84,7 @@
 	</div>
 	{#if expanded}
 		<slot />
-		<div class:hover>
+		<div>
 			<span>&lt;/</span>
 			<span class="tag-name">
 				<Indexer text={tagName} />
