@@ -3,7 +3,6 @@
 	import Element from './Element.svelte';
 	import Block from './Block.svelte';
 	import Slot from './Slot.svelte';
-	import Anchor from './Anchor.svelte';
 
 	import { background } from '$lib/runtime';
 	import { visibility, hovered, selected } from '$lib/store';
@@ -22,15 +21,13 @@
 </script>
 
 {#if $visibility[node.type]}
-	{@const active = $selected?.id === node.id}
-	{@const current = $hovered?.id === node.id}
-	{@const style = `padding-left: ${depth * 12}px`}
-	{@const left = depth * 12 + 4}
-
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 	<li
 		class:flash
+		style:--indent="{depth * 12}px"
+		data-current={$selected?.id === node.id || null}
+		data-hovered={$hovered?.id === node.id || null}
 		bind:this={node.dom}
 		on:animationend={() => (flash = false)}
 		on:click|stopPropagation={() => selected.set(node)}
@@ -43,37 +40,27 @@
 		{#if node.type === 'component' || node.type === 'element'}
 			<Element
 				tagName={node.tagName}
-				selected={active}
-				hover={current}
 				attributes={node.detail?.attributes || []}
 				listeners={node.detail?.listeners || []}
 				hasChildren={!!node.children.length}
-				{style}
 				bind:expanded={node.expanded}
 			>
-				<ul class:active style:--left="{left}px">
+				<ul>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Element>
 		{:else if node.type === 'block'}
-			<Block
-				tagName={node.tagName}
-				selected={active}
-				hover={current}
-				source={node.detail?.source}
-				{style}
-				bind:expanded={node.expanded}
-			>
-				<ul class:active style:--left="{left}px">
+			<Block tagName={node.tagName} source={node.detail?.source} bind:expanded={node.expanded}>
+				<ul>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Block>
 		{:else if node.type === 'iteration'}
-			<ul class:active style:--left="{left}px">
+			<ul>
 				<!-- TODO: figure this out
 				<span
 					class:selected={current}
@@ -92,25 +79,19 @@
 				{/each}
 			</ul>
 		{:else if node.type === 'slot'}
-			<Slot
-				tagName={node.tagName}
-				selected={active}
-				hover={current}
-				{style}
-				bind:expanded={node.expanded}
-			>
-				<ul class:active style:--left="{left}px">
+			<Slot tagName={node.tagName} bind:expanded={node.expanded}>
+				<ul>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Slot>
 		{:else if node.type === 'text'}
-			<div {style}>
+			<div>
 				<Indexer text={node.detail?.nodeValue} />
 			</div>
 		{:else if node.type === 'anchor'}
-			<Anchor {style} />
+			<div>#anchor</div>
 		{/if}
 	</li>
 {:else}
@@ -128,19 +109,28 @@
 		line-height: 1.5;
 		font-size: 0.75rem;
 	}
-
 	ul {
 		width: 100%;
 		position: relative;
 	}
-	ul.active::before {
+
+	li :global(div) {
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		padding-left: calc(var(--indent) + 6px);
+	}
+	li[data-hovered] > :global(div) {
+		background: #f0f9fe;
+	}
+	li[data-current] > ul::before {
 		content: '';
 		z-index: 1;
 		width: 0.125rem;
 		position: absolute;
 		top: 0.2rem;
 		bottom: 0.15rem;
-		left: calc(var(--left) - 0.75rem);
+		left: calc(var(--indent) - 0.75rem);
 		background: #e0e0e2;
 	}
 
@@ -151,28 +141,21 @@
 		animation: flash 0.8s ease-in-out;
 	}
 
-	li :global(.selected),
-	li :global(.selected *),
-	li :global(.hover.selected) {
+	li[data-current] > :global(div:first-child),
+	li[data-current][data-hovered] > :global(div) {
 		background: rgb(0, 116, 232);
 	}
-
-	li :global(> .selected::after) {
+	li[data-current] > :global(div:first-child:after) {
 		content: '== $n';
 		margin-left: 0.5rem;
 	}
 
-	li :global(.hover) {
-		background: #f0f9fe;
-	}
-
-	:global(.dark) li :global(.hover) {
+	:global(.dark) li[data-hovered] > :global(div) {
 		background: rgb(53, 59, 72);
 	}
 
-	:global(.dark) li :global(.selected),
-	:global(.dark) li :global(.selected *),
-	:global(.dark) li :global(.hover.selected) {
+	:global(.dark) li[data-current] > :global(div:first-child),
+	:global(.dark) li[data-current][data-hovered] > :global(div) {
 		background: rgb(32, 78, 138);
 	}
 

@@ -5,12 +5,9 @@
 
 	import type { ComponentProps } from 'svelte';
 
-	export let expanded: boolean;
-	export let hasChildren: boolean;
-	export let hover: boolean;
-	export let selected: boolean;
-	export let style: string;
 	export let tagName: string;
+	export let hasChildren: boolean;
+	export let expanded: boolean;
 
 	export let attributes: ComponentProps<ElementAttributes>['attributes'];
 	export let listeners: ComponentProps<ElementAttributes>['listeners'];
@@ -52,15 +49,7 @@
 </script>
 
 {#if hasChildren}
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div
-		{style}
-		class:expanded
-		class:hover
-		class:selected
-		class="expandable"
-		on:dblclick={() => (expanded = !expanded)}
-	>
+	<div role="group" class:expanded class="expandable" on:dblclick={() => (expanded = !expanded)}>
 		<span>&lt;</span>
 		<span class="tag-name">
 			<Indexer text={tagName} />
@@ -79,7 +68,7 @@
 	</div>
 	{#if expanded}
 		<slot />
-		<div class:hover {style}>
+		<div>
 			<span>&lt;/</span>
 			<span class="tag-name">
 				<Indexer text={tagName} />
@@ -88,7 +77,7 @@
 		</div>
 	{/if}
 {:else}
-	<div class:hover class:selected {style}>
+	<div>
 		<span>&lt;</span>
 		<span class="tag-name">
 			<Indexer text={tagName} />
@@ -99,12 +88,6 @@
 {/if}
 
 <style>
-	div {
-		width: 100%;
-		display: flex;
-		flex-wrap: wrap;
-	}
-
 	.tag-name {
 		color: rgb(0, 116, 232);
 	}

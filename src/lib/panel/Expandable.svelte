@@ -48,7 +48,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <li
 	data-tooltip={error || null}
-	style:--left="-0.5rem"
+	style:--indent="-3px"
 	style:--y-pad="0.125rem"
 	class:expanded
 	class:expandable
