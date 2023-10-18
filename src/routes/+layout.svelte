@@ -128,7 +128,7 @@
 
 	<!-- component details -->
 	<Resizable axis="x">
-		{@const events = $selected?.detail?.listeners?.map((l) => {
+		{@const events = $selected?.detail.listeners?.map((l) => {
 			const suffix = l.modifiers?.length ? `|${l.modifiers.join('|')}` : '';
 			const value = { __is: 'function', source: l.handler };
 			return { key: l.event + suffix, value };
@@ -136,7 +136,7 @@
 
 		{#if $selected?.type === 'component'}
 			<h2>Props</h2>
-			<PropertyList id={$selected.id} entries={$selected.detail?.attributes} />
+			<PropertyList id={$selected.id} entries={$selected.detail.attributes} />
 
 			<Divider type="horizontal" />
 
@@ -146,13 +146,13 @@
 			<Divider type="horizontal" />
 
 			<h2>State</h2>
-			<PropertyList id={$selected.id} entries={$selected.detail?.ctx} />
+			<PropertyList id={$selected.id} entries={$selected.detail.ctx} />
 		{:else if $selected?.type === 'block' || $selected?.type === 'iteration'}
 			<h2>State</h2>
-			<PropertyList readonly id={$selected.id} entries={$selected.detail?.ctx} />
+			<PropertyList readonly id={$selected.id} entries={$selected.detail.ctx} />
 		{:else if $selected?.type === 'element'}
 			<h2>Attributes</h2>
-			<PropertyList readonly id={$selected.id} entries={$selected.detail?.attributes} />
+			<PropertyList readonly id={$selected.id} entries={$selected.detail.attributes} />
 
 			<Divider type="horizontal" />
 

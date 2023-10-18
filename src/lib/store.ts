@@ -7,7 +7,7 @@ export type DebugNode = Overwrite<
 	{
 		invalidate(): void;
 		expanded: boolean;
-		detail?: {
+		detail: {
 			attributes?: Array<{
 				key: string;
 				value: string;

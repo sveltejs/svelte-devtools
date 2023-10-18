@@ -41,8 +41,8 @@
 		{#if node.type === 'component' || node.type === 'element'}
 			<Element
 				tagName={node.tagName}
-				attributes={node.detail?.attributes || []}
-				listeners={node.detail?.listeners || []}
+				attributes={node.detail.attributes || []}
+				listeners={node.detail.listeners || []}
 				empty={!node.children.length || node.children.every((n) => !$visibility[n.type])}
 				bind:expanded={node.expanded}
 			>
@@ -53,7 +53,7 @@
 				</ul>
 			</Element>
 		{:else if node.type === 'block'}
-			<Block tagName={node.tagName} source={node.detail?.source} bind:expanded={node.expanded}>
+			<Block tagName={node.tagName} source={node.detail.source} bind:expanded={node.expanded}>
 				<ul>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
@@ -78,7 +78,7 @@
 			</Slot>
 		{:else if node.type === 'text'}
 			<div>
-				<Indexer text={node.detail?.nodeValue} />
+				<Indexer text={node.detail.nodeValue} />
 			</div>
 		{:else if node.type === 'anchor'}
 			<div>#anchor</div>
