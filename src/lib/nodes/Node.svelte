@@ -1,12 +1,12 @@
 <script lang="ts">
 	import Indexer from '$lib/components/Indexer.svelte';
-	import Element from './Element.svelte';
 	import Block from './Block.svelte';
+	import Element from './Element.svelte';
+	import Iteration from './Iteration.svelte';
 	import Slot from './Slot.svelte';
 
 	import { background } from '$lib/runtime';
 	import { visibility, hovered, selected } from '$lib/store';
-	import Iteration from './Iteration.svelte';
 
 	export let node: NonNullable<typeof $selected>;
 	export let depth = 1;
