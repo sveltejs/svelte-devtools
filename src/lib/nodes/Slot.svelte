@@ -22,10 +22,3 @@
 		<Indexer text={`</${tagName}>`} color="#c586c0" />
 	</div>
 {/if}
-
-<style>
-	div {
-		width: 100%;
-		display: flex;
-	}
-</style>

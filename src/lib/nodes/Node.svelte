@@ -106,6 +106,8 @@
 
 	li :global(div) {
 		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
 		padding-left: calc(var(--indent) + 6px);
 	}
 	li[data-hovered] > :global(div) {
@@ -129,7 +131,6 @@
 		animation: flash 0.8s ease-in-out;
 	}
 
-	/* li :global(.selected *), */
 	li[data-current] > :global(div:first-child),
 	li[data-current][data-hovered] > :global(div) {
 		background: rgb(0, 116, 232);
@@ -139,12 +140,10 @@
 		margin-left: 0.5rem;
 	}
 
-	:global(.dark) li :global(.hover),
 	:global(.dark) li[data-hovered] > :global(div) {
 		background: rgb(53, 59, 72);
 	}
 
-	/* :global(.dark) li :global(.selected *), */
 	:global(.dark) li[data-current] > :global(div:first-child),
 	:global(.dark) li[data-current][data-hovered] > :global(div) {
 		background: rgb(32, 78, 138);

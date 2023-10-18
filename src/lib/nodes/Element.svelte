@@ -88,12 +88,6 @@
 {/if}
 
 <style>
-	div {
-		width: 100%;
-		display: flex;
-		flex-wrap: wrap;
-	}
-
 	.tag-name {
 		color: rgb(0, 116, 232);
 	}

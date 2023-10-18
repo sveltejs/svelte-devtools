@@ -3,12 +3,11 @@
 
 	export let text = '';
 	export let color = '';
-	export let hover = false;
 
 	$: i = text.indexOf($query);
 </script>
 
-<p class:hover style:color>
+<p style:color>
 	{#if i === -1 || $query.length < 2}
 		<span>{text}</span>
 	{:else}
@@ -22,8 +21,7 @@
 
 <style>
 	p {
-		display: inline;
-		padding-left: 0;
+		display: inline-flex;
 		margin: 0;
 	}
 	span {
