@@ -6,7 +6,7 @@
 	import type { ComponentProps } from 'svelte';
 
 	export let tagName: string;
-	export let hasChildren: boolean;
+	export let empty: boolean;
 	export let expanded: boolean;
 
 	export let attributes: ComponentProps<ElementAttributes>['attributes'];
@@ -48,7 +48,16 @@
 	});
 </script>
 
-{#if hasChildren}
+{#if empty}
+	<div>
+		<span>&lt;</span>
+		<span class="tag-name">
+			<Indexer text={tagName} />
+		</span>
+		<ElementAttributes attributes={cached} {listeners} />
+		<span>&nbsp;/&gt;</span>
+	</div>
+{:else}
 	<div role="group" class:expanded class="expandable" on:dblclick={() => (expanded = !expanded)}>
 		<span>&lt;</span>
 		<span class="tag-name">
@@ -76,15 +85,6 @@
 			<span>&gt;</span>
 		</div>
 	{/if}
-{:else}
-	<div>
-		<span>&lt;</span>
-		<span class="tag-name">
-			<Indexer text={tagName} />
-		</span>
-		<ElementAttributes attributes={cached} {listeners} />
-		<span>&nbsp;/&gt;</span>
-	</div>
 {/if}
 
 <style>

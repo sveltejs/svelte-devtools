@@ -5,12 +5,16 @@
 	import Slot from './Slot.svelte';
 
 	import { background } from '$lib/runtime';
-	import { visibility, hovered, selected } from '$lib/store';
+	import { hovered, selected, visibility } from '$lib/store';
 
 	export let node: NonNullable<typeof $selected>;
 	export let depth = 1;
 
 	node.invalidate = () => (node = node);
+
+	function invisible(n: typeof node): boolean {
+		return !$visibility[n.type] && n.children.every(invisible);
+	}
 
 	let lastLength = node.children.length;
 	let flash = false;
@@ -42,7 +46,7 @@
 				tagName={node.tagName}
 				attributes={node.detail?.attributes || []}
 				listeners={node.detail?.listeners || []}
-				hasChildren={!!node.children.length}
+				empty={!node.children.length || node.children.every(invisible)}
 				bind:expanded={node.expanded}
 			>
 				<ul>
