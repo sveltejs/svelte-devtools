@@ -108,9 +108,9 @@ chrome.tabs.onUpdated.addListener(
 );
 
 /** @param {number} tabId */
-function sensor(tabId) {
-	chrome.scripting
-		.executeScript({
+async function sensor(tabId) {
+	try {
+		await chrome.scripting.executeScript({
 			target: { tabId },
 
 			func: () => {
@@ -124,11 +124,11 @@ function sensor(tabId) {
 					chrome.runtime.sendMessage(detail);
 				});
 			},
-		})
-		.catch(() => {
-			// for internal URLs like `chrome://` or `edge://` and extension gallery
-			// https://chromium.googlesource.com/chromium/src/+/ee77a52baa1f8a98d15f9749996f90e9d3200f2d/chrome/common/extensions/chrome_extensions_client.cc#131
-			const icons = [16, 24, 48, 96, 128].map((s) => [s, `icons/disabled-${s}.png`]);
-			chrome.action.setIcon({ path: Object.fromEntries(icons) });
 		});
+	} catch {
+		// for internal URLs like `chrome://` or `edge://` and extension gallery
+		// https://chromium.googlesource.com/chromium/src/+/ee77a52baa1f8a98d15f9749996f90e9d3200f2d/chrome/common/extensions/chrome_extensions_client.cc#131
+		const icons = [16, 24, 48, 96, 128].map((s) => [s, `icons/disabled-${s}.png`]);
+		chrome.action.setIcon({ path: Object.fromEntries(icons) });
+	}
 }
