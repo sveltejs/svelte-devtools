@@ -2,12 +2,12 @@ import { writable } from 'svelte/store';
 
 type Overwrite<A, B> = Omit<A, keyof B> & B;
 
-type DebugNode = Overwrite<
+export type DebugNode = Overwrite<
 	SvelteBlockDetail,
 	{
 		invalidate(): void;
 		expanded: boolean;
-		detail?: {
+		detail: {
 			attributes?: Array<{
 				key: string;
 				value: string;

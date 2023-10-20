@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Indexer from '$lib/components/Indexer.svelte';
-	import Element from './Element.svelte';
 	import Block from './Block.svelte';
+	import Element from './Element.svelte';
+	import Iteration from './Iteration.svelte';
 	import Slot from './Slot.svelte';
 
 	import { background } from '$lib/runtime';
@@ -56,7 +57,7 @@
 				</ul>
 			</Element>
 		{:else if node.type === 'block'}
-			<Block tagName={node.tagName} source={node.detail?.source} bind:expanded={node.expanded}>
+			<Block tagName={node.tagName} source={node.detail.source} bind:expanded={node.expanded}>
 				<ul>
 					{#each node.children as child (child.id)}
 						<svelte:self node={child} depth={depth + 1} />
@@ -64,24 +65,13 @@
 				</ul>
 			</Block>
 		{:else if node.type === 'iteration'}
-			<ul>
-				<!-- TODO: figure this out
-				<span
-					class:selected={current}
-					class:hover={active}
-					style:z-index="1"
-					style:position="absolute"
-					style:left="{left - 4}px"
-					style:transform="translateX(-100%)"
-				>
-					&#8618;
-				</span>
-				-->
-
-				{#each node.children as child (child.id)}
-					<svelte:self node={child} depth={depth + 1} />
-				{/each}
-			</ul>
+			<Iteration bind:expanded={node.expanded}>
+				<ul>
+					{#each node.children as child (child.id)}
+						<svelte:self node={child} depth={depth + 1} />
+					{/each}
+				</ul>
+			</Iteration>
 		{:else if node.type === 'slot'}
 			<Slot tagName={node.tagName} bind:expanded={node.expanded}>
 				<ul>
@@ -92,7 +82,7 @@
 			</Slot>
 		{:else if node.type === 'text'}
 			<div>
-				<Indexer text={node.detail?.nodeValue} />
+				<Indexer text={node.detail.nodeValue} />
 			</div>
 		{:else if node.type === 'anchor'}
 			<div>#anchor</div>

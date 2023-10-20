@@ -111,6 +111,7 @@ function serialize(node) {
 		id: node.id,
 		type: node.type,
 		tagName: node.tagName,
+		detail: {},
 	});
 	switch (node.type) {
 		case 'component': {
