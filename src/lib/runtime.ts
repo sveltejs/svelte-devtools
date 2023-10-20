@@ -109,8 +109,7 @@ port.onMessage.addListener(({ type, payload }) => {
 			Object.assign(current, payload.node);
 			resolveEventBubble(current);
 
-			// if ($selected?.id === node.id) selected.update((o) => o);
-
+			selected.update((o) => o);
 			return current.invalidate();
 		}
 
