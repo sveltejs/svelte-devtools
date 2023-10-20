@@ -13,8 +13,6 @@ chrome.runtime.onConnect.addListener((port) => {
 			ports.set(message.tabId, sender);
 
 			return chrome.tabs.onUpdated.addListener(courier);
-		} else if (message.type === 'ext/reload') {
-			return chrome.runtime.reload();
 		} else if (message.type === 'page/refresh') {
 			return chrome.tabs.reload(message.tabId, { bypassCache: true });
 		}
