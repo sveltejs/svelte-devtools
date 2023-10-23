@@ -21,7 +21,8 @@
 
 <style>
 	p {
-		display: inline-flex;
+		/* cannot be `inline`-based for ellipsis overflow below */
+		display: flex;
 		margin: 0;
 	}
 	span {
