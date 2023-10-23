@@ -11,7 +11,6 @@
 	// import PickerButton from './PickerButton.svelte';
 	// import ProfileButton from './ProfileButton.svelte';
 	// import Profiler from './Profiler.svelte';
-	import ReloadExtension from './ReloadExtension.svelte';
 	import SearchBox from './SearchBox.svelte';
 	import VisibilitySelection from './VisibilitySelection.svelte';
 
@@ -159,8 +158,6 @@
 {:else}
 	<ConnectMessage />
 {/if}
-
-<ReloadExtension />
 
 <style>
 	main {
