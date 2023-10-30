@@ -1,6 +1,11 @@
 # Svelte DevTools
 
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/users/kfidecgcdjjfpeckbblhmfkhmlgecoff?color=blue&label=Chrome)](https://chrome.google.com/webstore/detail/svelte-devtools/kfidecgcdjjfpeckbblhmfkhmlgecoff)
+<a href="https://chrome.google.com/webstore/detail/svelte-devtools/kfidecgcdjjfpeckbblhmfkhmlgecoff">
+	<picture>
+		<source media="(prefers-color-scheme: dark)" srcset="https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4xis.png">
+		<img alt="Chrome Web Store" src="https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/tbyBjqi7Zu733AAKA5n4.png">
+	</picture>
+</a>
 
 Svelte DevTools is a Chrome extension for the [Svelte](https://svelte.dev/) framework. It allows you to inspect the Svelte state and component hierarchies in the Developer Tools.
 
