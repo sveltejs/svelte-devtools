@@ -1,0 +1,25 @@
+name: ZIP
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - run: pnpm install
+      - run: pnpm build
+      - run: zip svelte-devtools build/*
+
+      - uses: actions/upload-artifact@v3
+        with:
+          path: svelte-devtools.zip
