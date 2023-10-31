@@ -18,7 +18,8 @@ jobs:
 
       - run: pnpm install
       - run: pnpm build
-      - run: zip -r svelte-devtools build/*
+      - run: cd build && zip -r svelte-devtools *
+      - run: ls -al && mv build/svelte-devtools.zip .
 
       - uses: actions/upload-artifact@v3
         with:
