@@ -1,4 +1,4 @@
-name: ZIP
+name: REL
 
 on:
   workflow_dispatch:
@@ -18,9 +18,18 @@ jobs:
 
       - run: pnpm install
       - run: pnpm build
-      - run: cd build && zip -r svelte-devtools *
+      - run: cd build && zip -r svelte-devtools-${{ github.sha }} *
 
       - uses: actions/upload-artifact@v3
         with:
-          name: extension
-          path: build/svelte-devtools.zip
+          name: extension-${{ github.sha }}
+          path: build/svelte-devtools-${{ github.sha }}.zip
+
+  # publish:
+  #   runs-on: ubuntu-latest
+  #   needs: bundle
+
+  #   steps:
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: extension-${{ github.sha }}
