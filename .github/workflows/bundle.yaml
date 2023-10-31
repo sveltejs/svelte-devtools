@@ -18,8 +18,9 @@ jobs:
 
       - run: pnpm install
       - run: pnpm build
-      - run: zip svelte-devtools build/*
+      - run: zip -r svelte-devtools build
 
       - uses: actions/upload-artifact@v3
         with:
+          name: extension
           path: svelte-devtools.zip
