@@ -3,10 +3,10 @@ import { type DebugNode, hovered, root, selected } from './store';
 const tabId = chrome.devtools.inspectedWindow.tabId;
 const port = chrome.runtime.connect({ name: `${tabId}` });
 
-port.postMessage({ source: 'svelte-devtools', tabId, type: 'ext/init' });
+port.postMessage({ source: 'svelte-devtools', tabId, type: 'bypass::ext/init' });
 
 export const background = {
-	send(type: `${'ext' | 'page'}/${string}`, payload?: any) {
+	send(type: `bridge::${'ext' | 'page'}/${string}` | 'bypass::ext/page->refresh', payload?: any) {
 		port.postMessage({ source: 'svelte-devtools', tabId, type, payload });
 	},
 };
@@ -39,18 +39,18 @@ function resolveEventBubble(node: any) {
 
 port.onMessage.addListener(({ type, payload }) => {
 	switch (type) {
-		case 'ext/clear': {
+		case 'bridge::ext/clear': {
 			selected.set(undefined);
 			hovered.set(undefined);
 			return root.set([]);
 		}
 
-		case 'ext/inspect': {
+		case 'bridge::ext/inspect': {
 			const current = nodes.get(payload.node.id);
 			return selected.set(current);
 		}
 
-		case 'courier/node:add': {
+		case 'bridge::courier/node->add': {
 			const { node, target, anchor } = payload as {
 				node: DebugNode;
 				target: null | number;
@@ -73,7 +73,7 @@ port.onMessage.addListener(({ type, payload }) => {
 			return (node.parent = parent).invalidate();
 		}
 
-		case 'courier/node:remove': {
+		case 'bridge::courier/node->remove': {
 			const node = payload.node as SvelteBlockDetail;
 			const current = nodes.get(node.id);
 			if (current) nodes.delete(current.id);
@@ -84,7 +84,7 @@ port.onMessage.addListener(({ type, payload }) => {
 			return current.parent.invalidate();
 		}
 
-		case 'courier/node:update': {
+		case 'bridge::courier/node->update': {
 			const node = payload.node as SvelteBlockDetail;
 			const current = nodes.get(node.id);
 			if (!current) return;
@@ -95,7 +95,7 @@ port.onMessage.addListener(({ type, payload }) => {
 			return current.invalidate();
 		}
 
-		// case 'courier/profile:update': {
+		// case 'bridge::courier/profile->update': {
 		// 	resolveFrame(frame);
 		// 	profileFrame.set(frame);
 		// 	break;

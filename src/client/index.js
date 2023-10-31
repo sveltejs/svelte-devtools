@@ -19,18 +19,18 @@ window.addEventListener('message', ({ data, source }) => {
 	// only accept messages from our application or script
 	if (source !== window || data?.source !== 'svelte-devtools') return;
 
-	if (data.type === 'ext/select') {
+	if (data.type === 'bridge::ext/select') {
 		const node = getNode(data.payload);
 		// @ts-expect-error - saved for `inspect()`
 		if (node) window.$n = node.detail;
-	} else if (data.type === 'ext/highlight') {
+	} else if (data.type === 'bridge::ext/highlight') {
 		const node = getNode(data.payload);
 		return highlight(node);
 	}
 
 	// --- TODO: cleanup/implement below ---
 
-	// case 'ext/inspect': {
+	// case 'bridge::ext/inspect': {
 	// 	console.log(data.payload, data.payload instanceof HTMLElement);
 	// 	/** @param {MouseEvent} event  */
 	// 	const move = ({ target }) => highlight({ type: 'element', detail: target });
@@ -54,7 +54,7 @@ window.addEventListener('message', ({ data, source }) => {
 	// 	return highlight(undefined);
 	// }
 
-	// case 'ext/profiler': {
+	// case 'bridge::ext/profiler': {
 	// 	return data.payload ? startProfiler() : stopProfiler();
 	// }
 
@@ -185,7 +185,7 @@ function send(type, payload) {
 
 addListener({
 	add(node, anchor) {
-		send('courier/node:add', {
+		send('bridge::courier/node->add', {
 			node: serialize(node),
 			target: node.parent?.id ?? null,
 			anchor: anchor?.id ?? null,
@@ -193,14 +193,14 @@ addListener({
 	},
 
 	remove(node) {
-		send('courier/node:remove', { node: serialize(node) });
+		send('bridge::courier/node->remove', { node: serialize(node) });
 	},
 
 	update(node) {
-		send('courier/node:update', { node: serialize(node) });
+		send('bridge::courier/node->update', { node: serialize(node) });
 	},
 
 	profile(/** frame */) {
-		// send('courier/profile:update', { frame });
+		// send('bridge::courier/profile->update', { frame });
 	},
 });
