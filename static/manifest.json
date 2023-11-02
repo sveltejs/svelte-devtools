@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Svelte DevTools",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Browser DevTools extension for debugging Svelte applications.",
 	"icons": {
 		"16": "icons/default-16.png",
