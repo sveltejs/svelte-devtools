@@ -49,8 +49,12 @@
 			$selected.expanded = true;
 			$selected.invalidate();
 		} else if (key === 'ArrowLeft') {
-			$selected.expanded = false;
-			$selected.invalidate();
+			if ($selected.expanded) {
+				$selected.expanded = false;
+				return $selected.invalidate();
+			}
+			do $selected = $selected.parent ?? $selected;
+			while (!$visibility[$selected.type]);
 		} else if (key === 'ArrowUp') {
 			let nodes = ($selected.parent?.children || $root).filter((n) => $visibility[n.type]);
 			let sibling = nodes[nodes.findIndex((o) => o.id === $selected?.id) - 1];
