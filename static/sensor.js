@@ -4,7 +4,7 @@
 
 	document.dispatchEvent(
 		new CustomEvent('SvelteDevTools', {
-			detail: { type: 'ext/icon:set', payload: major },
+			detail: { type: 'bypass::ext/icon:set', payload: major },
 		}),
 	);
 })();

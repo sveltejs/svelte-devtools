@@ -9,16 +9,22 @@ chrome.runtime.onConnect.addListener((port) => {
 
 	// messages are from the devtools page and not content script (courier.js)
 	port.onMessage.addListener((message, sender) => {
-		if (message.type === 'ext/init') {
-			ports.set(message.tabId, sender);
+		switch (message.type) {
+			case 'bypass::ext/init': {
+				ports.set(message.tabId, sender);
+				if (!chrome.tabs.onUpdated.hasListener(courier)) {
+					chrome.tabs.onUpdated.addListener(courier);
+				}
+				break;
+			}
+			case 'bypass::ext/page->refresh': {
+				chrome.tabs.reload(message.tabId, { bypassCache: true });
+				break;
+			}
 
-			return chrome.tabs.onUpdated.addListener(courier);
-		} else if (message.type === 'page/refresh') {
-			return chrome.tabs.reload(message.tabId, { bypassCache: true });
+			default: // relay messages from devtools to tab
+				chrome.tabs.sendMessage(message.tabId, message);
 		}
-
-		// relay messages from devtools page to `chrome.scripting`
-		return chrome.tabs.sendMessage(message.tabId, message);
 	});
 
 	port.onDisconnect.addListener((disconnected) => {
@@ -34,7 +40,7 @@ chrome.runtime.onConnect.addListener((port) => {
 chrome.runtime.onMessage.addListener((message, sender) => {
 	if (sender.id !== chrome.runtime.id) return; // unexpected sender
 
-	if (message.type === 'ext/icon:set') {
+	if (message.type === 'bypass::ext/icon:set') {
 		const selected = message.payload ? 'default' : 'disabled';
 		const icons = [16, 24, 48, 96, 128].map((s) => [s, `icons/${selected}-${s}.png`]);
 		return chrome.action.setIcon({ path: Object.fromEntries(icons) });
@@ -67,7 +73,7 @@ function courier(tabId, changed) {
 			document.documentElement.appendChild(script);
 
 			// // TODO: reenable profiler
-			// if (message.type === 'ext/profiler' && message.payload) {
+			// if (message.type === 'bridge::ext/profiler' && message.payload) {
 			// 	// start profiler
 			// }
 
@@ -80,7 +86,7 @@ function courier(tabId, changed) {
 				// 		window.sessionStorage.SvelteDevToolsProfilerEnabled = 'true';
 				// 		break;
 				// 	case 'stopProfiler':
-				// 	case 'ext/clear':
+				// 	case 'bridge::ext/clear':
 				// 		delete window.sessionStorage.SvelteDevToolsProfilerEnabled;
 				// 		break;
 				// }
@@ -94,7 +100,7 @@ function courier(tabId, changed) {
 			});
 
 			window.addEventListener('unload', () => {
-				chrome.runtime.sendMessage({ type: 'ext/clear' });
+				chrome.runtime.sendMessage({ type: 'bridge::ext/clear' });
 			});
 		},
 	});

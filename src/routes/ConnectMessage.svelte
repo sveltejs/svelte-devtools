@@ -7,7 +7,7 @@
 	<p style:display="inline-flex" style:font-size="1.25rem">
 		<span>No Svelte app detected</span>
 
-		<button on:click={() => background.send('page/refresh')}>reload</button>
+		<button on:click={() => background.send('bypass::ext/page->refresh')}>reload</button>
 	</p>
 
 	<footer>

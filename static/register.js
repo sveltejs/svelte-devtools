@@ -5,7 +5,7 @@ chrome.devtools.panels.create(
 	// (panel) => {
 	// 	panel.onShown.addListener((win) =>
 	// 		chrome.devtools.inspectedWindow.eval('$0', (payload) =>
-	// 			win.postMessage({ source: 'svelte-devtools', type: 'ext/inspect', payload }),
+	// 			win.postMessage({ source: 'svelte-devtools', type: 'bridge::ext/inspect', payload }),
 	// 		),
 	// 	);
 	// },

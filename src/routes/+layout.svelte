@@ -18,7 +18,7 @@
 	import { hovered, root, selected, visibility } from '$lib/store';
 
 	$: if ($selected) {
-		background.send('ext/select', $selected.id);
+		background.send('bridge::ext/select', $selected.id);
 
 		let current = $selected;
 		let invalid = null;
@@ -32,7 +32,7 @@
 	}
 
 	function reset() {
-		background.send('ext/highlight', null);
+		background.send('bridge::ext/highlight', null);
 		hovered.set(undefined);
 	}
 </script>

@@ -38,7 +38,7 @@
 		on:click|stopPropagation={() => selected.set(node)}
 		on:mousemove|stopPropagation={() => {
 			if ($hovered?.id === node.id) return;
-			background.send('ext/highlight', node.id);
+			background.send('bridge::ext/highlight', node.id);
 			hovered.set(node);
 		}}
 	>

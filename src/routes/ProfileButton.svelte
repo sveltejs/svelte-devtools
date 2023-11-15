@@ -5,7 +5,7 @@
 	let enabled = false;
 </script>
 
-<Button on:click={() => background.send('ext/profiler', enabled)}>
+<Button on:click={() => background.send('bridge::ext/profiler', enabled)}>
 	{#if enabled}
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
 			<path d="M12.7,1.4 11.3,0l-8,8 8,8 1.4,-1.4L6,8Z" />
