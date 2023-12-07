@@ -206,8 +206,8 @@ document.addEventListener('SvelteDOMInsert', ({ detail }) => {
 			element.nodeType === Node.ELEMENT_NODE
 				? 'element'
 				: element.nodeValue && element.nodeValue !== ' '
-				? 'text'
-				: 'anchor';
+				  ? 'text'
+				  : 'anchor';
 
 		nodes.add({
 			anchor,
