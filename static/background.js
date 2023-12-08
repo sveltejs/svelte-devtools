@@ -70,7 +70,7 @@ function courier(tabId, changed) {
 			// because `detail` in the dispatched custom events is `null`
 			const script = document.createElement('script');
 			script.setAttribute('src', source);
-			document.documentElement.appendChild(script);
+			document.head.appendChild(script);
 
 			// // TODO: reenable profiler
 			// if (message.type === 'bridge::ext/profiler' && message.payload) {
@@ -108,7 +108,7 @@ function courier(tabId, changed) {
 
 chrome.tabs.onActivated.addListener(({ tabId }) => sensor(tabId));
 chrome.tabs.onUpdated.addListener(
-	(tabId, changed) => changed.status === 'loading' && sensor(tabId),
+	(tabId, changed) => changed.status === 'unloaded' && sensor(tabId),
 );
 
 /** @param {number} tabId */
@@ -122,7 +122,7 @@ async function sensor(tabId) {
 				document.querySelector(`script[src="${source}"]`)?.remove();
 				const script = document.createElement('script');
 				script.setAttribute('src', source);
-				document.documentElement.appendChild(script);
+				document.head.appendChild(script);
 
 				document.addEventListener('SvelteDevTools', ({ detail }) => {
 					chrome.runtime.sendMessage(detail);
