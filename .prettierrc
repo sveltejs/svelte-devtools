@@ -13,6 +13,12 @@
 		},
 
 		{
+			"files": ["package.json"],
+			"options": {
+				"plugins": ["prettier-plugin-sort-package-json"]
+			}
+		},
+		{
 			"files": ["*.md"],
 			"options": {
 				"tabWidth": 4
