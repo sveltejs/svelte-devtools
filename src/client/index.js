@@ -15,66 +15,81 @@ window.__svelte_devtools_select_element = function (element) {
 	if (node) send('inspect', { node: serialize(node) });
 };
 
+const previous = {
+	/** @type {HTMLElement | null} */
+	target: null,
+	style: {
+		cursor: '',
+		background: '',
+		outline: '',
+	},
+
+	clear() {
+		if (this.target) {
+			this.target.style.cursor = this.style.cursor;
+			this.target.style.background = this.style.background;
+			this.target.style.outline = this.style.outline;
+		}
+		this.target = null;
+	},
+};
+
+const inspect = {
+	/** @param {MouseEvent} event  */
+	handle({ target }) {
+		const same = previous.target && previous.target === target;
+		const html = target instanceof HTMLElement;
+		if (same || !html) return;
+
+		if (previous.target) previous.clear();
+		previous.target = target;
+		previous.style = {
+			cursor: target.style.cursor,
+			background: target.style.background,
+			outline: target.style.outline,
+		};
+		target.style.cursor = 'pointer';
+		target.style.background = 'rgba(0, 136, 204, 0.2)';
+		target.style.outline = '1px dashed rgb(0, 136, 204)';
+	},
+	/** @param {MouseEvent} event  */
+	click(event) {
+		event.preventDefault();
+		document.removeEventListener('mousemove', inspect.handle, true);
+		const node = getNode(/** @type {Node} */ (event.target));
+		if (node) send('bridge::ext/inspect', { node: serialize(node) });
+		previous.clear();
+	},
+};
+
 window.addEventListener('message', ({ data, source }) => {
 	// only accept messages from our application or script
 	if (source !== window || data?.source !== 'svelte-devtools') return;
 
 	if (data.type === 'bridge::ext/select') {
 		const node = getNode(data.payload);
-		// @ts-expect-error - saved for `inspect()`
+		// @ts-expect-error - saved for `devtools.inspect()`
 		if (node) window.$n = node.detail;
 	} else if (data.type === 'bridge::ext/highlight') {
 		const node = getNode(data.payload);
 		return highlight(node);
+	} else if (data.type === 'bridge::ext/inspect') {
+		switch (data.payload) {
+			case 'start': {
+				document.addEventListener('mousemove', inspect.handle, true);
+				document.addEventListener('click', inspect.click, {
+					capture: true,
+					once: true,
+				});
+				break;
+			}
+			default: {
+				document.removeEventListener('mousemove', inspect.handle, true);
+				document.removeEventListener('click', inspect.click, true);
+				previous.clear();
+			}
+		}
 	}
-
-	// --- TODO: cleanup/implement below ---
-
-	// case 'bridge::ext/inspect': {
-	// 	console.log(data.payload, data.payload instanceof HTMLElement);
-	// 	/** @param {MouseEvent} event  */
-	// 	const move = ({ target }) => highlight({ type: 'element', detail: target });
-	// 	if (data.payload instanceof HTMLElement) {
-	// 		const node = getNode(data.payload);
-	// 		if (node) window.postMessage({ type: 'inspect', node: serialize(node) });
-	// 	} else if (data.payload === 'start') {
-	// 		document.addEventListener('mousemove', move, true);
-	// 		document.addEventListener(
-	// 			'click',
-	// 			({ target }) => {
-	// 				document.removeEventListener('mousemove', move, true);
-	// 				const node = getNode(/** @type {Node} */ (target));
-	// 				if (node) window.postMessage({ type: 'inspect', node: serialize(node) });
-	// 			},
-	// 			{ capture: true, once: true },
-	// 		);
-	// 		return;
-	// 	}
-	// 	document.removeEventListener('mousemove', move, true);
-	// 	return highlight(undefined);
-	// }
-
-	// case 'bridge::ext/profiler': {
-	// 	return data.payload ? startProfiler() : stopProfiler();
-	// }
-
-	// switch (data.type) {
-
-	// 	case 'startPicker':
-	// 		startPicker();
-	// 		break;
-
-	// 	case 'stopPicker':
-	// 		stopPicker();
-	// 		break;
-
-	// 	case 'startProfiler':
-	// 		profiler.start();
-	// 		break;
-
-	// 	case 'stopProfiler':
-	// 		profiler.stop();
-	// 		break;
 });
 
 /**

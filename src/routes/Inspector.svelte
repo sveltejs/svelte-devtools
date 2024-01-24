@@ -4,27 +4,14 @@
 	import { selected } from '$lib/store';
 
 	let active = false;
-	let unsub = () => {};
 
 	function click() {
-		if (active) {
-			active = false;
-			background.send('bridge::ext/inspect', 'stop');
-			return;
-		}
+		active = !active;
+		background.send('bridge::ext/inspect', active ? 'start' : 'stop');
+	}
 
-		unsub();
-		unsub = selected.subscribe((node) => {
-			if (!active) return;
-			active = false;
-			unsub();
-
-			setTimeout(() => {
-				node?.dom?.scrollIntoView({ block: 'center' });
-			}, 120);
-		});
-		active = true;
-		background.send('bridge::ext/inspect', 'start');
+	$: if (active && $selected) {
+		$selected.dom?.scrollIntoView({ block: 'center' });
 	}
 </script>
 

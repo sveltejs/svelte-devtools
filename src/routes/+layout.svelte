@@ -8,7 +8,7 @@
 
 	import Breadcrumbs from './Breadcrumbs.svelte';
 	import ConnectMessage from './ConnectMessage.svelte';
-	// import PickerButton from './PickerButton.svelte';
+	import Inspector from './Inspector.svelte';
 	// import ProfileButton from './ProfileButton.svelte';
 	// import Profiler from './Profiler.svelte';
 	import SearchBox from './SearchBox.svelte';
@@ -93,10 +93,7 @@
 			<!-- TODO: reenable profiler -->
 			<!-- <ProfileButton /> -->
 
-			<!-- toggle highlighting page elements -->
-			<!-- TODO: reenable picker -->
-			<!-- <PickerButton /> -->
-
+			<Inspector />
 			<VisibilitySelection />
 
 			<Divider type="vertical" spacing="0.25rem" />
