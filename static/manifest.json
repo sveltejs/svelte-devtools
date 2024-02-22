@@ -21,6 +21,7 @@
 		}
 	},
 	"background": {
+		"scripts": ["background.js"],
 		"service_worker": "background.js"
 	},
 	"devtools_page": "register.html",
