@@ -20,8 +20,8 @@
 
 		"paths": {
 			"$lib": ["./src/lib"],
-			"$lib/*": ["./src/lib/*"],
-		},
+			"$lib/*": ["./src/lib/*"]
+		}
 	},
 	"include": [
 		"vite.config.ts",
@@ -29,7 +29,7 @@
 		"src/**/*.ts",
 		"src/**/*.js",
 		"src/**/*.svelte",
-		"static/**/*.js",
+		"static/**/*.js"
 	],
-	"exclude": ["static/courier.js"],
+	"exclude": ["static/courier.js"]
 }
