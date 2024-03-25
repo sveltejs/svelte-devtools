@@ -1,6 +1,5 @@
 node_modules
 /build
-/debug
 
 .DS_Store
 .cache

@@ -7,7 +7,7 @@ export default defineConfig(() => {
 		plugins: [svelte()],
 
 		build: {
-			outDir: 'debug',
+			outDir: 'build',
 		},
 
 		publicDir: 'static',

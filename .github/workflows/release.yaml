@@ -19,8 +19,7 @@ jobs:
 
       - run: pnpm install
       - run: pnpm build
-      - run: cd build/chrome && zip -r svelte-devtools-chrome *
-      - run: cd build/firefox && zip -r svelte-devtools-firefox *
+      - run: cd build && zip -r svelte-devtools *
 
       - uses: actions/upload-artifact@v3
         with:

@@ -58,7 +58,7 @@ declare global {
 		children: SvelteBlockDetail[];
 		/** `type: 'element' | 'component'` */
 		parent?: SvelteBlockDetail;
-		/** like `parent` but `type: 'component'`  */
+		/** like `parent` but `type: 'component'` */
 		container?: SvelteBlockDetail;
 
 		block: SvelteComponentDetail['component']['$$']['fragment'];
