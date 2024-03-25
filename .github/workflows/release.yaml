@@ -24,7 +24,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: extension-${{ github.sha }}
-          path: build/svelte-devtools-*.zip
+          path: build/svelte-devtools.zip
 
   # publish:
   #   runs-on: ubuntu-latest
