@@ -19,12 +19,12 @@ jobs:
 
       - run: pnpm install
       - run: pnpm build
-      - run: cd build && zip -r svelte-devtools-${{ github.sha }} *
+      - run: cd build && zip -r svelte-devtools *
 
       - uses: actions/upload-artifact@v3
         with:
           name: extension-${{ github.sha }}
-          path: build/svelte-devtools-${{ github.sha }}.zip
+          path: build/svelte-devtools.zip
 
   # publish:
   #   runs-on: ubuntu-latest
