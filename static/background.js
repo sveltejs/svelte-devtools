@@ -108,25 +108,34 @@ function courier(tabId, changed) {
 
 chrome.tabs.onActivated.addListener(({ tabId }) => sensor(tabId));
 chrome.tabs.onUpdated.addListener(
-	(tabId, changed) => changed.status === 'unloaded' && sensor(tabId),
+	(tabId, changed) => changed.status === 'complete' && sensor(tabId),
 );
 
 /** @param {number} tabId */
 async function sensor(tabId) {
 	try {
+		// add SvelteDevTools event listener
 		await chrome.scripting.executeScript({
 			target: { tabId },
-
 			func: () => {
-				const source = chrome.runtime.getURL('/sensor.js');
-				document.querySelector(`script[src="${source}"]`)?.remove();
-				const script = document.createElement('script');
-				script.setAttribute('src', source);
-				document.head.appendChild(script);
-
 				document.addEventListener('SvelteDevTools', ({ detail }) => {
 					chrome.runtime.sendMessage(detail);
 				});
+			},
+		});
+		// capture data to send to listener
+		await chrome.scripting.executeScript({
+			target: { tabId },
+			world: 'MAIN',
+			func: () => {
+				// @ts-ignore - injected if the website is using svelte
+				const [major] = [...(window.__svelte?.v ?? [])];
+
+				document.dispatchEvent(
+					new CustomEvent('SvelteDevTools', {
+						detail: { type: 'bypass::ext/icon:set', payload: major },
+					}),
+				);
 			},
 		});
 	} catch {

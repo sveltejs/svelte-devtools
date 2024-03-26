@@ -27,8 +27,5 @@
 	"devtools_page": "register.html",
 	"host_permissions": ["*://*/*"],
 	"permissions": ["activeTab", "scripting"],
-	"web_accessible_resources": [
-		{ "matches": ["*://*/*"], "resources": ["courier.js"] },
-		{ "matches": ["*://*/*"], "resources": ["sensor.js"], "world": "MAIN" }
-	]
+	"web_accessible_resources": [{ "matches": ["*://*/*"], "resources": ["courier.js"] }]
 }
