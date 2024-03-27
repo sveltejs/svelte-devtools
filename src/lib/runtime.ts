@@ -46,6 +46,7 @@ port.onMessage.addListener(({ type, payload }) => {
 		}
 
 		case 'bridge::ext/inspect': {
+			if (typeof payload === 'string') return;
 			const current = nodes.get(payload.node.id);
 			return selected.set(current);
 		}
