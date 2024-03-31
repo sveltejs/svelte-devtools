@@ -1,17 +1,21 @@
 <script lang="ts">
 	import Indexer from '../components/Indexer.svelte';
 
-	export let attributes: Array<{
-		key: string;
-		value: string;
-		bounded?: boolean;
-		flash?: boolean;
-	}>;
-	export let listeners: Array<{
-		event: any;
-		handler: any;
-		modifiers: any;
-	}>;
+	interface Props {
+		attributes: Array<{
+			key: string;
+			value: string;
+			bounded?: boolean;
+			flash?: boolean;
+		}>;
+		listeners: Array<{
+			event: any;
+			handler: any;
+			modifiers: any;
+		}>;
+	}
+
+	let { attributes, listeners }: Props = $props();
 </script>
 
 {#each attributes as { key, value, bounded, flash } (key)}

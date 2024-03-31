@@ -2,8 +2,12 @@
 	import Indexer from '../components/Indexer.svelte';
 	import Ellipsis from './Ellipsis.svelte';
 
-	export let tagName: string;
-	export let expanded: boolean;
+	interface Props {
+		tagName: string;
+		expanded: boolean;
+	}
+
+	let { tagName, expanded }: Props = $props();
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -11,7 +15,7 @@
 	<Indexer text={`<${tagName}>`} color="#c586c0" />
 
 	{#if !expanded}
-		<Ellipsis on:click={() => (expanded = true)} />
+		<Ellipsis onclick={() => (expanded = true)} />
 		<Indexer text={`</${tagName}>`} color="#c586c0" />
 	{/if}
 </div>

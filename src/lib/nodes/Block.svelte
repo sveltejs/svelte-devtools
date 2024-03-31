@@ -2,20 +2,24 @@
 	import Indexer from '../components/Indexer.svelte';
 	import Ellipsis from './Ellipsis.svelte';
 
-	export let tagName: string;
-	export let source: string | undefined;
-	export let expanded: boolean;
+	interface Props {
+		tagName: string;
+		source?: string;
+		expanded: boolean;
+	}
+
+	let { tagName, source, expanded }: Props = $props();
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class:expanded class="expandable tag-open tag-name" on:dblclick={() => (expanded = !expanded)}>
+<div class:expanded class="expandable tag-open tag-name" ondblclick={() => (expanded = !expanded)}>
 	{#if source}
 		<span>{source}</span>
 	{:else}
 		<Indexer text={`{#${tagName}}`} />
 	{/if}
 	{#if !expanded}
-		<Ellipsis on:click={() => (expanded = true)} />
+		<Ellipsis onclick={() => (expanded = true)} />
 		<Indexer text={`{/${tagName}}`} />
 	{/if}
 </div>

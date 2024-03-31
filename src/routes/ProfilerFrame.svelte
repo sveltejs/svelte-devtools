@@ -1,23 +1,25 @@
 <script lang="ts">
 	import type { Profiler } from '$lib/store';
-	import { createEventDispatcher } from 'svelte';
 
-	export let children: Profiler[];
-	export let duration: number;
+	interface Props {
+		children: Profiler[];
+		duration: number;
+		onclick(frame: Profiler): void;
+	}
 
-	const dispatch = createEventDispatcher();
+	let { children, duration, onclick }: Props = $props();
 </script>
 
 {#if children?.length}
 	<ul>
 		{#each children as frame}
 			<li style="width: {(frame.duration / duration) * 100}%">
-				<button class={frame.type} on:click={() => dispatch('click', frame)}>
+				<button class={frame.type} onclick={() => onclick(frame)}>
 					<span>&zwnj;</span>
 					<span>{frame.node.tagName}</span>
 				</button>
 
-				<svelte:self {...frame} on:click={() => dispatch('click', frame)} />
+				<svelte:self {...frame} onclick={() => onclick(frame)} />
 			</li>
 		{/each}
 	</ul>

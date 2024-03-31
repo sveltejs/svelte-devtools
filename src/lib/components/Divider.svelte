@@ -1,6 +1,10 @@
 <script lang="ts">
-	export let type: 'horizontal' | 'vertical';
-	export let spacing: `${string}rem` = '0rem';
+	interface Props {
+		type: 'horizontal' | 'vertical';
+		spacing?: `${string}rem`;
+	}
+
+	let { type, spacing = '0rem' }: Props = $props();
 </script>
 
 <div class={type} style="--spacing: {spacing}"></div>

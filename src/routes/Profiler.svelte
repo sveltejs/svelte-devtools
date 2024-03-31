@@ -8,20 +8,20 @@
 
 	import { profileFrame } from '$lib/store';
 
-	let selected: null | ComponentProps<ProfilerFrame>['children'][0] = null;
-	let top: null | ComponentProps<ProfilerFrame>['children'][0] = null;
+	let selected: null | ComponentProps<ProfilerFrame>['children'][0] = $state(null);
+	let top: null | ComponentProps<ProfilerFrame>['children'][0] = $state(null);
 
 	function round(n: number) {
 		return Math.round(n * 100) / 100;
 	}
 
-	$: children = top ? [top] : $profileFrame?.children || [];
-	$: duration = children.reduce((acc, o) => acc + o.duration, 0);
+	const children = $derived(top ? [top] : $profileFrame?.children || []);
+	const duration = $derived(children.reduce((acc, o) => acc + o.duration, 0));
 </script>
 
 <Toolbar>
 	{#if top}
-		<Button on:click={() => (top = null)}>
+		<Button onclick={() => (top = null)}>
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
 				<path d="M12.7,1.4 11.3,0l-8,8 8,8 1.4,-1.4L6,8Z" />
 			</svg>
@@ -30,7 +30,7 @@
 		<ProfileButton />
 	{/if}
 	<Button
-		on:click={() => {
+		onclick={() => {
 			$profileFrame = undefined;
 			top = null;
 			selected = null;
@@ -48,9 +48,9 @@
 		<ProfilerFrame
 			{children}
 			{duration}
-			on:click={({ detail }) => {
-				if (selected === detail) top = detail;
-				else selected = detail;
+			onclick={(frame) => {
+				if (selected === frame) top = frame;
+				else selected = frame;
 			}}
 		/>
 	{:else}

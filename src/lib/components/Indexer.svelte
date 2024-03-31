@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { query } from '$lib/store';
+	import { app } from '$lib/state.svelte';
 
-	export let text = '';
-	export let color = '';
+	const { text = '', color = '' } = $props();
 
-	$: i = text.indexOf($query);
+	const i = $derived(text.indexOf(app.query));
 </script>
 
 <p style:color>
-	{#if i === -1 || $query.length < 2}
+	{#if i === -1 || app.query.length < 2}
 		<span>{text}</span>
 	{:else}
 		{#if i !== 0}<span>{text.slice(0, i)}</span>{/if}
-		<mark>{text.slice(i, i + $query.length)}</mark>
-		{#if i + $query.length < text.length}
-			<span>{text.slice(i + $query.length)}</span>
+		<mark>{text.slice(i, i + app.query.length)}</mark>
+		{#if i + app.query.length < text.length}
+			<span>{text.slice(i + app.query.length)}</span>
 		{/if}
 	{/if}
 </p>

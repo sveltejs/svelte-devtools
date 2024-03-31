@@ -1,13 +1,17 @@
 <script lang="ts">
-	export let axis: 'x' | 'y';
+	interface Props {
+		axis: 'x' | 'y';
+	}
+
+	let { axis }: Props = $props();
 
 	let resizing = false;
-	let size = 400;
+	let size = $state(400);
 </script>
 
 <svelte:window
-	on:mouseup={() => (resizing = false)}
-	on:mousemove={({ pageX: x, pageY: y }) => {
+	onmouseup={() => (resizing = false)}
+	onmousemove={({ pageX: x, pageY: y }) => {
 		if (!resizing) return;
 		size = axis === 'x' ? window.innerWidth - x : window.innerHeight - y;
 	}}
@@ -15,7 +19,7 @@
 
 <aside class={axis} style="{axis === 'x' ? 'width' : 'height'}: {size}px">
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class="{axis} resize" on:mousedown={() => (resizing = true)} />
+	<div class="{axis} resize" onmousedown={() => (resizing = true)} />
 
 	<div><slot /></div>
 </aside>

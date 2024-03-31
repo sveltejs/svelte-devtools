@@ -1,5 +1,5 @@
 <script>
-	import { background } from '$lib/runtime';
+	import { background } from '$lib/runtime.svelte';
 </script>
 
 <main>

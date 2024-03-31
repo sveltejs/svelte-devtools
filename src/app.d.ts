@@ -34,7 +34,7 @@ declare global {
 	};
 
 	type SvelteBlockDetail = {
-		id: number;
+		id: string;
 		source: string;
 		type:
 			| 'anchor'

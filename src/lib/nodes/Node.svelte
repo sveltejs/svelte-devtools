@@ -3,43 +3,46 @@
 	import Block from './Block.svelte';
 	import Element from './Element.svelte';
 	import Iteration from './Iteration.svelte';
+	import Node from './Node.svelte';
 	import Slot from './Slot.svelte';
 
-	import { background } from '$lib/runtime';
-	import { hovered, selected, visibility } from '$lib/store';
+	import { background } from '$lib/runtime.svelte';
+	import { app, visibility } from '$lib/state.svelte';
 
-	export let node: NonNullable<typeof $selected>;
-	export let depth = 1;
+	interface Props {
+		node: NonNullable<typeof app.selected>;
+		depth?: number;
+	}
 
-	node.invalidate = () => (node = node);
+	let { node, depth = 1 }: Props = $props();
 
 	function invisible(n: typeof node): boolean {
-		return !$visibility[n.type] && n.children.every(invisible);
+		return !visibility[n.type] && n.children.every(invisible);
 	}
 
-	let lastLength = node.children.length;
-	let flash = false;
-	$: {
+	let lastLength = $state(node.children.length);
+	let flash = $state(false);
+	$effect(() => {
 		flash = flash || node.children.length !== lastLength;
 		lastLength = node.children.length;
-	}
+	});
 </script>
 
-{#if $visibility[node.type]}
+{#if visibility[node.type]}
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 	<li
 		class:flash
 		style:--indent="{depth * 12}px"
-		data-current={$selected?.id === node.id || null}
-		data-hovered={$hovered?.id === node.id || null}
+		data-current={app.selected?.id === node.id || null}
+		data-hovered={app.hovered?.id === node.id || null}
 		bind:this={node.dom}
 		on:animationend={() => (flash = false)}
-		on:click|stopPropagation={() => selected.set(node)}
+		on:click|stopPropagation={() => (app.selected = node)}
 		on:mousemove|stopPropagation={() => {
-			if ($hovered?.id === node.id) return;
+			if (app.hovered?.id === node.id) return;
 			background.send('bridge::ext/highlight', node.id);
-			hovered.set(node);
+			app.hovered = node;
 		}}
 	>
 		{#if node.type === 'component' || node.type === 'element'}
@@ -52,7 +55,7 @@
 			>
 				<ul>
 					{#each node.children as child (child.id)}
-						<svelte:self node={child} depth={depth + 1} />
+						<Node node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Element>
@@ -60,7 +63,7 @@
 			<Block tagName={node.tagName} source={node.detail.source} bind:expanded={node.expanded}>
 				<ul>
 					{#each node.children as child (child.id)}
-						<svelte:self node={child} depth={depth + 1} />
+						<Node node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Block>
@@ -68,7 +71,7 @@
 			<Iteration bind:expanded={node.expanded}>
 				<ul>
 					{#each node.children as child (child.id)}
-						<svelte:self node={child} depth={depth + 1} />
+						<Node node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Iteration>
@@ -76,7 +79,7 @@
 			<Slot tagName={node.tagName} bind:expanded={node.expanded}>
 				<ul>
 					{#each node.children as child (child.id)}
-						<svelte:self node={child} depth={depth + 1} />
+						<Node node={child} depth={depth + 1} />
 					{/each}
 				</ul>
 			</Slot>
@@ -90,7 +93,7 @@
 	</li>
 {:else}
 	{#each node.children as child (child.id)}
-		<svelte:self node={child} {depth} />
+		<Node node={child} {depth} />
 	{/each}
 {/if}
 

@@ -5,12 +5,26 @@
 
 	import type { ComponentProps } from 'svelte';
 
-	export let tagName: string;
-	export let empty: boolean;
-	export let expanded: boolean;
+	interface Props {
+		tagName: string;
+		empty: boolean;
+		expanded: boolean;
+		attributes: ComponentProps<ElementAttributes>['attributes'];
+		listeners: ComponentProps<ElementAttributes>['listeners'];
+	}
 
-	export let attributes: ComponentProps<ElementAttributes>['attributes'];
-	export let listeners: ComponentProps<ElementAttributes>['listeners'];
+	let { tagName, empty, expanded = $bindable(), attributes, listeners }: Props = $props();
+
+	const memory: Record<string, string> = {};
+	const cached = $derived(
+		attributes.map((o) => {
+			const value = stringify(o.value);
+			const flash = memory[o.key] !== value;
+			memory[o.key] = value;
+
+			return { ...o, value, flash };
+		}),
+	);
 
 	function stringify(value: any): string {
 		switch (typeof value) {
@@ -37,15 +51,6 @@
 				return '';
 		}
 	}
-
-	const memory: Record<string, string> = {};
-	$: cached = attributes.map((o) => {
-		const value = stringify(o.value);
-		const flash = memory[o.key] !== value;
-		memory[o.key] = value;
-
-		return { ...o, value, flash };
-	});
 </script>
 
 {#if empty}
@@ -58,7 +63,7 @@
 		<span>&nbsp;/&gt;</span>
 	</div>
 {:else}
-	<div role="group" class:expanded class="expandable" on:dblclick={() => (expanded = !expanded)}>
+	<div role="group" class:expanded class="expandable" ondblclick={() => (expanded = !expanded)}>
 		<span>&lt;</span>
 		<span class="tag-name">
 			<Indexer text={tagName} />
@@ -66,7 +71,7 @@
 		<ElementAttributes attributes={cached} {listeners} />
 		<span>&gt;</span>
 		{#if !expanded}
-			<Ellipsis on:click={() => (expanded = true)} />
+			<Ellipsis onclick={() => (expanded = true)} />
 
 			<span>&lt;/</span>
 			<span class="tag-name">

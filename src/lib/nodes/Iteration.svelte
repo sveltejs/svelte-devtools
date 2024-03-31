@@ -1,14 +1,18 @@
 <script lang="ts">
 	import Ellipsis from './Ellipsis.svelte';
 
-	export let expanded: boolean;
+	interface Props {
+		expanded: boolean;
+	}
+
+	let { expanded }: Props = $props();
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class="expandable" on:dblclick={() => (expanded = !expanded)}>
+<div class="expandable" ondblclick={() => (expanded = !expanded)}>
 	<span>&#8618;</span>
 	{#if !expanded}
-		<Ellipsis on:click={() => (expanded = true)} />
+		<Ellipsis onclick={() => (expanded = true)} />
 	{/if}
 </div>
 
