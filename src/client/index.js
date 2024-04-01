@@ -202,8 +202,8 @@ addListener({
 	add(node, anchor) {
 		send('bridge::courier/node->add', {
 			node: serialize(node),
-			target: node.parent?.id ?? null,
-			anchor: anchor?.id ?? null,
+			target: node.parent?.id,
+			anchor: anchor?.id,
 		});
 	},
 

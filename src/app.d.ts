@@ -34,7 +34,7 @@ declare global {
 	};
 
 	type SvelteBlockDetail = {
-		id: number;
+		id: string; // crypto.randomUUID();
 		source: string;
 		type:
 			| 'anchor'

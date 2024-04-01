@@ -3,17 +3,13 @@ import { listeners } from './listener.js';
 
 /** @type {undefined | SvelteBlockDetail} */
 let current_block;
-let pointer = 0;
 
-/** @param {number | Node} id */
+/** @param {string | Node} id */
 export function getNode(id) {
 	return nodes.map.get(id);
 }
 
 const nodes = {
-	/** @type {SvelteBlockDetail[]} */
-	root: [],
-
 	/** @type {Map<any, SvelteBlockDetail>} */
 	map: new Map(),
 
@@ -33,8 +29,6 @@ const nodes = {
 			const index = target.children.findIndex((n) => n === sibling);
 			if (index === -1) target.children.push(node);
 			else target.children.splice(index, 0, node);
-		} else {
-			this.root.push(node);
 		}
 
 		listeners.add(node, sibling);
@@ -81,7 +75,7 @@ document.addEventListener('SvelteRegisterComponent', ({ detail }) => {
 let last_promise;
 document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 	const { type, id, block, ...rest } = detail;
-	const current_node_id = pointer++;
+	const current_node_id = crypto.randomUUID();
 
 	if (block.m) {
 		const original = block.m;
@@ -134,7 +128,7 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 					// @ts-expect-error - each block fallback
 					group = /** @type {SvelteBlockDetail} */ ({
 						version: '',
-						id: pointer++,
+						id: crypto.randomUUID(),
 						type: 'block',
 						tagName: 'each',
 						container: parent,
@@ -214,7 +208,7 @@ document.addEventListener('SvelteDOMInsert', ({ detail }) => {
 			target,
 			// @ts-expect-error - missing properties are irrelevant
 			node: {
-				id: pointer++,
+				id: crypto.randomUUID(),
 				type,
 				detail: element,
 				tagName: element.nodeName.toLowerCase(),

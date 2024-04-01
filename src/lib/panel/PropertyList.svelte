@@ -2,18 +2,16 @@
 	import Expandable from './Expandable.svelte';
 
 	export let entries: Array<{ key: string; value: any }> = [];
-	export let id: number;
+	export let id: string;
 	export let readonly = false;
 
 	const errors: Record<string, string | undefined> = {};
 	function change(key: string, value: any) {
 		chrome.devtools.inspectedWindow.eval(
-			`__svelte_devtools_inject_state(${id}, '${key}', ${value})`,
+			`__svelte_devtools_inject_state("${id}", "${key}", ${value})`,
 			(_, error) => {
 				errors[key] =
-					error && error.isException
-						? error.value.substring(0, error.value.indexOf('\n'))
-						: undefined;
+					error && error.isException ? error.value.slice(0, error.value.indexOf('\n')) : undefined;
 			},
 		);
 	}
