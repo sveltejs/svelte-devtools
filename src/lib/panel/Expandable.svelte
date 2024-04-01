@@ -24,9 +24,12 @@
 			case 'number':
 				return value.toString();
 			case 'object':
-				return `{${Object.entries(value)
-					.map(([key, value]) => `"${key}":${key == k ? v : stringify(value)}`)
-					.join(',')}}`;
+				// only return updated key
+				if (k) {
+					return `{${k}: ${v}}`;
+				} else {
+					return `{}`;
+				}
 
 			default: // when is this ever the case?
 				return value?.toString() ?? 'undefined';

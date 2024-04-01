@@ -3,6 +3,8 @@ import { addListener } from './listener.js';
 // import { profiler } from './profiler.js';
 import { nodes } from './svelte.js';
 
+const propClones = new Map();
+
 // @ts-ignore - for the app to call with `eval`
 window['#SvelteDevTools'] = {
 	/**
@@ -12,9 +14,42 @@ window['#SvelteDevTools'] = {
 	 */
 	inject(id, key, value) {
 		const { detail: component } = nodes.map.get(id) || {};
-		component && component.$inject_state({ [key]: value });
+
+		if (component) {
+			const clone = updateProp(propClones.get(id)[key], value);
+
+			component.$inject_state({
+				[key]: clone,
+			});
+		}
 	},
 };
+
+/**
+ * @param {*} orig
+ * @param {*} value
+ * @returns {any}
+ */
+function updateProp(orig, value, seen = new Map()) {
+	switch (typeof value) {
+		case 'object': {
+			if (value === window || value === null) return null;
+			if (Array.isArray(value)) return value.map((o, index) => updateProp(orig[index], o, seen));
+			if (seen.has(value)) return seen.get(value);
+
+			/** @type {Record<string, any>} */
+			const o = {};
+			seen.set(value, o);
+			for (const [key, v] of Object.entries(value)) {
+				orig[key] = updateProp(orig[key], v, seen);
+			}
+
+			return orig;
+		}
+		default:
+			return value;
+	}
+}
 
 const previous = {
 	/** @type {HTMLElement | null} */
@@ -132,18 +167,37 @@ function serialize(node) {
 	switch (node.type) {
 		case 'component': {
 			const { $$: internal = {} } = node.detail;
-			const ctx = clone(node.detail.$capture_state?.() || {});
+			const nodeState = node.detail.$capture_state?.() || {};
 			const bindings = Object.values(internal.bound || {}).map(
 				/** @param {Function} f */ (f) => f.name,
 			);
+
+			/** @type {Record<string, any>} */
+			// clone original prop objects for update
+			const _propClones = {};
 			const props = Object.keys(internal.props || {}).flatMap((key) => {
-				const value = ctx[key];
-				delete ctx[key]; // deduplicate for ctx
+				const prop = nodeState[key];
+
+				if (prop) {
+					const prototypeDescriptors = Object.getOwnPropertyDescriptors(
+						Object.getPrototypeOf(nodeState[key]),
+					);
+					const protoClone = Object.create(null, prototypeDescriptors);
+					const clone = Object.create(protoClone, Object.getOwnPropertyDescriptors(prop));
+					_propClones[key] = clone;
+				}
+
+				const value = clone(prop);
+				delete nodeState[key]; // deduplicate for ctx
 				if (value === undefined) return [];
 
 				const bounded = bindings.some((f) => f.includes(key));
 				return { key, value, bounded };
 			});
+
+			propClones.set(res.id, _propClones);
+
+			const ctx = clone(nodeState);
 
 			res.detail = {
 				attributes: props,
