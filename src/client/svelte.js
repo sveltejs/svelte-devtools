@@ -4,13 +4,8 @@ import { listeners } from './listener.js';
 /** @type {undefined | SvelteBlockDetail} */
 let current_block;
 
-/** @param {string | Node} id */
-export function getNode(id) {
-	return nodes.map.get(id);
-}
-
-const nodes = {
-	/** @type {Map<any, SvelteBlockDetail>} */
+export const nodes = {
+	/** @type {Map<string | object | Node, SvelteBlockDetail>} */
 	map: new Map(),
 
 	/** @param {{ node: SvelteBlockDetail; target?: Node; anchor?: Node }} opts */
@@ -24,7 +19,7 @@ const nodes = {
 		}
 		node.parent = target;
 
-		const sibling = this.map.get(anchor);
+		const sibling = anchor && this.map.get(anchor);
 		if (target) {
 			const index = target.children.findIndex((n) => n === sibling);
 			if (index === -1) target.children.push(node);
