@@ -62,6 +62,12 @@ function courier(tabId, changed) {
 		// a limbo world where both `chrome` and `window` are defined
 		// with many unexpected and out of the ordinary behaviors, do
 		// minimal work here and delegate to `courier.js` in the page.
+		// only a subset of APIs are available in this `chrome` limbo
+		//	- chrome.csi->f()
+		//	- chrome.dom.{openOrClosedShadowRoot->f()}
+		//	- chrome.extension.{ViewType, inIncognitoContext}
+		//	- chrome.i18n
+		//	- chrome.runtime
 		func: () => {
 			const source = chrome.runtime.getURL('/courier.js');
 			if (document.querySelector(`script[src="${source}"]`)) return;
@@ -72,24 +78,9 @@ function courier(tabId, changed) {
 			script.setAttribute('src', source);
 			document.head.appendChild(script);
 
-			// // TODO: reenable profiler
-			// if (message.type === 'bridge::ext/profiler' && message.payload) {
-			// 	// start profiler
-			// }
-
 			chrome.runtime.onMessage.addListener((message, sender) => {
 				if (sender.id !== chrome.runtime.id) return; // unexpected sender
 				window.postMessage(message); // relay to content script (courier.js)
-
-				// switch (message.type) {
-				// 	case 'startProfiler':
-				// 		window.sessionStorage.SvelteDevToolsProfilerEnabled = 'true';
-				// 		break;
-				// 	case 'stopProfiler':
-				// 	case 'bridge::ext/clear':
-				// 		delete window.sessionStorage.SvelteDevToolsProfilerEnabled;
-				// 		break;
-				// }
 			});
 
 			window.addEventListener('message', ({ source, data }) => {
