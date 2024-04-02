@@ -6,7 +6,16 @@
 	import ProfileButton from './ProfileButton.svelte';
 	import ProfilerFrame from './ProfilerFrame.svelte';
 
-	import { profileFrame } from '$lib/store';
+	interface Profiler {
+		type: 'mount' | 'patch' | 'detach';
+		node: import('$lib/state.svelte').DebugNode;
+		duration: number;
+		start: number;
+		end: number;
+		children: Profiler[];
+	}
+
+	let profileFrame: undefined | Profiler = $state();
 
 	let selected: null | ComponentProps<ProfilerFrame>['children'][0] = $state(null);
 	let top: null | ComponentProps<ProfilerFrame>['children'][0] = $state(null);
@@ -15,7 +24,7 @@
 		return Math.round(n * 100) / 100;
 	}
 
-	const children = $derived(top ? [top] : $profileFrame?.children || []);
+	const children = $derived(top ? [top] : profileFrame?.children || []);
 	const duration = $derived(children.reduce((acc, o) => acc + o.duration, 0));
 </script>
 
@@ -31,7 +40,7 @@
 	{/if}
 	<Button
 		onclick={() => {
-			$profileFrame = undefined;
+			profileFrame = undefined;
 			top = null;
 			selected = null;
 		}}

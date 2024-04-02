@@ -30,8 +30,8 @@ devDependencies:
     specifier: 5.0.0-next.90
     version: 5.0.0-next.90
   svelte-check:
-    specifier: ^3.6.4
-    version: 3.6.4(svelte@5.0.0-next.90)
+    specifier: ^3.6.8
+    version: 3.6.8(svelte@5.0.0-next.90)
   typescript:
     specifier: ^5.3.3
     version: 5.3.3
@@ -987,8 +987,8 @@ packages:
       min-indent: 1.0.1
     dev: true
 
-  /svelte-check@3.6.4(svelte@5.0.0-next.90):
-    resolution: {integrity: sha512-mY/dqucqm46p72M8yZmn81WPZx9mN6uuw8UVfR3ZKQeLxQg5HDGO3HHm5AZuWZPYNMLJ+TRMn+TeN53HfQ/vsw==}
+  /svelte-check@3.6.8(svelte@5.0.0-next.90):
+    resolution: {integrity: sha512-rhXU7YCDtL+lq2gCqfJDXKTxJfSsCgcd08d7VWBFxTw6IWIbMWSaASbAOD3N0VV9TYSSLUqEBiratLd8WxAJJA==}
     hasBin: true
     peerDependencies:
       svelte: ^3.55.0 || ^4.0.0-next.0 || ^4.0.0 || ^5.0.0-next.0

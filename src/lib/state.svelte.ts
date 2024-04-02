@@ -1,11 +1,8 @@
-import { writable } from 'svelte/store';
-
 type Overwrite<A, B> = Omit<A, keyof B> & B;
 
 export type DebugNode = Overwrite<
 	SvelteBlockDetail,
 	{
-		invalidate(): void;
 		expanded: boolean;
 		detail: {
 			attributes?: Array<{
@@ -30,10 +27,20 @@ export type DebugNode = Overwrite<
 		dom?: HTMLLIElement;
 	}
 >;
-export const selected = writable<undefined | DebugNode>(undefined);
-export const hovered = writable<undefined | DebugNode>(undefined);
-export const root = writable<DebugNode[]>([]);
-export const visibility = writable<{ [key: string]: boolean }>({
+
+export const app = $state({
+	nodes: {} as { [key: string]: DebugNode },
+	get root() {
+		const nodes = Object.values(this.nodes);
+		return nodes.filter((node) => !node.parent);
+	},
+
+	selected: undefined as undefined | DebugNode,
+	hovered: undefined as undefined | DebugNode,
+	query: '',
+});
+
+export const visibility = $state<{ [key: string]: boolean }>({
 	component: true,
 	element: true,
 	block: true,
@@ -42,15 +49,3 @@ export const visibility = writable<{ [key: string]: boolean }>({
 	text: true,
 	anchor: false,
 });
-
-export const query = writable('');
-
-export type Profiler = {
-	type: 'mount' | 'patch' | 'detach';
-	node: DebugNode;
-	duration: number;
-	start: number;
-	end: number;
-	children: Profiler[];
-};
-export const profileFrame = writable<undefined | Profiler>(undefined);

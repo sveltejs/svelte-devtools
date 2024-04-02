@@ -1,5 +1,12 @@
 <script lang="ts">
-	import type { Profiler } from '$lib/store';
+	interface Profiler {
+		type: 'mount' | 'patch' | 'detach';
+		node: import('$lib/state.svelte').DebugNode;
+		duration: number;
+		start: number;
+		end: number;
+		children: Profiler[];
+	}
 
 	interface Props {
 		children: Profiler[];
