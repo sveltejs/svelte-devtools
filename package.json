@@ -3,7 +3,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "pnpm run --parallel \"/dev:*/\"",
-		"dev:app": "vite build --watch",
+		"dev:app": "vite build -wd --minify=false --sourcemap=inline",
 		"dev:scripts": "rollup -cw",
 		"build": "rollup -c && vite build",
 		"build:zip": "cd build && zip -r svelte-devtools.zip *",
