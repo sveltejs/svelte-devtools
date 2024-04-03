@@ -1,8 +1,9 @@
 <script lang="ts">
 	import Editable from './Editable.svelte';
+	import Expandable from './Expandable.svelte';
 
 	interface Props {
-		key: string;
+		key: string | number;
 		value: any;
 		readonly: boolean;
 		error?: string;
@@ -56,7 +57,10 @@
 	style:--y-pad="0.125rem"
 	class:expanded
 	class:expandable
-	on:click|stopPropagation={() => (expanded = !expanded)}
+	onclick={(event) => {
+		event.stopPropagation();
+		expanded = !expanded;
+	}}
 >
 	<span>{key}:</span>
 	<span>&nbsp;</span>
@@ -73,11 +77,11 @@
 		{#if value.length && expanded}
 			<ul>
 				{#each value as v, key}
-					<svelte:self
+					<Expandable
 						{key}
 						value={v}
 						{readonly}
-						onchange={(updated: unknown) => onchange(stringify(value, key, updated))}
+						onchange={(updated) => onchange(stringify(value, key, updated))}
 					/>
 				{/each}
 			</ul>
@@ -93,11 +97,11 @@
 			{#if expanded}
 				<ul>
 					{#each Object.entries(value) as [key, v] (key)}
-						<svelte:self
+						<Expandable
 							{key}
 							value={v}
 							{readonly}
-							onchange={(updated: unknown) => onchange(stringify(value, key, updated))}
+							onchange={(updated) => onchange(stringify(value, key, updated))}
 						/>
 					{/each}
 				</ul>

@@ -20,7 +20,7 @@
 		"@types/node": "^20.11.19",
 		"prettier": "^3.2.5",
 		"prettier-plugin-sort-package-json": "^0.2.0",
-		"prettier-plugin-svelte": "^3.2.1",
+		"prettier-plugin-svelte": "^3.2.2",
 		"rollup": "^4.12.0",
 		"svelte": "5.0.0-next.90",
 		"svelte-check": "^3.6.8",

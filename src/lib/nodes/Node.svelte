@@ -37,9 +37,13 @@
 		data-current={app.selected?.id === node.id || null}
 		data-hovered={app.hovered?.id === node.id || null}
 		bind:this={node.dom}
-		on:animationend={() => (flash = false)}
-		on:click|stopPropagation={() => (app.selected = node)}
-		on:mousemove|stopPropagation={() => {
+		onanimationend={() => (flash = false)}
+		onclick={(event) => {
+			event.stopPropagation();
+			app.selected = node;
+		}}
+		onmousemove={(event) => {
+			event.stopPropagation();
 			if (app.hovered?.id === node.id) return;
 			background.send('bridge::ext/highlight', node.id);
 			app.hovered = node;

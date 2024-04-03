@@ -39,7 +39,7 @@
 </script>
 
 <svelte:window
-	on:keydown={({ target, key }) => {
+	onkeydown={({ target, key }) => {
 		if (target !== document.body || !app.selected) return;
 
 		if (key === 'Enter') {
@@ -112,7 +112,7 @@
 			</Button>
 		</Toolbar>
 
-		<ul on:mousemove|self={reset} on:mouseleave={reset}>
+		<ul on:mousemove|self={reset} onmouseleave={reset}>
 			{#each app.root as node (node.id)}
 				<Node {node} />
 			{/each}

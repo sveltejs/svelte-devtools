@@ -3,10 +3,10 @@
 
 	const breadcrumbs = $derived.by(() => {
 		const ancestors = [];
-		let parent = app.selected;
-		while (parent && parent.tagName) {
-			ancestors.push(parent);
-			parent = parent.parent;
+		let node = app.selected;
+		while (node && node.tagName) {
+			ancestors.push(node);
+			node = node.parent;
 		}
 		return ancestors.reverse();
 	});

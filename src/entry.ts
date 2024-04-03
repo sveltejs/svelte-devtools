@@ -1,6 +1,5 @@
 import './app.css';
 import App from './routes/+layout.svelte';
-
 import { mount } from 'svelte';
 
 if (chrome.devtools.panels.themeName === 'dark') {
