@@ -16,6 +16,7 @@ export const background = {
 			background.send(type, payload); // retry immediately
 		}
 	},
+};
 
 const nodes = new Map<null | number, DebugNode>();
 
