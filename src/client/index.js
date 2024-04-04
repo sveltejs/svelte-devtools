@@ -1,18 +1,19 @@
 import { highlight } from './highlight.js';
 import { addListener } from './listener.js';
 // import { profiler } from './profiler.js';
-import { getNode } from './svelte.js';
+import { nodes } from './svelte.js';
 
-// @ts-ignore - possibly find an alternative
-window.__svelte_devtools_inject_state = function (id, key, value) {
-	const { detail: component } = getNode(id) || {};
-	component && component.$inject_state({ [key]: value });
-};
-
-// @ts-ignore - possibly find an alternative
-window.__svelte_devtools_select_element = function (element) {
-	const node = getNode(element);
-	if (node) send('inspect', { node: serialize(node) });
+// @ts-ignore - for the app to call with `eval`
+window['#SvelteDevTools'] = {
+	/**
+	 * @param {string} id
+	 * @param {string} key
+	 * @param {any} value
+	 */
+	inject(id, key, value) {
+		const { detail: component } = nodes.map.get(id) || {};
+		component && component.$inject_state({ [key]: value });
+	},
 };
 
 const previous = {
@@ -56,7 +57,7 @@ const inspect = {
 	click(event) {
 		event.preventDefault();
 		document.removeEventListener('mousemove', inspect.handle, true);
-		const node = getNode(/** @type {Node} */ (event.target));
+		const node = nodes.map.get(/** @type {Node} */ (event.target));
 		if (node) send('bridge::ext/inspect', { node: serialize(node) });
 		previous.clear();
 	},
@@ -67,11 +68,11 @@ window.addEventListener('message', ({ data, source }) => {
 	if (source !== window || data?.source !== 'svelte-devtools') return;
 
 	if (data.type === 'bridge::ext/select') {
-		const node = getNode(data.payload);
+		const node = nodes.map.get(data.payload);
 		// @ts-expect-error - saved for `devtools.inspect()`
 		if (node) window.$n = node.detail;
 	} else if (data.type === 'bridge::ext/highlight') {
-		const node = getNode(data.payload);
+		const node = nodes.map.get(data.payload);
 		return highlight(node);
 	} else if (data.type === 'bridge::ext/inspect') {
 		switch (data.payload) {
@@ -202,8 +203,8 @@ addListener({
 	add(node, anchor) {
 		send('bridge::courier/node->add', {
 			node: serialize(node),
-			target: node.parent?.id ?? null,
-			anchor: anchor?.id ?? null,
+			target: node.parent?.id,
+			anchor: anchor?.id,
 		});
 	},
 

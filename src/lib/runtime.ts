@@ -11,7 +11,7 @@ export const background = {
 	},
 };
 
-const nodes = new Map<null | number, DebugNode>();
+const nodes = {} as { [key: string]: DebugNode };
 
 function resolveEventBubble(node: any) {
 	if (!node.detail || !node.detail.listeners) return;
@@ -42,20 +42,22 @@ port.onMessage.addListener(({ type, payload }) => {
 		case 'bridge::ext/clear': {
 			selected.set(undefined);
 			hovered.set(undefined);
-			return root.set([]);
+			root.set([]);
+			break;
 		}
 
 		case 'bridge::ext/inspect': {
-			if (typeof payload === 'string') return;
-			const current = nodes.get(payload.node.id);
-			return selected.set(current);
+			if (typeof payload === 'string') break;
+			const current = nodes[payload.node.id];
+			selected.set(current);
+			break;
 		}
 
 		case 'bridge::courier/node->add': {
 			const { node, target, anchor } = payload as {
 				node: DebugNode;
-				target: null | number;
-				anchor: null | number;
+				target: string;
+				anchor: string;
 			};
 
 			node.children = [];
@@ -63,37 +65,43 @@ port.onMessage.addListener(({ type, payload }) => {
 			node.invalidate = () => {};
 			resolveEventBubble(node);
 
-			const parent = nodes.get(target);
-			nodes.set(node.id, node);
-			if (!parent) return root.update((n) => [...n, node]);
+			const parent = nodes[target];
+			nodes[node.id] = node;
+			if (!parent) {
+				root.update((n) => [...n, node]);
+				break;
+			}
 
 			const index = parent.children.findIndex((n) => n.id === anchor);
 			if (index === -1) parent.children.push(node);
 			else parent.children.splice(index, 0, node);
 
-			return (node.parent = parent).invalidate();
+			(node.parent = parent).invalidate();
+			break;
 		}
 
 		case 'bridge::courier/node->remove': {
 			const node = payload.node as SvelteBlockDetail;
-			const current = nodes.get(node.id);
-			if (current) nodes.delete(current.id);
-			if (!current?.parent) return;
+			const current = nodes[node.id];
+			if (current) delete nodes[current.id];
+			if (!current?.parent) break;
 
 			const index = current.parent.children.findIndex((o) => o.id === current.id);
 			current.parent.children.splice(index, 1);
-			return current.parent.invalidate();
+			current.parent.invalidate();
+			break;
 		}
 
 		case 'bridge::courier/node->update': {
 			const node = payload.node as SvelteBlockDetail;
-			const current = nodes.get(node.id);
-			if (!current) return;
+			const current = nodes[node.id];
+			if (!current) break;
 			Object.assign(current, payload.node);
 			resolveEventBubble(current);
 
 			selected.update((o) => o);
-			return current.invalidate();
+			current.invalidate();
+			break;
 		}
 
 		// case 'bridge::courier/profile->update': {
