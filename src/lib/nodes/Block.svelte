@@ -6,9 +6,10 @@
 		tagName: string;
 		source?: string;
 		expanded: boolean;
+		children: import('svelte').Snippet;
 	}
 
-	let { tagName, source, expanded }: Props = $props();
+	let { tagName, source, expanded, children }: Props = $props();
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -24,7 +25,7 @@
 	{/if}
 </div>
 {#if expanded}
-	<slot />
+	{@render children()}
 
 	<div>
 		<Indexer text={`{/${tagName}}`} />

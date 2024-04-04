@@ -1,9 +1,10 @@
 <script lang="ts">
 	interface Props {
 		axis: 'x' | 'y';
+		children: import('svelte').Snippet;
 	}
 
-	let { axis }: Props = $props();
+	let { axis, children }: Props = $props();
 
 	let resizing = false;
 	let size = $state(400);
@@ -21,7 +22,7 @@
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div class="{axis} resize" onmousedown={() => (resizing = true)} />
 
-	<div><slot /></div>
+	<div>{@render children()}</div>
 </aside>
 
 <style>

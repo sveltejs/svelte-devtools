@@ -3,9 +3,10 @@
 
 	interface Props {
 		expanded: boolean;
+		children: import('svelte').Snippet;
 	}
 
-	let { expanded }: Props = $props();
+	let { expanded, children }: Props = $props();
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -17,5 +18,5 @@
 </div>
 
 {#if expanded}
-	<slot />
+	{@render children()}
 {/if}

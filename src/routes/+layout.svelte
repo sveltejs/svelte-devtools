@@ -25,8 +25,6 @@
 			while ((current = current.parent)) {
 				current.expanded = true;
 			}
-
-			app.selected.dom?.scrollIntoView({ block: 'center' });
 		} else if (app.root.length) {
 			app.selected = app.root[0];
 		}
@@ -39,15 +37,18 @@
 </script>
 
 <svelte:window
-	onkeydown={({ target, key }) => {
+	onkeydown={(event) => {
+		const { target, key } = event;
 		if (target !== document.body || !app.selected) return;
 
 		if (key === 'Enter') {
 			app.selected.expanded = !app.selected.expanded;
 		} else if (key === 'ArrowRight') {
+			event.preventDefault();
 			if (!app.selected) app.selected = app.root[0];
 			app.selected.expanded = true;
 		} else if (key === 'ArrowLeft') {
+			event.preventDefault();
 			if (app.selected.expanded) {
 				app.selected.expanded = false;
 				return;
@@ -55,6 +56,7 @@
 			do app.selected = app.selected.parent ?? app.selected;
 			while (!visibility[app.selected.type]);
 		} else if (key === 'ArrowUp') {
+			event.preventDefault();
 			let nodes = (app.selected.parent?.children || app.root).filter((n) => visibility[n.type]);
 			let sibling = nodes[nodes.findIndex((o) => o.id === app.selected?.id) - 1];
 			while (sibling?.expanded) {
@@ -63,6 +65,7 @@
 			}
 			app.selected = sibling ?? app.selected.parent ?? app.selected;
 		} else if (key === 'ArrowDown') {
+			event.preventDefault();
 			const children = app.selected.children.filter((n) => visibility[n.type]);
 
 			if (!app.selected.expanded || children.length === 0) {

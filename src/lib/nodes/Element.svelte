@@ -11,20 +11,12 @@
 		expanded: boolean;
 		attributes: ComponentProps<ElementAttributes>['attributes'];
 		listeners: ComponentProps<ElementAttributes>['listeners'];
+		children: import('svelte').Snippet;
 	}
 
-	let { tagName, empty, expanded = $bindable(), attributes, listeners }: Props = $props();
+	let { tagName, empty, expanded = $bindable(), attributes, listeners, children }: Props = $props();
 
-	const memory: Record<string, string> = {};
-	const cached = $derived(
-		attributes.map((o) => {
-			const value = stringify(o.value);
-			const flash = memory[o.key] !== value;
-			memory[o.key] = value;
-
-			return { ...o, value, flash };
-		}),
-	);
+	const cached = $derived(attributes.map((o) => ({ ...o, value: stringify(o.value) })));
 
 	function stringify(value: any): string {
 		switch (typeof value) {
@@ -53,51 +45,52 @@
 	}
 </script>
 
-{#if empty}
-	<div>
-		<span>&lt;</span>
-		<span class="tag-name">
-			<Indexer text={tagName} />
-		</span>
-		<ElementAttributes attributes={cached} {listeners} />
+{#snippet close()}
+	<span>&lt;/</span>
+	<span class="tag">
+		<Indexer text={tagName} />
+	</span>
+	<span>&gt;</span>
+{/snippet}
+
+<div
+	role="group"
+	class:expandable={!empty}
+	class:expanded
+	ondblclick={() => (expanded = !empty && !expanded)}
+>
+	<span>&lt;</span>
+	<span class="tag">
+		<Indexer text={tagName} />
+	</span>
+	<ElementAttributes attributes={cached} {listeners} />
+
+	{#if empty}
 		<span>&nbsp;/&gt;</span>
-	</div>
-{:else}
-	<div role="group" class:expanded class="expandable" ondblclick={() => (expanded = !expanded)}>
-		<span>&lt;</span>
-		<span class="tag-name">
-			<Indexer text={tagName} />
-		</span>
-		<ElementAttributes attributes={cached} {listeners} />
+	{:else}
 		<span>&gt;</span>
 		{#if !expanded}
 			<Ellipsis onclick={() => (expanded = true)} />
 
-			<span>&lt;/</span>
-			<span class="tag-name">
-				<Indexer text={tagName} />
-			</span>
-			<span>&gt;</span>
+			{@render close()}
 		{/if}
-	</div>
-	{#if expanded}
-		<slot />
-		<div>
-			<span>&lt;/</span>
-			<span class="tag-name">
-				<Indexer text={tagName} />
-			</span>
-			<span>&gt;</span>
-		</div>
 	{/if}
+</div>
+
+{#if expanded}
+	{@render children()}
+
+	<div>
+		{@render close()}
+	</div>
 {/if}
 
 <style>
-	.tag-name {
+	.tag {
 		color: rgb(0, 116, 232);
 	}
 
-	:global(.dark) .tag-name {
+	:global(.dark) .tag {
 		color: rgb(117, 191, 255);
 	}
 </style>

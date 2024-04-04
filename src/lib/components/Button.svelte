@@ -4,13 +4,14 @@
 		disabled?: boolean;
 		active?: boolean;
 		onclick(event: MouseEvent): void;
+		children: import('svelte').Snippet;
 	}
 
-	let { type = 'button', disabled = false, active = false, onclick }: Props = $props();
+	let { type = 'button', disabled = false, active = false, onclick, children }: Props = $props();
 </script>
 
 <button {type} {disabled} class:active {onclick}>
-	<slot />
+	{@render children()}
 </button>
 
 <style>

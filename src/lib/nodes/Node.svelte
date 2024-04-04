@@ -16,28 +16,31 @@
 
 	let { node, depth = 1 }: Props = $props();
 
+	const prev = $state(node);
+
 	function invisible(n: typeof node): boolean {
 		return !visibility[n.type] && n.children.every(invisible);
 	}
-
-	let lastLength = $state(node.children.length);
-	let flash = $state(false);
-	$effect(() => {
-		flash = flash || node.children.length !== lastLength;
-		lastLength = node.children.length;
-	});
 </script>
+
+{#snippet expand(children, level)}
+	{#each children as child (child.id)}
+		<Node node={child} depth={level} />
+	{/each}
+{/snippet}
 
 {#if visibility[node.type]}
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 	<li
-		class:flash
+		bind:this={node.dom}
 		style:--indent="{depth * 12}px"
+		class:flash={prev.id !== node.id ||
+			prev.source !== node.source ||
+			prev.children.length !== node.children.length}
 		data-current={app.selected?.id === node.id || null}
 		data-hovered={app.hovered?.id === node.id || null}
-		bind:this={node.dom}
-		onanimationend={() => (flash = false)}
+		onanimationend={() => Object.assign(prev, node)}
 		onclick={(event) => {
 			event.stopPropagation();
 			app.selected = node;
@@ -57,35 +60,19 @@
 				empty={!node.children.length || node.children.every(invisible)}
 				bind:expanded={node.expanded}
 			>
-				<ul>
-					{#each node.children as child (child.id)}
-						<Node node={child} depth={depth + 1} />
-					{/each}
-				</ul>
+				<ul>{@render expand(node.children, depth + 1)}</ul>
 			</Element>
 		{:else if node.type === 'block'}
 			<Block tagName={node.tagName} source={node.detail.source} bind:expanded={node.expanded}>
-				<ul>
-					{#each node.children as child (child.id)}
-						<Node node={child} depth={depth + 1} />
-					{/each}
-				</ul>
+				<ul>{@render expand(node.children, depth + 1)}</ul>
 			</Block>
 		{:else if node.type === 'iteration'}
 			<Iteration bind:expanded={node.expanded}>
-				<ul>
-					{#each node.children as child (child.id)}
-						<Node node={child} depth={depth + 1} />
-					{/each}
-				</ul>
+				<ul>{@render expand(node.children, depth + 1)}</ul>
 			</Iteration>
 		{:else if node.type === 'slot'}
 			<Slot tagName={node.tagName} bind:expanded={node.expanded}>
-				<ul>
-					{#each node.children as child (child.id)}
-						<Node node={child} depth={depth + 1} />
-					{/each}
-				</ul>
+				<ul>{@render expand(node.children, depth + 1)}</ul>
 			</Slot>
 		{:else if node.type === 'text'}
 			<div>
@@ -96,9 +83,7 @@
 		{/if}
 	</li>
 {:else}
-	{#each node.children as child (child.id)}
-		<Node node={child} {depth} />
-	{/each}
+	{@render expand(node.children, depth)}
 {/if}
 
 <style>
@@ -135,13 +120,6 @@
 		background: #e0e0e2;
 	}
 
-	li.flash :global(> :first-child),
-	li.flash :global(> :first-child *),
-	li :global(.flash),
-	li :global(.flash *) {
-		animation: flash 0.8s ease-in-out;
-	}
-
 	li[data-current] > :global(div:first-child),
 	li[data-current][data-hovered] > :global(div) {
 		background: rgb(0, 116, 232);
@@ -158,6 +136,14 @@
 	:global(.dark) li[data-current] > :global(div:first-child),
 	:global(.dark) li[data-current][data-hovered] > :global(div) {
 		background: rgb(32, 78, 138);
+	}
+
+	/* flash animation for updates */
+	li.flash > :global(:first-child),
+	li.flash > :global(:first-child *),
+	li :global(.flash),
+	li :global(.flash *) {
+		animation: flash 800ms ease-in-out;
 	}
 
 	@keyframes flash {

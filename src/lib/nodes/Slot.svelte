@@ -5,13 +5,14 @@
 	interface Props {
 		tagName: string;
 		expanded: boolean;
+		children: import('svelte').Snippet;
 	}
 
-	let { tagName, expanded }: Props = $props();
+	let { tagName, expanded, children }: Props = $props();
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class:expanded class="expandable tag-open tag-name" on:dblclick={() => (expanded = !expanded)}>
+<div class:expanded class="expandable tag-open tag-name" ondblclick={() => (expanded = !expanded)}>
 	<Indexer text="<{tagName}>" color="#c586c0" />
 
 	{#if !expanded}
@@ -20,7 +21,7 @@
 	{/if}
 </div>
 {#if expanded}
-	<slot />
+	{@render children()}
 
 	<div>
 		<Indexer text="</{tagName}>" color="#c586c0" />
