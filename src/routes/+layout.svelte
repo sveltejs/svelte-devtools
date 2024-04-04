@@ -17,6 +17,8 @@
 	import { background } from '$lib/runtime.svelte';
 	import { app, visibility } from '$lib/state.svelte';
 
+	let container = $state<undefined | HTMLElement>();
+
 	$effect(() => {
 		if (app.selected) {
 			background.send('bridge::ext/select', app.selected.id);
@@ -24,6 +26,16 @@
 			let current = app.selected;
 			while ((current = current.parent)) {
 				current.expanded = true;
+			}
+
+			// scroll selected node into view
+			if (app.selected.dom && container) {
+				const { top: start, height } = container.getBoundingClientRect();
+				const top = app.selected.dom.getBoundingClientRect().top - start;
+				if (top >= 0 && top + 24 <= height) return; // node is in view
+				app.selected.dom.scrollIntoView({
+					block: top < 0 || height / 2 - top >= 0 ? 'start' : 'end',
+				});
 			}
 		} else if (app.root.length) {
 			app.selected = app.root[0];
@@ -115,7 +127,7 @@
 			</Button>
 		</Toolbar>
 
-		<ul on:mousemove|self={reset} onmouseleave={reset}>
+		<ul bind:this={container} on:mousemove|self={reset} onmouseleave={reset}>
 			{#each app.root as node (node.id)}
 				<Node {node} />
 			{/each}
