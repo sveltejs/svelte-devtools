@@ -47,7 +47,6 @@ port.onMessage.addListener(({ type, payload }) => {
 		case 'bridge::ext/inspect': {
 			if (typeof payload === 'string') break;
 			app.selected = app.nodes[payload.node.id];
-			app.inspecting = false;
 			break;
 		}
 
