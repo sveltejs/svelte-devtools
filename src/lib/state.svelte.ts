@@ -37,6 +37,8 @@ export const app = $state({
 
 	selected: undefined as undefined | DebugNode,
 	hovered: undefined as undefined | DebugNode,
+
+	inspecting: false,
 	query: '',
 });
 
