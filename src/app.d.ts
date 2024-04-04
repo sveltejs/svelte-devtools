@@ -119,7 +119,7 @@ declare global {
 			}
 		>;
 
-		SvelteDevTools: CusomEvent<{
+		SvelteDevTools: CustomEvent<{
 			type: string;
 			payload: string;
 		}>;

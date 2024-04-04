@@ -1,12 +1,16 @@
 <script lang="ts">
 	import Editable from './Editable.svelte';
+	import Expandable from './Expandable.svelte';
 
-	import { createEventDispatcher } from 'svelte';
+	interface Props {
+		key: string | number;
+		value: any;
+		readonly: boolean;
+		error?: string;
+		onchange(updated: unknown): void;
+	}
 
-	export let key: string;
-	export let value: any;
-	export let error: string | undefined;
-	export let readonly: boolean;
+	const { key, value, readonly, error, onchange }: Props = $props();
 
 	function stringify(value: unknown, k?: any, v?: any): string {
 		if (Array.isArray(value))
@@ -29,19 +33,20 @@
 		}
 	}
 
-	const dispatch = createEventDispatcher();
+	let expanded = $state(false);
 
-	let expanded = false;
-
-	$: type = typeof value;
-	$: expandable =
-		value != null &&
-		value === value &&
-		type === 'object' &&
-		((Array.isArray(value) && value.length) ||
-			value.__is === 'function' ||
-			value.__is === 'symbol' ||
-			Object.keys(value).length);
+	const type = $derived(typeof value);
+	const expandable = $derived.by(() => {
+		return (
+			value != null &&
+			value === value &&
+			type === 'object' &&
+			((Array.isArray(value) && value.length) ||
+				value.__is === 'function' ||
+				value.__is === 'symbol' ||
+				Object.keys(value).length)
+		);
+	});
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -52,28 +57,31 @@
 	style:--y-pad="0.125rem"
 	class:expanded
 	class:expandable
-	on:click|stopPropagation={() => (expanded = !expanded)}
+	onclick={(event) => {
+		event.stopPropagation();
+		expanded = !expanded;
+	}}
 >
 	<span>{key}:</span>
 	<span>&nbsp;</span>
 
 	{#if type === 'string'}
-		<Editable type="string" {value} {readonly} on:change />
+		<Editable type="string" {value} {readonly} {onchange} />
 	{:else if value == null || value !== value}
-		<Editable type="null" {value} {readonly} on:change />
+		<Editable type="null" {value} {readonly} {onchange} />
 	{:else if type === 'number' || type === 'boolean'}
-		<Editable type="number" {value} {readonly} on:change />
+		<Editable type="number" {value} {readonly} {onchange} />
 	{:else if Array.isArray(value)}
 		<span class="object">Array [{value.length || ''}]</span>
 
 		{#if value.length && expanded}
 			<ul>
 				{#each value as v, key}
-					<svelte:self
+					<Expandable
 						{key}
 						value={v}
 						{readonly}
-						on:change={(e) => dispatch('change', stringify(value, key, e.detail))}
+						onchange={(updated) => onchange(stringify(value, key, updated))}
 					/>
 				{/each}
 			</ul>
@@ -89,11 +97,11 @@
 			{#if expanded}
 				<ul>
 					{#each Object.entries(value) as [key, v] (key)}
-						<svelte:self
+						<Expandable
 							{key}
 							value={v}
 							{readonly}
-							on:change={(e) => dispatch('change', stringify(value, key, e.detail))}
+							onchange={(updated) => onchange(stringify(value, key, updated))}
 						/>
 					{/each}
 				</ul>

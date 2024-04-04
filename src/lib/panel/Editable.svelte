@@ -1,38 +1,37 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	interface Props {
+		type: 'string' | 'number' | 'null';
+		value: any;
+		readonly: boolean;
+		onchange(updated: unknown): void;
+	}
 
-	export let type: 'string' | 'number' | 'null';
-	export let value: any;
-	export let readonly: boolean;
+	let { type, value, readonly, onchange }: Props = $props();
 
-	const dispatch = createEventDispatcher();
-
-	let editing = false;
+	let editing = $state(false);
 </script>
 
 {#if editing}
 	<input
 		value={JSON.stringify(value)}
-		on:blur={({ target }) => {
+		onblur={({ target }) => {
 			editing = false;
 			// @ts-expect-error - target and value exists
 			const updated = target.value;
-			value = JSON.parse(updated);
-			dispatch('change', updated);
+			onchange((value = JSON.parse(updated)));
 		}}
-		on:keydown={({ key, target }) => {
+		onkeydown={({ key, target }) => {
 			if (key !== 'Enter') return;
 			editing = false;
 			// @ts-expect-error - target and value exists
 			const updated = target.value;
-			value = JSON.parse(updated);
-			dispatch('change', updated);
+			onchange((value = JSON.parse(updated)));
 		}}
 	/>
 {:else}
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<span class:readonly class={type} on:click={() => (editing = !readonly)}>
+	<span class:readonly class={type} onclick={() => (editing = !readonly)}>
 		{JSON.stringify(value)}
 	</span>
 {/if}

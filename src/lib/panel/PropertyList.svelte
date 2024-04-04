@@ -1,9 +1,13 @@
 <script lang="ts">
 	import Expandable from './Expandable.svelte';
 
-	export let entries: Array<{ key: string; value: any }> = [];
-	export let id: string;
-	export let readonly = false;
+	interface Props {
+		id: string;
+		entries?: Array<{ key: string; value: any }>;
+		readonly?: boolean;
+	}
+
+	let { id, entries = [], readonly = false }: Props = $props();
 
 	const errors: Record<string, string | undefined> = {};
 	function change(key: string, value: any) {
@@ -26,7 +30,7 @@
 				{key}
 				{value}
 				error={errors[key]}
-				on:change={(e) => change(key, e.detail)}
+				onchange={(updated) => change(key, updated)}
 			/>
 		{/each}
 	</ul>

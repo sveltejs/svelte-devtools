@@ -1,4 +1,12 @@
-<button on:click>&bull; &bull; &bull;</button>
+<script lang="ts">
+	interface Props {
+		onclick(event: MouseEvent): void;
+	}
+
+	let { onclick }: Props = $props();
+</script>
+
+<button {onclick}>&bull; &bull; &bull;</button>
 
 <style>
 	button {
