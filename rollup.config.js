@@ -8,7 +8,7 @@ export default defineConfig([
 		},
 	},
 	{
-		input: 'src/client/index.js',
+		input: 'src/client/core.js',
 		output: [
 			{ file: 'static/courier.js', format: 'iife' },
 			{ file: 'build/courier.js', format: 'iife' },

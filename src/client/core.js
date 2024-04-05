@@ -1,7 +1,7 @@
 import { highlight } from './highlight.js';
 import { addListener } from './listener.js';
-// import { profiler } from './profiler.js';
-import { nodes } from './svelte.js';
+import { send } from './runtime.js';
+import { nodes } from './svelte-4.js';
 
 // @ts-ignore - for the app to call with `eval`
 window['#SvelteDevTools'] = {
@@ -189,14 +189,6 @@ function serialize(node) {
 	}
 
 	return res;
-}
-
-/**
- * @param {string} type
- * @param {Record<string, any>} [payload]
- */
-function send(type, payload) {
-	window.postMessage({ source: 'svelte-devtools', type, payload });
 }
 
 addListener({
