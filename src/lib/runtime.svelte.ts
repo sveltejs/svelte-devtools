@@ -1,4 +1,4 @@
-import { type DebugNode, hovered, root, selected } from './store';
+import { type DebugNode, app } from './state.svelte';
 
 const tabId = chrome.devtools.inspectedWindow.tabId;
 let port = chrome.runtime.connect({ name: `${tabId}` });
@@ -17,8 +17,6 @@ export const background = {
 		}
 	},
 };
-
-const nodes = new Map<null | number, DebugNode>();
 
 function resolveEventBubble(node: any) {
 	if (!node.detail || !node.detail.listeners) return;
@@ -47,60 +45,60 @@ function resolveEventBubble(node: any) {
 port.onMessage.addListener(({ type, payload }) => {
 	switch (type) {
 		case 'bridge::ext/clear': {
-			selected.set(undefined);
-			hovered.set(undefined);
-			return root.set([]);
+			app.nodes = {};
+			app.selected = undefined;
+			app.hovered = undefined;
+			break;
 		}
 
 		case 'bridge::ext/inspect': {
-			if (typeof payload === 'string') return;
-			const current = nodes.get(payload.node.id);
-			return selected.set(current);
+			if (typeof payload === 'string') break;
+			app.selected = app.nodes[payload.node.id];
+			app.inspecting = false;
+			break;
 		}
 
 		case 'bridge::courier/node->add': {
 			const { node, target, anchor } = payload as {
 				node: DebugNode;
-				target: null | number;
-				anchor: null | number;
+				target: string;
+				anchor: string;
 			};
 
+			node.parent = app.nodes[target];
 			node.children = [];
 			node.expanded = false;
-			node.invalidate = () => {};
 			resolveEventBubble(node);
 
-			const parent = nodes.get(target);
-			nodes.set(node.id, node);
-			if (!parent) return root.update((n) => [...n, node]);
+			app.nodes[node.id] = node;
+			if (!node.parent) break;
 
-			const index = parent.children.findIndex((n) => n.id === anchor);
-			if (index === -1) parent.children.push(node);
-			else parent.children.splice(index, 0, node);
+			const siblings = node.parent.children;
+			const index = siblings.findIndex((n) => n.id === anchor);
+			if (index === -1) siblings.push(node);
+			else siblings.splice(index, 0, node);
 
-			return (node.parent = parent).invalidate();
+			break;
 		}
 
 		case 'bridge::courier/node->remove': {
 			const node = payload.node as SvelteBlockDetail;
-			const current = nodes.get(node.id);
-			if (current) nodes.delete(current.id);
-			if (!current?.parent) return;
+			const current = app.nodes[node.id];
+			if (current) delete app.nodes[current.id];
+			if (!current?.parent) break;
 
 			const index = current.parent.children.findIndex((o) => o.id === current.id);
 			current.parent.children.splice(index, 1);
-			return current.parent.invalidate();
+			break;
 		}
 
 		case 'bridge::courier/node->update': {
 			const node = payload.node as SvelteBlockDetail;
-			const current = nodes.get(node.id);
-			if (!current) return;
-			Object.assign(current, payload.node);
+			const current = app.nodes[node.id];
+			if (!current) break;
+			Object.assign(current, node);
 			resolveEventBubble(current);
-
-			selected.update((o) => o);
-			return current.invalidate();
+			break;
 		}
 
 		// case 'bridge::courier/profile->update': {
@@ -113,7 +111,7 @@ port.onMessage.addListener(({ type, payload }) => {
 
 		// 		if (!frame.node) return;
 
-		// 		frame.node = nodes.get(frame.node) || {
+		// 		frame.node = app.nodes.get(frame.node) || {
 		// 			type: 'Unknown',
 		// 			tagName: 'Unknown',
 		// 		};

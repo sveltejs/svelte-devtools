@@ -14,78 +14,92 @@
 	import SearchBox from './SearchBox.svelte';
 	import VisibilitySelection from './VisibilitySelection.svelte';
 
-	import { background } from '$lib/runtime';
-	import { hovered, root, selected, visibility } from '$lib/store';
+	import { background } from '$lib/runtime.svelte';
+	import { app, visibility } from '$lib/state.svelte';
 
-	$: if ($selected) {
-		background.send('bridge::ext/select', $selected.id);
+	let container = $state<undefined | HTMLElement>();
 
-		let current = $selected;
-		let invalid = null;
-		while ((current = current.parent)) {
-			if (current.expanded) continue;
-			(invalid = current).expanded = true;
+	$effect(() => {
+		if (app.selected) {
+			background.send('bridge::ext/select', app.selected.id);
+
+			let current = app.selected;
+			while ((current = current.parent)) {
+				current.expanded = true;
+			}
+
+			// scroll selected node into view
+			if (app.selected.dom && container) {
+				const { top: start, height } = container.getBoundingClientRect();
+				const top = app.selected.dom.getBoundingClientRect().top - start;
+				if (top >= 0 && top + 24 <= height) return; // node is in view
+				app.selected.dom.scrollIntoView({
+					block: top < 0 || height / 2 - top >= 0 ? 'start' : 'end',
+				});
+			}
+		} else if (app.root.length) {
+			app.selected = app.root[0];
 		}
-		if (invalid) invalid.invalidate();
-	} else if ($root.length) {
-		selected.set($root[0]);
-	}
+	});
 
 	function reset() {
 		background.send('bridge::ext/highlight', null);
-		hovered.set(undefined);
+		app.hovered = undefined;
 	}
 </script>
 
 <svelte:window
-	on:keydown={({ target, key }) => {
-		if (target !== document.body || !$selected) return;
+	onkeydown={(event) => {
+		const { target, key } = event;
+		if (target !== document.body || !app.selected) return;
 
 		if (key === 'Enter') {
-			$selected.expanded = !$selected.expanded;
-			$selected.invalidate();
+			app.selected.expanded = !app.selected.expanded;
 		} else if (key === 'ArrowRight') {
-			if (!$selected) $selected = $root[0];
-			$selected.expanded = true;
-			$selected.invalidate();
+			event.preventDefault();
+			if (!app.selected) app.selected = app.root[0];
+			app.selected.expanded = true;
 		} else if (key === 'ArrowLeft') {
-			if ($selected.expanded) {
-				$selected.expanded = false;
-				return $selected.invalidate();
+			event.preventDefault();
+			if (app.selected.expanded) {
+				app.selected.expanded = false;
+				return;
 			}
-			do $selected = $selected.parent ?? $selected;
-			while (!$visibility[$selected.type]);
+			do app.selected = app.selected.parent ?? app.selected;
+			while (!visibility[app.selected.type]);
 		} else if (key === 'ArrowUp') {
-			let nodes = ($selected.parent?.children || $root).filter((n) => $visibility[n.type]);
-			let sibling = nodes[nodes.findIndex((o) => o.id === $selected?.id) - 1];
+			event.preventDefault();
+			let nodes = (app.selected.parent?.children || app.root).filter((n) => visibility[n.type]);
+			let sibling = nodes[nodes.findIndex((o) => o.id === app.selected?.id) - 1];
 			while (sibling?.expanded) {
-				nodes = sibling.children.filter((n) => $visibility[n.type]);
+				nodes = sibling.children.filter((n) => visibility[n.type]);
 				sibling = nodes[nodes.length - 1];
 			}
-			$selected = sibling ?? $selected.parent ?? $selected;
+			app.selected = sibling ?? app.selected.parent ?? app.selected;
 		} else if (key === 'ArrowDown') {
-			const children = $selected.children.filter((n) => $visibility[n.type]);
+			event.preventDefault();
+			const children = app.selected.children.filter((n) => visibility[n.type]);
 
-			if (!$selected.expanded || children.length === 0) {
-				let next = $selected;
-				let current = $selected;
+			if (!app.selected.expanded || children.length === 0) {
+				let next = app.selected;
+				let current = app.selected;
 				do {
-					const nodes = current.parent ? current.parent.children : $root;
-					const siblings = nodes.filter((n) => $visibility[n.type]);
+					const nodes = current.parent ? current.parent.children : app.root;
+					const siblings = nodes.filter((n) => visibility[n.type]);
 					const index = siblings.findIndex((o) => o.id === current.id);
 					next = siblings[index + 1];
 					current = current.parent;
 				} while (!next && current);
 
-				$selected = next ?? $selected;
+				app.selected = next ?? app.selected;
 			} else {
-				$selected = children[0];
+				app.selected = children[0];
 			}
 		}
 	}}
 />
 
-{#if $root.length}
+{#if app.root.length}
 	<main>
 		<!-- <Profiler /> -->
 
@@ -102,8 +116,8 @@
 
 			<!-- svelte-ignore missing-declaration -->
 			<Button
-				disabled={$selected?.id === undefined || $selected?.type !== 'element'}
-				on:click={() => chrome.devtools.inspectedWindow.eval('inspect($n).scrollIntoView()')}
+				disabled={app.selected?.id === undefined || app.selected?.type !== 'element'}
+				onclick={() => chrome.devtools.inspectedWindow.eval('inspect($n).scrollIntoView()')}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
 					<path
@@ -113,8 +127,8 @@
 			</Button>
 		</Toolbar>
 
-		<ul on:mousemove|self={reset} on:mouseleave={reset}>
-			{#each $root as node (node.id)}
+		<ul bind:this={container} on:mousemove|self={reset} onmouseleave={reset}>
+			{#each app.root as node (node.id)}
 				<Node {node} />
 			{/each}
 		</ul>
@@ -124,36 +138,36 @@
 
 	<!-- component details -->
 	<Resizable axis="x">
-		{@const events = $selected?.detail.listeners?.map((l) => {
+		{@const events = app.selected?.detail.listeners?.map((l) => {
 			const suffix = l.modifiers?.length ? `|${l.modifiers.join('|')}` : '';
 			const value = { __is: 'function', source: l.handler };
 			return { key: l.event + suffix, value };
 		})}
 
-		{#if $selected?.type === 'component'}
+		{#if app.selected?.type === 'component'}
 			<h2>Props</h2>
-			<PropertyList id={$selected.id} entries={$selected.detail.attributes} />
+			<PropertyList id={app.selected.id} entries={app.selected?.detail.attributes} />
 
 			<Divider type="horizontal" />
 
 			<h2>Events</h2>
-			<PropertyList id={$selected.id} entries={events} />
+			<PropertyList id={app.selected.id} entries={events} />
 
 			<Divider type="horizontal" />
 
 			<h2>State</h2>
-			<PropertyList id={$selected.id} entries={$selected.detail.ctx} />
-		{:else if $selected?.type === 'block' || $selected?.type === 'iteration'}
+			<PropertyList id={app.selected.id} entries={app.selected?.detail.ctx} />
+		{:else if app.selected?.type === 'block' || app.selected?.type === 'iteration'}
 			<h2>State</h2>
-			<PropertyList readonly id={$selected.id} entries={$selected.detail.ctx} />
-		{:else if $selected?.type === 'element'}
+			<PropertyList readonly id={app.selected.id} entries={app.selected.detail.ctx} />
+		{:else if app.selected?.type === 'element'}
 			<h2>Attributes</h2>
-			<PropertyList readonly id={$selected.id} entries={$selected.detail.attributes} />
+			<PropertyList readonly id={app.selected.id} entries={app.selected.detail.attributes} />
 
 			<Divider type="horizontal" />
 
 			<h2>Events</h2>
-			<PropertyList id={$selected.id} entries={events} />
+			<PropertyList id={app.selected.id} entries={events} />
 		{/if}
 	</Resizable>
 {:else}

@@ -2,23 +2,28 @@
 	import Indexer from '../components/Indexer.svelte';
 	import Ellipsis from './Ellipsis.svelte';
 
-	export let tagName: string;
-	export let expanded: boolean;
+	interface Props {
+		tagName: string;
+		expanded: boolean;
+		children: import('svelte').Snippet;
+	}
+
+	let { tagName, expanded, children }: Props = $props();
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class:expanded class="expandable tag-open tag-name" on:dblclick={() => (expanded = !expanded)}>
-	<Indexer text={`<${tagName}>`} color="#c586c0" />
+<div class:expanded class="expandable tag-open tag-name" ondblclick={() => (expanded = !expanded)}>
+	<Indexer text="<{tagName}>" color="#c586c0" />
 
 	{#if !expanded}
-		<Ellipsis on:click={() => (expanded = true)} />
-		<Indexer text={`</${tagName}>`} color="#c586c0" />
+		<Ellipsis onclick={() => (expanded = true)} />
+		<Indexer text="</{tagName}>" color="#c586c0" />
 	{/if}
 </div>
 {#if expanded}
-	<slot />
+	{@render children()}
 
 	<div>
-		<Indexer text={`</${tagName}>`} color="#c586c0" />
+		<Indexer text="</{tagName}>" color="#c586c0" />
 	</div>
 {/if}

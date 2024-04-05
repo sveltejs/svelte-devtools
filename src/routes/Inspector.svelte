@@ -1,21 +1,16 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
-	import { background } from '$lib/runtime';
-	import { selected } from '$lib/store';
-
-	let active = false;
-
-	function click() {
-		active = !active;
-		background.send('bridge::ext/inspect', active ? 'start' : 'stop');
-	}
-
-	$: if (active && $selected) {
-		$selected.dom?.scrollIntoView({ block: 'center' });
-	}
+	import { background } from '$lib/runtime.svelte';
+	import { app } from '$lib/state.svelte';
 </script>
 
-<Button on:click={click} {active}>
+<Button
+	active={app.inspecting}
+	onclick={() => {
+		app.inspecting = !app.inspecting;
+		background.send('bridge::ext/inspect', app.inspecting ? 'start' : 'stop');
+	}}
+>
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
 		<path
 			d="M3 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2.6a1 1 0 1 1 0 2H3a3 3 0 0 1-3-3V4a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v2.6a1 1 0 1 1-2 0V4a1 1 0 0 0-1-1H3z"

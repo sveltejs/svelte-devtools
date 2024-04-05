@@ -1,19 +1,22 @@
 <script lang="ts">
 	import Expandable from './Expandable.svelte';
 
-	export let entries: Array<{ key: string; value: any }> = [];
-	export let id: number;
-	export let readonly = false;
+	interface Props {
+		id: string;
+		entries?: Array<{ key: string; value: any }>;
+		readonly?: boolean;
+	}
+
+	let { id, entries = [], readonly = false }: Props = $props();
 
 	const errors: Record<string, string | undefined> = {};
 	function change(key: string, value: any) {
 		chrome.devtools.inspectedWindow.eval(
-			`__svelte_devtools_inject_state(${id}, '${key}', ${value})`,
+			`window['#SvelteDevTools'].inject("${id}", "${key}", ${value})`,
 			(_, error) => {
-				errors[key] =
-					error && error.isException
-						? error.value.substring(0, error.value.indexOf('\n'))
-						: undefined;
+				errors[key] = error?.isException
+					? error.value.slice(0, error.value.indexOf('\n'))
+					: undefined;
 			},
 		);
 	}
@@ -27,7 +30,7 @@
 				{key}
 				{value}
 				error={errors[key]}
-				on:change={(e) => change(key, e.detail)}
+				onchange={(updated) => change(key, updated)}
 			/>
 		{/each}
 	</ul>

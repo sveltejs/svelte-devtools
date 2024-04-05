@@ -1,27 +1,26 @@
 <script lang="ts">
-	import { selected, hovered, visibility } from '$lib/store';
+	import { app, visibility } from '$lib/state.svelte';
 
-	function trail(node: typeof $selected) {
+	const breadcrumbs = $derived.by(() => {
 		const ancestors = [];
+		let node = app.selected;
 		while (node && node.tagName) {
 			ancestors.push(node);
 			node = node.parent;
 		}
 		return ancestors.reverse();
-	}
-
-	$: breadcrumbs = trail($selected);
+	});
 </script>
 
 {#if breadcrumbs.length}
 	<ul>
 		{#each breadcrumbs as node}
-			{#if $visibility[node.type]}
+			{#if visibility[node.type]}
 				<button
-					class:selected={node.id === $selected?.id}
-					on:click={() => selected.set(node)}
-					on:focus={() => hovered.set(node)}
-					on:mouseover={() => hovered.set(node)}
+					class:selected={node.id === app.selected?.id}
+					onclick={() => (app.selected = node)}
+					onfocus={() => (app.hovered = node)}
+					onmouseover={() => (app.hovered = node)}
 				>
 					{node.tagName}
 				</button>
