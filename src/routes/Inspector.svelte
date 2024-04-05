@@ -2,21 +2,13 @@
 	import Button from '$lib/components/Button.svelte';
 	import { background } from '$lib/runtime.svelte';
 	import { app } from '$lib/state.svelte';
-
-	let active = $state(false);
-
-	$effect(() => {
-		if (active && app.selected) {
-			app.selected.dom?.scrollIntoView({ block: 'center' });
-		}
-	});
 </script>
 
 <Button
-	{active}
+	active={app.inspecting}
 	onclick={() => {
-		active = !active;
-		background.send('bridge::ext/inspect', active ? 'start' : 'stop');
+		app.inspecting = !app.inspecting;
+		background.send('bridge::ext/inspect', app.inspecting ? 'start' : 'stop');
 	}}
 >
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
