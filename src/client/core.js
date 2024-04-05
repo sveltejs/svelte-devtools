@@ -1,7 +1,7 @@
 import { highlight } from './highlight.js';
-import { addListener } from './listener.js';
 import { send } from './runtime.js';
-import { nodes } from './svelte-4.js';
+import { index as v4 } from './svelte-4.js';
+import { serialize } from './utils.js';
 
 // @ts-ignore - for the app to call with `eval`
 window['#SvelteDevTools'] = {
@@ -11,7 +11,7 @@ window['#SvelteDevTools'] = {
 	 * @param {any} value
 	 */
 	inject(id, key, value) {
-		const { detail: component } = nodes.map.get(id) || {};
+		const { detail: component } = v4.map.get(id) || {};
 		component && component.$inject_state({ [key]: value });
 	},
 };
@@ -27,9 +27,10 @@ const previous = {
 
 	clear() {
 		if (this.target) {
-			this.target.style.cursor = this.style.cursor;
-			this.target.style.background = this.style.background;
-			this.target.style.outline = this.style.outline;
+			for (const key in this.style) {
+				// @ts-expect-error - trust me TS
+				this.target.style[key] = this.style[key];
+			}
 		}
 		this.target = null;
 	},
@@ -57,7 +58,7 @@ const inspect = {
 	click(event) {
 		event.preventDefault();
 		document.removeEventListener('mousemove', inspect.handle, true);
-		const node = nodes.map.get(/** @type {Node} */ (event.target));
+		const node = v4.map.get(/** @type {Node} */ (event.target));
 		if (node) send('bridge::ext/inspect', { node: serialize(node) });
 		previous.clear();
 	},
@@ -68,11 +69,11 @@ window.addEventListener('message', ({ data, source }) => {
 	if (source !== window || data?.source !== 'svelte-devtools') return;
 
 	if (data.type === 'bridge::ext/select') {
-		const node = nodes.map.get(data.payload);
+		const node = v4.map.get(data.payload);
 		// @ts-expect-error - saved for `devtools.inspect()`
 		if (node) window.$n = node.detail;
 	} else if (data.type === 'bridge::ext/highlight') {
-		const node = nodes.map.get(data.payload);
+		const node = v4.map.get(data.payload);
 		return highlight(node);
 	} else if (data.type === 'bridge::ext/inspect') {
 		switch (data.payload) {
@@ -91,124 +92,4 @@ window.addEventListener('message', ({ data, source }) => {
 			}
 		}
 	}
-});
-
-/**
- * @param {unknown} value
- * @returns {any}
- */
-function clone(value, seen = new Map()) {
-	switch (typeof value) {
-		case 'function':
-			return { __is: 'function', source: value.toString(), name: value.name };
-		case 'symbol':
-			return { __is: 'symbol', name: value.toString() };
-		case 'object': {
-			if (value === window || value === null) return null;
-			if (Array.isArray(value)) return value.map((o) => clone(o, seen));
-			if (seen.has(value)) return {};
-
-			/** @type {Record<string, any>} */
-			const o = {};
-			seen.set(value, o);
-			for (const [key, v] of Object.entries(value)) {
-				o[key] = clone(v, seen);
-			}
-			return o;
-		}
-		default:
-			return value;
-	}
-}
-
-/** @param {SvelteBlockDetail} node  */
-function serialize(node) {
-	const res = /** @type {SvelteBlockDetail} */ ({
-		id: node.id,
-		type: node.type,
-		tagName: node.tagName,
-		detail: {},
-	});
-	switch (node.type) {
-		case 'component': {
-			const { $$: internal = {} } = node.detail;
-			const ctx = clone(node.detail.$capture_state?.() || {});
-			const bindings = Object.values(internal.bound || {}).map(
-				/** @param {Function} f */ (f) => f.name,
-			);
-			const props = Object.keys(internal.props || {}).flatMap((key) => {
-				const value = ctx[key];
-				delete ctx[key]; // deduplicate for ctx
-				if (value === undefined) return [];
-
-				const bounded = bindings.some((f) => f.includes(key));
-				return { key, value, bounded };
-			});
-
-			res.detail = {
-				attributes: props,
-				listeners: Object.entries(internal.callbacks || {}).flatMap(([event, value]) =>
-					value.map(/** @param {Function} f */ (f) => ({ event, handler: f.toString() })),
-				),
-				ctx: Object.entries(ctx).map(([key, value]) => ({ key, value })),
-			};
-			break;
-		}
-
-		case 'element': {
-			/** @type {Attr[]} from {NamedNodeMap} */
-			const attributes = Array.from(node.detail.attributes || []);
-
-			/** @type {NonNullable<SvelteListenerDetail['node']['__listeners']>} */
-			const listeners = node.detail.__listeners || [];
-
-			res.detail = {
-				attributes: attributes.map(({ name: key, value }) => ({ key, value })),
-				listeners: listeners.map((o) => ({ ...o, handler: o.handler.toString() })),
-			};
-			break;
-		}
-
-		case 'text': {
-			res.detail = {
-				nodeValue: node.detail.nodeValue,
-			};
-			break;
-		}
-
-		case 'iteration':
-		case 'block': {
-			const { ctx, source } = node.detail;
-			const cloned = Object.entries(clone(ctx));
-			res.detail = {
-				ctx: cloned.map(([key, value]) => ({ key, value })),
-				source: source.slice(source.indexOf('{'), source.indexOf('}') + 1),
-			};
-			break;
-		}
-	}
-
-	return res;
-}
-
-addListener({
-	add(node, anchor) {
-		send('bridge::courier/node->add', {
-			node: serialize(node),
-			target: node.parent?.id,
-			anchor: anchor?.id,
-		});
-	},
-
-	remove(node) {
-		send('bridge::courier/node->remove', { node: serialize(node) });
-	},
-
-	update(node) {
-		send('bridge::courier/node->update', { node: serialize(node) });
-	},
-
-	profile(/** frame */) {
-		// send('bridge::courier/profile->update', { frame });
-	},
 });
