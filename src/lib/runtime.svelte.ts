@@ -1,13 +1,20 @@
 import { type DebugNode, app } from './state.svelte';
 
 const tabId = chrome.devtools.inspectedWindow.tabId;
-const port = chrome.runtime.connect({ name: `${tabId}` });
+let port = chrome.runtime.connect({ name: `${tabId}` });
 
 port.postMessage({ source: 'svelte-devtools', tabId, type: 'bypass::ext/init' });
 
 export const background = {
 	send(type: `bridge::${'ext' | 'page'}/${string}` | 'bypass::ext/page->refresh', payload?: any) {
-		port.postMessage({ source: 'svelte-devtools', tabId, type, payload });
+		try {
+			port.postMessage({ source: 'svelte-devtools', tabId, type, payload });
+		} catch {
+			// https://developer.chrome.com/docs/extensions/develop/concepts/messaging#port-lifetime
+			// chrome aggressively disconnects the port, not much we can do other than to reconnect
+			port = chrome.runtime.connect({ name: `${tabId}` });
+			background.send(type, payload); // retry immediately
+		}
 	},
 };
 
