@@ -68,7 +68,7 @@ export function serialize(node) {
 			const listeners = node.detail.__listeners || [];
 
 			res.detail = {
-				attributes: attributes.map(({ name: key, value }) => ({ key, value })),
+				attributes: attributes.map(({ name: key, value }) => ({ key, value, readonly: true })),
 				listeners: listeners.map((o) => ({ ...o, handler: o.handler.toString() })),
 			};
 			break;
@@ -86,7 +86,7 @@ export function serialize(node) {
 			const { ctx, source } = node.detail;
 			const cloned = Object.entries(clone(ctx));
 			res.detail = {
-				ctx: cloned.map(([key, value]) => ({ key, value })),
+				ctx: cloned.map(([key, value]) => ({ key, value, readonly: true })),
 				source: source.slice(source.indexOf('{'), source.indexOf('}') + 1),
 			};
 			break;
