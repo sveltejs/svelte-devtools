@@ -7,12 +7,25 @@ import { serialize } from './utils.js';
 window['#SvelteDevTools'] = {
 	/**
 	 * @param {string} id
-	 * @param {string} key
+	 * @param {string[]} keys
 	 * @param {any} value
 	 */
-	inject(id, key, value) {
+	inject(id, keys, value) {
 		const { detail: component } = v4.map.get(id) || {};
-		component && component.$inject_state({ [key]: value });
+		if (component) {
+			const [prop, ...rest] = keys;
+			const original = component.$capture_state()[prop];
+			if (typeof original === 'object') {
+				let ref = original;
+				for (let i = 0; i < rest.length - 1; i += 1) {
+					ref = ref[rest[i]];
+				}
+				ref[rest[rest.length - 1]] = value;
+				component.$inject_state({ [prop]: original });
+			} else {
+				component.$inject_state({ [prop]: value });
+			}
+		}
 	},
 };
 

@@ -146,28 +146,28 @@
 
 		{#if app.selected?.type === 'component'}
 			<h2>Props</h2>
-			<PropertyList id={app.selected.id} entries={app.selected?.detail.attributes} />
+			<PropertyList entries={app.selected?.detail.attributes} />
 
 			<Divider type="horizontal" />
 
 			<h2>Events</h2>
-			<PropertyList id={app.selected.id} entries={events} />
+			<PropertyList entries={events} />
 
 			<Divider type="horizontal" />
 
 			<h2>State</h2>
-			<PropertyList id={app.selected.id} entries={app.selected?.detail.ctx} />
+			<PropertyList entries={app.selected?.detail.ctx} />
 		{:else if app.selected?.type === 'block' || app.selected?.type === 'iteration'}
 			<h2>State</h2>
-			<PropertyList readonly id={app.selected.id} entries={app.selected.detail.ctx} />
+			<PropertyList entries={app.selected.detail.ctx} />
 		{:else if app.selected?.type === 'element'}
 			<h2>Attributes</h2>
-			<PropertyList readonly id={app.selected.id} entries={app.selected.detail.attributes} />
+			<PropertyList entries={app.selected.detail.attributes} />
 
 			<Divider type="horizontal" />
 
 			<h2>Events</h2>
-			<PropertyList id={app.selected.id} entries={events} />
+			<PropertyList entries={events} />
 		{/if}
 	</Resizable>
 {:else}
