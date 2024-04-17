@@ -1,9 +1,5 @@
 node_modules
-/build
 
 .DS_Store
 .cache
 .env
-
-# generated files
-static/courier.js

@@ -6,13 +6,11 @@
 	import Resizable from '$lib/components/Resizable.svelte';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 
-	import Breadcrumbs from './Breadcrumbs.svelte';
-	import ConnectMessage from './ConnectMessage.svelte';
-	import Inspector from './Inspector.svelte';
-	// import ProfileButton from './ProfileButton.svelte';
-	// import Profiler from './Profiler.svelte';
-	import SearchBox from './SearchBox.svelte';
-	import VisibilitySelection from './VisibilitySelection.svelte';
+	import Breadcrumbs from './routes/Breadcrumbs.svelte';
+	import ConnectMessage from './routes/ConnectMessage.svelte';
+	import Inspector from './routes/Inspector.svelte';
+	import SearchBox from './routes/SearchBox.svelte';
+	import VisibilitySelection from './routes/VisibilitySelection.svelte';
 
 	import { background } from '$lib/runtime.svelte';
 	import { app, visibility } from '$lib/state.svelte';
