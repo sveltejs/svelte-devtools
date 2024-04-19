@@ -18,7 +18,7 @@ jobs:
           cache: pnpm
 
       - run: pnpm install
-      - run: pnpm build
+      - run: cd workspace/extension && pnpm build
       - run: cd workspace/extension/build && zip -r svelte-devtools *
 
       - uses: actions/upload-artifact@v3
