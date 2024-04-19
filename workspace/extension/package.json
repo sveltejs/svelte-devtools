@@ -14,11 +14,7 @@
 		"check:svelte": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"devDependencies": {
-		"@sveltejs/vite-plugin-svelte": "^3.1.0",
 		"@types/chrome": "^0.0.266",
-		"rollup": "^4.14.3",
-		"svelte": "5.0.0-next.90",
-		"svelte-check": "^3.6.9",
-		"vite": "^5.2.9"
+		"rollup": "^4.14.3"
 	}
 }
