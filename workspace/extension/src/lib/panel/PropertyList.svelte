@@ -72,7 +72,7 @@
 					<span class="object">Array [{value.length || ''}]</span>
 
 					{#if value.length && expanded}
-						<PropertyList entries={value} keys={[key]} />
+						<PropertyList entries={value} keys={[...keys, key]} />
 					{/if}
 				{:else if type === 'object'}
 					{#if value.__is === 'function'}
@@ -84,7 +84,7 @@
 						<span class="object">Object &lbrace;&hellip;&rbrace;</span>
 
 						{#if expanded}
-							<PropertyList entries={Object.values(value)} keys={[key]} />
+							<PropertyList entries={Object.values(value)} keys={[...keys, key]} />
 						{/if}
 					{:else}
 						<span class="object">Object &lbrace; &rbrace;</span>
