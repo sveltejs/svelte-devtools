@@ -1,10 +1,10 @@
-import { listeners } from './listener.js';
-// import { profiler } from './profiler.js';
+import { send } from './runtime.js';
+import { serialize } from './utils.js';
 
 /** @type {undefined | SvelteBlockDetail} */
 let current_block;
 
-export const nodes = {
+export const index = {
 	/** @type {Map<string | object | Node, SvelteBlockDetail>} */
 	map: new Map(),
 
@@ -21,12 +21,23 @@ export const nodes = {
 
 		const sibling = anchor && this.map.get(anchor);
 		if (target) {
-			const index = target.children.findIndex((n) => n === sibling);
-			if (index === -1) target.children.push(node);
-			else target.children.splice(index, 0, node);
+			const idx = target.children.findIndex((n) => n === sibling);
+			if (idx === -1) target.children.push(node);
+			else target.children.splice(idx, 0, node);
 		}
 
-		listeners.add(node, sibling);
+		send('bridge::courier/node->add', {
+			node: serialize(node),
+			target: node.parent?.id,
+			anchor: sibling?.id,
+		});
+	},
+
+	/** @param {{ node: SvelteBlockDetail; target?: Node; anchor?: Node }} opts */
+	update({ node }) {
+		send('bridge::courier/node->update', {
+			node: serialize(node),
+		});
 	},
 
 	/** @param {SvelteBlockDetail} node */
@@ -41,24 +52,26 @@ export const nodes = {
 			node.parent = undefined;
 		}
 
-		listeners.remove(node);
+		send('bridge::courier/node->remove', {
+			node: serialize(node),
+		});
 	},
 };
 
 document.addEventListener('SvelteRegisterComponent', ({ detail }) => {
 	const { component, tagName } = detail;
 
-	const node = nodes.map.get(component.$$.fragment);
+	const node = index.map.get(component.$$.fragment);
 	if (node) {
-		nodes.map.delete(component.$$.fragment);
+		index.map.delete(component.$$.fragment);
 
 		node.detail = component;
 		node.tagName = tagName;
 
-		listeners.update(node);
+		index.update({ node });
 	} else {
 		// @ts-expect-error - component special case
-		nodes.map.set(component.$$.fragment, {
+		index.map.set(component.$$.fragment, {
 			type: 'component',
 			detail: component,
 			tagName,
@@ -98,27 +111,27 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 					break;
 
 				case 'component': {
-					const component = nodes.map.get(block);
+					const component = index.map.get(block);
 					if (component) {
-						nodes.map.delete(block);
+						index.map.delete(block);
 						Object.assign(node, component);
 					} else {
 						node.type = 'component';
 						node.tagName = 'Unknown';
 						node.detail = {};
-						nodes.map.set(block, node);
+						index.map.set(block, node);
 					}
 
 					Promise.resolve().then(() => {
 						const invalidate = node.detail.$$?.bound || {};
-						Object.keys(invalidate).length && listeners.update(node);
+						Object.keys(invalidate).length && index.update({ node });
 					});
 					break;
 				}
 			}
 
 			if (type === 'each') {
-				let group = parent && nodes.map.get(parent.id + id);
+				let group = parent && index.map.get(parent.id + id);
 				if (!group) {
 					// @ts-expect-error - each block fallback
 					group = /** @type {SvelteBlockDetail} */ ({
@@ -133,22 +146,21 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 							source: detail.source,
 						},
 					});
-					parent && nodes.map.set(parent.id + id, group);
-					nodes.add({ node: group, target, anchor });
+					parent && index.map.set(parent.id + id, group);
+					index.add({ node: group, target, anchor });
 				}
 
 				node.container = group;
 				node.type = 'iteration';
 
 				// @ts-expect-error - overloaded nodes
-				nodes.add({ node, target: group, anchor });
+				index.add({ node, target: group, anchor });
 			} else {
-				nodes.add({ node, target, anchor });
+				index.add({ node, target, anchor });
 			}
 
 			current_block = node;
 
-			// profiler.update(node, 'mount', original, target, anchor);
 			original(target, anchor);
 
 			current_block = parent;
@@ -159,10 +171,9 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 		const original = block.p;
 		block.p = (changed, ctx) => {
 			const parent = current_block;
-			current_block = nodes.map.get(current_node_id);
-			current_block && listeners.update(current_block);
+			current_block = index.map.get(current_node_id);
+			current_block && index.update({ node: current_block });
 
-			// profiler.update(current_block, 'patch', original, changed, ctx);
 			original(changed, ctx);
 
 			current_block = parent;
@@ -172,15 +183,14 @@ document.addEventListener('SvelteRegisterBlock', ({ detail }) => {
 	if (block.d) {
 		const original = block.d;
 		block.d = (detaching) => {
-			const node = nodes.map.get(current_node_id);
+			const node = index.map.get(current_node_id);
 			if (node) {
 				if (node.tagName === 'await') {
 					last_promise = node.container;
 				}
-				nodes.remove(node);
+				index.remove(node);
 			}
 
-			// profiler.update(node, 'detach', original, detaching);
 			original(detaching);
 		};
 	}
@@ -198,7 +208,7 @@ document.addEventListener('SvelteDOMInsert', ({ detail }) => {
 					? 'text'
 					: 'anchor';
 
-		nodes.add({
+		index.add({
 			anchor,
 			target,
 			// @ts-expect-error - missing properties are irrelevant
@@ -213,14 +223,14 @@ document.addEventListener('SvelteDOMInsert', ({ detail }) => {
 		});
 
 		element.childNodes.forEach((child) => {
-			!nodes.map.has(child) && deep_insert({ node: child, target: element });
+			!index.map.has(child) && deep_insert({ node: child, target: element });
 		});
 	}
 });
 
 document.addEventListener('SvelteDOMRemove', ({ detail }) => {
-	const node = nodes.map.get(detail.node);
-	if (node) nodes.remove(node);
+	const node = index.map.get(detail.node);
+	if (node) index.remove(node);
 });
 
 document.addEventListener('SvelteDOMAddEventListener', ({ detail }) => {
@@ -238,29 +248,29 @@ document.addEventListener('SvelteDOMRemoveEventListener', ({ detail }) => {
 });
 
 document.addEventListener('SvelteDOMSetData', ({ detail }) => {
-	const node = nodes.map.get(detail.node);
+	const node = index.map.get(detail.node);
 	if (!node) return;
 	if (node.type === 'anchor') node.type = 'text';
-	listeners.update(node);
+	index.update({ node });
 });
 
 document.addEventListener('SvelteDOMSetProperty', ({ detail }) => {
-	const node = nodes.map.get(detail.node);
+	const node = index.map.get(detail.node);
 	if (!node) return;
 	if (node.type === 'anchor') node.type = 'text';
-	listeners.update(node);
+	index.update({ node });
 });
 
 document.addEventListener('SvelteDOMSetAttribute', ({ detail }) => {
-	const node = nodes.map.get(detail.node);
+	const node = index.map.get(detail.node);
 	if (!node) return;
 	if (node.type === 'anchor') node.type = 'text';
-	listeners.update(node);
+	index.update({ node });
 });
 
 document.addEventListener('SvelteDOMRemoveAttribute', ({ detail }) => {
-	const node = nodes.map.get(detail.node);
+	const node = index.map.get(detail.node);
 	if (!node) return;
 	if (node.type === 'anchor') node.type = 'text';
-	listeners.update(node);
+	index.update({ node });
 });
