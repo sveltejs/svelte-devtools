@@ -72,7 +72,9 @@
 					<span class="object">Array [{value.length || ''}]</span>
 
 					{#if value.length && expanded}
-						<PropertyList entries={value} keys={[...keys, key]} />
+						{@const entries = value.map((v, i) => ({ key: `${i}`, value: v, readonly }))}
+
+						<PropertyList {entries} keys={[...keys, key]} />
 					{/if}
 				{:else if type === 'object'}
 					{#if value.__is === 'function'}

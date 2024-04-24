@@ -10,9 +10,7 @@ function clone(value, seen = new Map()) {
 			return { __is: 'symbol', name: value.toString() };
 		case 'object': {
 			if (value === window || value === null) return null;
-			if (Array.isArray(value)) {
-				return value.map((o, i) => ({ key: i, value: clone(o, seen) }));
-			}
+			if (Array.isArray(value)) return value.map((o) => clone(o, seen));
 			if (seen.has(value)) return {};
 
 			/** @type {Record<string, any>} */
@@ -58,7 +56,7 @@ export function serialize(node) {
 				listeners: Object.entries(internal.callbacks || {}).flatMap(([event, value]) =>
 					value.map(/** @param {Function} f */ (f) => ({ event, handler: f.toString() })),
 				),
-				ctx: Object.entries(clone(captured)).map(([key, value]) => ({ key, value })),
+				ctx: Object.entries(captured).map(([key, v]) => ({ key, value: clone(v) })),
 			};
 			break;
 		}
