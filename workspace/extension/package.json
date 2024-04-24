@@ -1,0 +1,20 @@
+{
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "pnpm run --parallel \"/^dev:.*/\"",
+		"dev:app": "vite build -wd --minify=false --sourcemap=inline",
+		"dev:scripts": "rollup -cw",
+		"build": "rollup -c && vite build",
+		"bundle:zip": "cd build && zip -r svelte-devtools.zip *",
+		"bundle:tar": "cd build && tar -czf svelte-devtools.tar.gz *",
+		"format": "prettier -w .",
+		"check": "pnpm run --parallel \"/^check:.*/\"",
+		"check:style": "prettier -c .",
+		"check:svelte": "svelte-check --tsconfig ./tsconfig.json"
+	},
+	"devDependencies": {
+		"@types/chrome": "^0.0.266",
+		"rollup": "^4.14.3"
+	}
+}
