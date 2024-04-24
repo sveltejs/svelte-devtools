@@ -10,14 +10,17 @@ function clone(value, seen = new Map()) {
 			return { __is: 'symbol', name: value.toString() };
 		case 'object': {
 			if (value === window || value === null) return null;
-			if (Array.isArray(value)) return value.map((o) => clone(o, seen));
+			if (Array.isArray(value)) {
+				return value.map((o, i) => ({ key: i, value: clone(o, seen) }));
+			}
 			if (seen.has(value)) return {};
 
 			/** @type {Record<string, any>} */
 			const o = {};
 			seen.set(value, o);
 			for (const [key, v] of Object.entries(value)) {
-				o[key] = clone(v, seen);
+				const readonly = Object.getOwnPropertyDescriptor(value, key)?.get !== undefined;
+				o[key] = { key, value: clone(v, seen), readonly };
 			}
 			return o;
 		}
@@ -37,13 +40,13 @@ export function serialize(node) {
 	switch (node.type) {
 		case 'component': {
 			const { $$: internal = {} } = node.detail;
-			const ctx = clone(node.detail.$capture_state?.() || {});
+			const captured = node.detail.$capture_state?.() || {};
 			const bindings = Object.values(internal.bound || {}).map(
 				/** @param {Function} f */ (f) => f.name,
 			);
 			const props = Object.keys(internal.props || {}).flatMap((key) => {
-				const value = ctx[key];
-				delete ctx[key]; // deduplicate for ctx
+				const value = clone(captured[key]);
+				delete captured[key]; // deduplicate for ctx
 				if (value === undefined) return [];
 
 				const bounded = bindings.some((f) => f.includes(key));
@@ -55,7 +58,7 @@ export function serialize(node) {
 				listeners: Object.entries(internal.callbacks || {}).flatMap(([event, value]) =>
 					value.map(/** @param {Function} f */ (f) => ({ event, handler: f.toString() })),
 				),
-				ctx: Object.entries(ctx).map(([key, value]) => ({ key, value })),
+				ctx: Object.entries(clone(captured)).map(([key, value]) => ({ key, value })),
 			};
 			break;
 		}
