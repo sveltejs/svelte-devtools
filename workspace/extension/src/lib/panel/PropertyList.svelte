@@ -74,7 +74,7 @@
 					{#if value.length && expanded}
 						{@const entries = value.map((v, i) => ({ key: `${i}`, value: v, readonly }))}
 
-						<PropertyList {entries} keys={[key]} />
+						<PropertyList {entries} keys={[...keys, key]} />
 					{/if}
 				{:else if type === 'object'}
 					{#if value.__is === 'function'}
@@ -90,7 +90,7 @@
 								return { key, value: v, readonly };
 							})}
 
-							<PropertyList {entries} keys={[key]} />
+							<PropertyList {entries} keys={[...keys, key]} />
 						{/if}
 					{:else}
 						<span class="object">Object &lbrace; &rbrace;</span>
