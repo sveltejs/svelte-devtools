@@ -45,12 +45,19 @@
 
 {#if editing}
 	<input
+		autofocus
 		value={value === null ? 'null' : value === undefined ? 'undefined' : value}
 		onblur={({ target }) => {
 			// @ts-expect-error - target and value exists
 			update(target.value);
 		}}
-		onkeydown={({ key, target }) => {
+		onkeydown={(event) => {
+			const { key, target } = event;
+			if (key === 'Escape') {
+				event.preventDefault();
+				editing = false;
+				return;
+			}
 			if (key !== 'Enter') return;
 			// @ts-expect-error - target and value exists
 			update(target.value);
