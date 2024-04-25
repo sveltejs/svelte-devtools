@@ -86,11 +86,7 @@
 						<span class="object">Object &lbrace;&hellip;&rbrace;</span>
 
 						{#if expanded[key]}
-							{@const entries = Object.entries(value).map(([key, v]) => {
-								return { key, value: v, readonly };
-							})}
-
-							<PropertyList {entries} {keys} />
+							<PropertyList entries={Object.values(value)} {keys} />
 						{/if}
 					{:else}
 						<span class="object">Object &lbrace; &rbrace;</span>
