@@ -14,7 +14,7 @@
 		<p style:font-size="1rem">Not working? Did you...</p>
 		<ul>
 			<li>Build with dev mode enabled?</li>
-			<li>Use Svelte version 4.0.0 or above?</li>
+			<li>Use Svelte version ^4.0.0?</li>
 		</ul>
 	</footer>
 </main>
