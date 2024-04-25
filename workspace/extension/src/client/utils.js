@@ -16,8 +16,11 @@ function clone(value, seen = new Map()) {
 			/** @type {Record<string, any>} */
 			const o = {};
 			seen.set(value, o);
+
+			const descriptors = Object.getOwnPropertyDescriptors(value);
 			for (const [key, v] of Object.entries(value)) {
-				const readonly = Object.getOwnPropertyDescriptor(value, key)?.get !== undefined;
+				const { get, writable } = descriptors[key];
+				const readonly = !writable || get !== undefined;
 				o[key] = { key, value: clone(v, seen), readonly };
 			}
 			return o;

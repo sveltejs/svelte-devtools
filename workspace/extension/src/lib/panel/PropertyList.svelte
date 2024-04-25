@@ -85,7 +85,7 @@
 					{:else if Object.keys(value).length}
 						<span class="object">Object &lbrace;&hellip;&rbrace;</span>
 
-						{#if expanded}
+						{#if expanded[key]}
 							<PropertyList entries={Object.values(value)} {keys} />
 						{/if}
 					{:else}
