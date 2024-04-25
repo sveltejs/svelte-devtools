@@ -144,7 +144,7 @@
 
 		{#if app.selected?.type === 'component'}
 			<h2>Props</h2>
-			<PropertyList entries={app.selected?.detail.attributes} />
+			<PropertyList entries={app.selected.detail.attributes} />
 
 			<Divider type="horizontal" />
 
@@ -154,7 +154,7 @@
 			<Divider type="horizontal" />
 
 			<h2>State</h2>
-			<PropertyList entries={app.selected?.detail.ctx} />
+			<PropertyList entries={app.selected.detail.ctx} />
 		{:else if app.selected?.type === 'block' || app.selected?.type === 'iteration'}
 			<h2>State</h2>
 			<PropertyList entries={app.selected.detail.ctx} />

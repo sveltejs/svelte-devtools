@@ -14,24 +14,24 @@
 		keys?: string[];
 	}
 
-	const { entries = [], keys = [] }: Props = $props();
+	const { entries = [], keys: parents = [] }: Props = $props();
 
-	let expanded = $state(false);
+	const expanded = $state<{ [k: string]: boolean }>({});
 </script>
 
 {#if entries.length}
 	<ul>
 		{#each entries as { key, value, readonly = false } (key)}
-			{@const id = `${app.selected?.id}+${keys.join('.')}.${key}`}
+			{@const keys = [...parents, key]}
 			{@const type = typeof value}
 
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 			<li
-				data-tooltip={errors[id] || null}
+				data-tooltip={errors[`${app.selected?.id}+${keys.join('.')}`] || null}
 				style:--indent="-3px"
 				style:--y-pad="0.125rem"
-				class:expanded
+				class:expanded={expanded[key]}
 				class:expandable={value != null &&
 					value === value &&
 					type === 'object' &&
@@ -41,7 +41,7 @@
 						Object.keys(value).length)}
 				onclick={(event) => {
 					event.stopPropagation();
-					expanded = !expanded;
+					expanded[key] = !expanded[key];
 				}}
 			>
 				<span>{key}:</span>
@@ -52,41 +52,41 @@
 						{readonly}
 						type="string"
 						{value}
-						onchange={(updated) => inject([...keys, key], updated)}
+						onchange={(updated) => inject(keys, updated)}
 					/>
 				{:else if value == null || value !== value}
 					<Editable
 						{readonly}
 						type="null"
 						value={value === null ? 'null' : 'undefined'}
-						onchange={(updated) => inject([...keys, key], updated)}
+						onchange={(updated) => inject(keys, updated)}
 					/>
 				{:else if type === 'number' || type === 'boolean'}
 					<Editable
 						{readonly}
 						type="number"
 						{value}
-						onchange={(updated) => inject([...keys, key], updated)}
+						onchange={(updated) => inject(keys, updated)}
 					/>
 				{:else if Array.isArray(value)}
 					<span class="object">Array [{value.length || ''}]</span>
 
-					{#if value.length && expanded}
+					{#if value.length && expanded[key]}
 						{@const entries = value.map((v, i) => ({ key: `${i}`, value: v, readonly }))}
 
-						<PropertyList {entries} keys={[...keys, key]} />
+						<PropertyList {entries} {keys} />
 					{/if}
 				{:else if type === 'object'}
 					{#if value.__is === 'function'}
 						<span class="function">function {value.name || ''}()</span>
-						{#if expanded}<pre style:width="100%">{value.source}</pre>{/if}
+						{#if expanded[key]}<pre style:width="100%">{value.source}</pre>{/if}
 					{:else if value.__is === 'symbol'}
 						<span class="symbol">{value.name || 'Symbol()'}</span>
 					{:else if Object.keys(value).length}
 						<span class="object">Object &lbrace;&hellip;&rbrace;</span>
 
 						{#if expanded}
-							<PropertyList entries={Object.values(value)} keys={[...keys, key]} />
+							<PropertyList entries={Object.values(value)} {keys} />
 						{/if}
 					{:else}
 						<span class="object">Object &lbrace; &rbrace;</span>
