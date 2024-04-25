@@ -1,0 +1,16 @@
+{
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "svelte-kit sync && vite build",
+		"format": "prettier --write .",
+		"check": "pnpm run \"/^check:.*/\"",
+		"check:style": "prettier --check .",
+		"check:svelte": "svelte-kit sync && svelte-check src --tsconfig ./tsconfig.json"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-vercel": "^5.3.0",
+		"@sveltejs/kit": "^2.5.6"
+	}
+}
