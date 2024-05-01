@@ -29,7 +29,9 @@ Clone this repository, setup and run the build script
 git clone https://github.com/sveltejs/svelte-devtools.git
 cd svelte-devtools
 pnpm install
-pnpm build
+
+cd workspace/extension
+pnpm dev
 ```
 
 This will build the codebase and output all the required files in the `build` directory. To load the extension for development, follow these steps:
