@@ -19,8 +19,8 @@
 />
 
 <aside class={axis} style="{axis === 'x' ? 'width' : 'height'}: {size}px">
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class="{axis} resize" onmousedown={() => (resizing = true)} />
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="{axis} resize" onmousedown={() => (resizing = true)}></div>
 
 	<div>{@render children()}</div>
 </aside>

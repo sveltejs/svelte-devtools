@@ -112,7 +112,6 @@
 			<SearchBox />
 			<Divider type="vertical" spacing="0.25rem" />
 
-			<!-- svelte-ignore missing-declaration -->
 			<Button
 				disabled={app.selected?.id === undefined || app.selected?.type !== 'element'}
 				onclick={() => chrome.devtools.inspectedWindow.eval('inspect($n).scrollIntoView()')}
@@ -125,7 +124,11 @@
 			</Button>
 		</Toolbar>
 
-		<ul bind:this={container} on:mousemove|self={reset} onmouseleave={reset}>
+		<ul
+			bind:this={container}
+			onmousemove={(event) => event.currentTarget === event.target && reset()}
+			onmouseleave={reset}
+		>
 			{#each app.root as node (node.id)}
 				<Node {node} />
 			{/each}

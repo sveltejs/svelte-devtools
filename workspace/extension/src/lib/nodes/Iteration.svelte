@@ -6,10 +6,10 @@
 		children: import('svelte').Snippet;
 	}
 
-	let { expanded, children }: Props = $props();
+	let { expanded = $bindable(), children }: Props = $props();
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="expandable" ondblclick={() => (expanded = !expanded)}>
 	<span>&#8618;</span>
 	{#if !expanded}
