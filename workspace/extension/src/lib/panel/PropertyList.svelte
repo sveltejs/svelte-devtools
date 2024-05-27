@@ -25,8 +25,7 @@
 			{@const keys = [...parents, key]}
 			{@const type = typeof value}
 
-			<!-- svelte-ignore a11y-click-events-have-key-events -->
-			<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+			<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
 			<li
 				data-tooltip={errors[`${app.selected?.id}+${keys.join('.')}`] || null}
 				style:--indent="-3px"

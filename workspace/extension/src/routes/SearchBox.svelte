@@ -53,10 +53,10 @@
 	{/if}
 
 	<Button disabled={!results.length} onclick={submit.next}>
-		<div class="next" />
+		<div class="next"></div>
 	</Button>
 	<Button disabled={!results.length} onclick={submit.prev}>
-		<div class="prev" />
+		<div class="prev"></div>
 	</Button>
 </form>
 

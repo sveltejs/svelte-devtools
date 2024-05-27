@@ -30,8 +30,7 @@
 {/snippet}
 
 {#if visibility[node.type]}
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+	<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
 	<li
 		bind:this={node.dom}
 		style:--indent="{depth * 12}px"

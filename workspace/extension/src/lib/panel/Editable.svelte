@@ -44,6 +44,7 @@
 </script>
 
 {#if editing}
+	<!-- svelte-ignore a11y_autofocus -->
 	<input
 		autofocus
 		value={value === null ? 'null' : value === undefined ? 'undefined' : value}
@@ -64,8 +65,7 @@
 		}}
 	/>
 {:else}
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 	<span class:readonly class={type} onclick={() => (editing = !readonly)}>
 		{type === 'string' ? `"${value}"` : `${value}`}
 	</span>
