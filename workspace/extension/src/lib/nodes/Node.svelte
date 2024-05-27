@@ -121,7 +121,7 @@
 
 	li[data-current] > :global(div:first-child),
 	li[data-current][data-hovered] > :global(div) {
-		background: rgb(0, 116, 232);
+		background: rgba(0, 116, 232, 0.2);
 	}
 	li[data-current] > :global(div:first-child:after) {
 		content: '== $n';
