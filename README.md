@@ -17,9 +17,11 @@ After installing you will see a new tab in Developer Tools. This tab displays a 
 
 ## Requirements
 
-The `svelte-devtools` extension requires your Svelte application to be compiled with the `dev` option set to `true`. If you're using [SvelteKit](https://kit.svelte.dev/), this is done automatically, outside of that you will need to set it manually.
+The `svelte-devtools` extension requires the following to be true:
 
-This extension officially supports Svelte version `^4.0.0`.
+- Chrome or Firefox version 121 or higher
+- Application running Svelte version `^4.0.0`
+- Application compiled with `dev: true` ([SvelteKit](https://kit.svelte.dev/) does this automatically for you)
 
 ## Development
 
