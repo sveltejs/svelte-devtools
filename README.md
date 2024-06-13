@@ -11,7 +11,7 @@ Svelte DevTools is a browser extension for the [Svelte](https://svelte.dev/) fra
 
 After installing you will see a new tab in Developer Tools. This tab displays a tree of Svelte components, HTMLx blocks, and DOM elements that were rendered on the page. By selecting one of the nodes in the tree, you can inspect and edit its current state in the panel to the right.
 
-> For Firefox users, you can grab the [`.zip` file of the latest version from the GitHub releases page](https://github.com/sveltejs/svelte-devtools/releases/latest) and load it as a temporary extension. Note that you may need to enable "Always Allow on localhost" in the extension settings.
+> For Firefox users, you can install the [`.xpi` file of the latest version from the GitHub releases page](https://github.com/sveltejs/svelte-devtools/releases/latest). Note that if you grab the `.zip` file, you will need to load it as a temporary extension and enable "Always Allow on localhost" in the extension settings.
 
 ![2.0.0 Screenshot](./.github/assets/screenshot-2.0.0.png '2.0.0 Screenshot')
 
