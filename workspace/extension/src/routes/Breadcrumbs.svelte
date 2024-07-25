@@ -48,15 +48,18 @@
 		background: var(--background);
 		color: var(--color);
 		font-size: inherit;
-	}
-	button:hover {
-		background: rgba(255, 255, 255, 0.1);
-	}
-	button.selected {
-		background: rgba(255, 255, 255, 0.05);
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.1);
+		}
+		&.selected {
+			background: rgba(255, 255, 255, 0.05);
+		}
 	}
 
-	:global(.dark) ul {
-		border-top-color: rgb(60, 60, 61);
+	:global(.dark) {
+		ul {
+			border-top-color: rgb(60, 60, 61);
+		}
 	}
 </style>

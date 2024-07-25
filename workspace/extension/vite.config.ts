@@ -7,6 +7,7 @@ export default defineConfig(() => {
 		plugins: [svelte()],
 
 		build: {
+			cssTarget: 'chrome111',
 			outDir: 'build',
 		},
 
