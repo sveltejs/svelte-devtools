@@ -52,10 +52,10 @@
 		color: white;
 		line-height: 2rem;
 		cursor: pointer;
-	}
 
-	button:hover {
-		opacity: 0.8;
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 
 	.mount {

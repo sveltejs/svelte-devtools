@@ -42,35 +42,39 @@
 		background-color: #ffffff;
 		font-size: 0.875rem;
 		text-align: left;
-	}
-	section::before {
-		content: '';
-		z-index: -1;
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 1rem;
-		height: 1rem;
-		background-color: inherit;
-		transform: translate(50%, -30%) rotate(45deg);
+
+		&::before {
+			content: '';
+			z-index: -1;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 1rem;
+			height: 1rem;
+			background-color: inherit;
+			transform: translate(50%, -30%) rotate(45deg);
+		}
 	}
 
 	label {
 		display: flex;
 		align-items: center;
 		padding: 0.25rem 0.5rem;
+
+		& > span {
+			margin-left: 0.5rem;
+			text-transform: capitalize;
+		}
 	}
 	input {
 		margin: 0;
 	}
-	label > span {
-		margin-left: 0.5rem;
-		text-transform: capitalize;
-	}
 
-	:global(.dark) section {
-		border: none;
-		background-color: #4a4a4f;
-		color: #f9f9fa;
+	:global(.dark) {
+		section {
+			border: none;
+			background-color: #4a4a4f;
+			color: #f9f9fa;
+		}
 	}
 </style>

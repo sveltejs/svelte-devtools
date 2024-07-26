@@ -27,9 +27,10 @@
 		justify-items: center;
 		align-content: center;
 		justify-content: center;
-	}
-	main * {
-		margin: 0;
+
+		* {
+			margin: 0;
+		}
 	}
 
 	button {
@@ -40,9 +41,10 @@
 		color: #040d14;
 		font-family: monospace;
 		transition-duration: var(--t-duration);
-	}
-	button:hover {
-		outline-color: rgba(208, 212, 215, 0.8);
+
+		&:hover {
+			outline-color: rgba(208, 212, 215, 0.8);
+		}
 	}
 
 	footer {
@@ -50,13 +52,15 @@
 		display: grid;
 		gap: 0.75rem;
 		padding-top: 3rem;
-	}
-	ul {
-		padding-left: 1.5rem;
-		list-style-type: disc;
-		font-size: 0.875rem;
-	}
-	li:not(:first-child) {
-		margin-top: 0.5rem;
+
+		ul {
+			padding-left: 1.5rem;
+			list-style-type: disc;
+			font-size: 0.875rem;
+
+			li:not(:first-child) {
+				margin-top: 0.5rem;
+			}
+		}
 	}
 </style>

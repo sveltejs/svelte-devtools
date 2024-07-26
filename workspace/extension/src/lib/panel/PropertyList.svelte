@@ -115,12 +115,13 @@
 		align-items: center;
 		padding: 0.25rem;
 		border-radius: 0.25rem;
-	}
-	li[data-tooltip] {
-		background: rgba(179, 0, 0, 0.8);
-	}
-	li:hover {
-		background: rgba(135, 135, 137, 0.075);
+
+		&:hover {
+			background: rgba(135, 135, 137, 0.075);
+		}
+		&[data-tooltip] {
+			background: rgba(179, 0, 0, 0.8);
+		}
 	}
 
 	.function,
@@ -129,9 +130,11 @@
 		color: rgb(0, 116, 232);
 	}
 
-	:global(.dark) .function,
-	:global(.dark) .symbol,
-	:global(.dark) .object {
-		color: rgb(117, 191, 255);
+	:global(.dark) {
+		.function,
+		.symbol,
+		.object {
+			color: rgb(117, 191, 255);
+		}
 	}
 </style>

@@ -18,8 +18,9 @@
 		background: var(--background);
 		color: var(--color);
 		font-size: 0.5rem;
-	}
-	button:hover {
-		background: rgba(255, 255, 255, 0.1);
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.1);
+		}
 	}
 </style>
