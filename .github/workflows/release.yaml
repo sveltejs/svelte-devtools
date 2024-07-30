@@ -26,11 +26,34 @@ jobs:
           name: extension-${{ github.sha }}
           path: workspace/extension/build/svelte-devtools.zip
 
+      # TODO: upload zip to GitHub releases
+
+  sign:
+    runs-on: ubuntu-latest
+    needs: bundle
+    # TODO: web-ext sign fails if version already exists, find another way to check
+    if: success() && startsWith(github.event.head_commit.message, '~ v')
+
+    steps:
+      - uses: pnpm/action-setup@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: extension-${{ github.sha }}
+
+      - run: pnpm dlx web-ext sign --channel unlisted --api-key ${{ secrets.WEB_EXT_API_KEY }} --api-secret ${{ secrets.WEB_EXT_API_SECRET }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: extension-${{ github.sha }}
+
+      # TODO: upload signed extension to GitHub releases
+
+  # TODO: publish to Chrome Web Store
   # publish:
   #   runs-on: ubuntu-latest
   #   needs: bundle
 
   #   steps:
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/download-artifact@v4
   #       with:
   #         name: extension-${{ github.sha }}
