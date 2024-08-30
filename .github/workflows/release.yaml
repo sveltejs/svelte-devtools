@@ -38,16 +38,25 @@ jobs:
           name: extension-${{ github.sha }}
           path: workspace/extension/build/svelte-devtools.zip
 
-      # debug
-      - run: echo ${{ github.event.head_commit.message }}
-      - if: github.event.head_commit.message == '~ v${{ needs.manifest.outputs.version }}'
+      - if: |
+          github.repository == 'sveltejs/svelte-devtools'
+          # github.event_name == 'push' && github.ref == 'refs/heads/master' &&
+          # github.event.head_commit.message == '~ v${{ needs.manifest.outputs.version }}'
         env:
           GH_TOKEN: ${{ github.token }}
         run: | # https://cli.github.com/manual/gh_release_create
           gh release create v3.0.0 \
           workspace/extension/build/svelte-devtools.zip \
           --title 3.0.0 \
-          --draft --generate-notes
+          --draft --generate-notes --notes '
+          **Full Changelog**: https://github.com/sveltejs/svelte-devtools/compare/$(gh release list --exclude-drafts --json tagName --jq .[0].tagName)...v${{ needs.manifest.outputs.version }}
+
+          Built from ${{ github.event.head_commit.id }} at https://github.com/sveltejs/svelte-devtools/actions/runs/${{ github.run_id }}
+          - Chrome Web Store: https://chrome.google.com/webstore/detail/svelte-devtools/kfidecgcdjjfpeckbblhmfkhmlgecoff
+          - Firefox Signed Add-on: https://github.com/sveltejs/svelte-devtools/releases/download/v${{ needs.manifest.outputs.version }}/svelte-devtools.xpi
+
+          ---
+          '
 
   # publish:
   #   runs-on: ubuntu-latest
