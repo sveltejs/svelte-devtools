@@ -6,8 +6,20 @@ on:
   pull_request:
 
 jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - id: extract
+        working-directory: ./workspace/extension/static
+        run: echo version=v$(jq -r '.version' manifest.json) >> $GITHUB_OUTPUT
+
   bundle:
     runs-on: ubuntu-latest
+    needs: manifest
 
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +37,9 @@ jobs:
         with:
           name: extension-${{ github.sha }}
           path: workspace/extension/build/svelte-devtools.zip
+
+      - run: echo ${{ needs.manifest.outputs.version }}
+      # - run: gh release create --draft
 
   # publish:
   #   runs-on: ubuntu-latest
