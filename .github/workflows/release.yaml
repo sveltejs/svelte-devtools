@@ -38,11 +38,15 @@ jobs:
           name: extension-${{ github.sha }}
           path: workspace/extension/build/svelte-devtools.zip
 
+      # debug
+      - run: echo ${{ github.event.head_commit.message }}
       - if: github.event.head_commit.message == '~ v${{ needs.manifest.outputs.version }}'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: | # https://cli.github.com/manual/gh_release_create
-          gh release create v${{ needs.manifest.outputs.version }} \
+          gh release create v3.0.0 \
           workspace/extension/build/svelte-devtools.zip \
-          --title ${{ needs.manifest.outputs.version }} \
+          --title 3.0.0 \
           --draft --generate-notes
 
   # publish:
