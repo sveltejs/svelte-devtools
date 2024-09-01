@@ -38,7 +38,10 @@ jobs:
           name: extension-${{ github.sha }}
           path: workspace/extension/build/svelte-devtools.zip
 
-      - if: github.ref == 'refs/heads/master'
+      - if: |
+          github.repository == 'sveltejs/svelte-devtools' &&
+          github.event_name == 'push' && github.ref == 'refs/heads/master' &&
+          startsWith(github.event.head_commit.message, '~ v${{ needs.manifest.outputs.version }}')
         env:
           GH_TOKEN: ${{ github.token }}
         run: | # https://cli.github.com/manual/gh_release_create
