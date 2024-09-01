@@ -41,7 +41,7 @@ jobs:
       - if: |
           github.repository == 'sveltejs/svelte-devtools' &&
           github.event_name == 'push' && github.ref == 'refs/heads/master' &&
-          startsWith(github.event.head_commit.message, '~ v${{ needs.manifest.outputs.version }}')
+          startsWith(github.event.head_commit.message, format('~ v{0}', needs.manifest.outputs.version))
         env:
           GH_TOKEN: ${{ github.token }}
         run: | # https://cli.github.com/manual/gh_release_create
