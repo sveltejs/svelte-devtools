@@ -72,32 +72,34 @@
 {/if}
 
 <style>
-	span,
 	input {
 		flex-grow: 1;
-	}
-
-	input {
 		padding: 0.15rem 0.375rem;
 		border: none;
 		border-radius: inherit;
 		font-size: inherit;
 	}
 
-	span:not(.readonly) {
-		cursor: pointer;
-	}
-	span.string {
-		color: rgb(221, 0, 169);
-	}
-	span.number {
-		color: rgb(5, 139, 0);
-	}
-	span.null {
-		color: rgb(115, 115, 115);
+	span {
+		flex-grow: 1;
+
+		&:not(.readonly) {
+			cursor: pointer;
+		}
+		&.string {
+			color: rgb(221, 0, 169);
+		}
+		&.number {
+			color: rgb(5, 139, 0);
+		}
+		&.null {
+			color: rgb(115, 115, 115);
+		}
 	}
 
-	:global(.dark) span.string {
-		color: rgb(255, 125, 233);
+	:global(.dark) {
+		span.string {
+			color: rgb(255, 125, 233);
+		}
 	}
 </style>

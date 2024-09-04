@@ -6,8 +6,20 @@ on:
   pull_request:
 
 jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - id: extract
+        working-directory: ./workspace/extension/static
+        run: echo "version=$(jq -r '.version' manifest.json)" >> $GITHUB_OUTPUT
+
   bundle:
     runs-on: ubuntu-latest
+    needs: manifest
 
     steps:
       - uses: actions/checkout@v4
@@ -26,27 +38,37 @@ jobs:
           name: extension-${{ github.sha }}
           path: workspace/extension/build/svelte-devtools.zip
 
-      # TODO: upload zip to GitHub releases
-
   sign:
     runs-on: ubuntu-latest
-    needs: bundle
-    # TODO: web-ext sign fails if version already exists, find another way to check
-    if: success() && startsWith(github.event.head_commit.message, '~ v')
+    needs: [manifest, bundle]
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    # if: |
+    #   github.repository == 'sveltejs/svelte-devtools' &&
+    #   github.event_name == 'push' && github.ref == 'refs/heads/master' &&
+    #   startsWith(github.event.head_commit.message, format('~ v{0}', needs.manifest.outputs.version))
 
     steps:
       - uses: pnpm/action-setup@v4
       - uses: actions/download-artifact@v4
-        with:
-          name: extension-${{ github.sha }}
+      - run: ls -al
 
-      - run: pnpm dlx web-ext sign --channel unlisted --api-key ${{ secrets.WEB_EXT_API_KEY }} --api-secret ${{ secrets.WEB_EXT_API_SECRET }}
+      # - run: |
+      #     pnpm dlx web-ext sign \
+      #     --channel unlisted \
+      #     --api-key ${{ secrets.WEB_EXT_API_KEY }} \
+      #     --api-secret ${{ secrets.WEB_EXT_API_SECRET }} \
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: extension-${{ github.sha }}
-
-      # TODO: upload signed extension to GitHub releases
+      # - run: | # https://cli.github.com/manual/gh_release_create
+      #     gh release create v${{ needs.manifest.outputs.version }} \
+      #     workspace/extension/build/svelte-devtools.zip \
+      #     --title ${{ needs.manifest.outputs.version }} \
+      #     --draft --generate-notes --notes '
+      #     Built from ${{ github.event.head_commit.id }} at https://github.com/sveltejs/svelte-devtools/actions/runs/${{ github.run_id }}
+      #     - Chrome Web Store: https://chrome.google.com/webstore/detail/svelte-devtools/kfidecgcdjjfpeckbblhmfkhmlgecoff
+      #     - Firefox Signed Add-on: https://github.com/sveltejs/svelte-devtools/releases/download/v${{ needs.manifest.outputs.version }}/svelte-devtools.xpi
+      #     ---'
 
   # TODO: publish to Chrome Web Store
   # publish:
