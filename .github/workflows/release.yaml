@@ -53,7 +53,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/download-artifact@v4
-      - run: ls -al
+      - run: ls -al extension-${{ github.sha }}
 
       # - run: |
       #     pnpm dlx web-ext sign \
@@ -63,7 +63,7 @@ jobs:
 
       # - run: | # https://cli.github.com/manual/gh_release_create
       #     gh release create v${{ needs.manifest.outputs.version }} \
-      #     workspace/extension/build/svelte-devtools.zip \
+      #     extension-${{ github.sha }}/svelte-devtools.zip \
       #     --title ${{ needs.manifest.outputs.version }} \
       #     --draft --generate-notes --notes '
       #     Built from ${{ github.event.head_commit.id }} at https://github.com/sveltejs/svelte-devtools/actions/runs/${{ github.run_id }}
