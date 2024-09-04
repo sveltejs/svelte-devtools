@@ -50,6 +50,7 @@ jobs:
     #   startsWith(github.event.head_commit.message, format('~ v{0}', needs.manifest.outputs.version))
 
     steps:
+      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/download-artifact@v4
       - run: ls -al
