@@ -23,7 +23,7 @@
 	}
 </script>
 
-{#snippet expand(children, level)}
+{#snippet expand(children: (typeof node)['children'], level: number)}
 	{#each children as child (child.id)}
 		<Node node={child} depth={level} />
 	{/each}
