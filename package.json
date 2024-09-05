@@ -8,13 +8,13 @@
 	},
 	"packageManager": "pnpm@8.15.6",
 	"devDependencies": {
-		"@sveltejs/vite-plugin-svelte": "^3.1.2",
+		"@sveltejs/vite-plugin-svelte": "next",
 		"@types/node": "^20.16.4",
 		"prettier": "^3.3.3",
 		"prettier-plugin-sort-package-json": "^0.2.0",
 		"prettier-plugin-svelte": "^3.2.6",
 		"svelte": "5.0.0-next.141",
-		"svelte-check": "^3.8.6",
+		"svelte-check": "^4.0.1",
 		"typescript": "^5.5.4",
 		"vite": "^5.4.3"
 	}
