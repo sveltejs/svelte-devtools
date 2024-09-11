@@ -46,7 +46,7 @@ jobs:
           url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/$id
           comment="Try the changes in this PR by [side-loading the built extension]($url). :rocket:"
 
-          gh pr comment ${{ github.event.pull_request.number }} --edit-last --body "$comment"
+          gh pr comment ${{ github.event.pull_request.number }} --body "$comment"
 
   publish:
     runs-on: ubuntu-latest
