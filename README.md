@@ -25,16 +25,22 @@ The `svelte-devtools` extension requires the following to be true:
 
 ## Development
 
-Clone this repository, setup and run the build script
+Clone this repository and setup the environment with `pnpm`
 
 ```sh
 git clone https://github.com/sveltejs/svelte-devtools.git
 cd svelte-devtools
 pnpm install
-pnpm build
 ```
 
-This will build the codebase and output all the required files in the `build` directory. To load the extension for development, follow these steps:
+To work on the extension, run the `dev` script from `workspace/extension` directory
+
+```sh
+cd workspace/extension
+pnpm dev
+```
+
+This will build the extension and create a directory called `build`. Steps may vary depending on the browser you are using, but generally:
 
 1. Navigate to the extensions settings page
 2. Turn on the 'Developer mode' switch
