@@ -38,6 +38,22 @@ jobs:
           name: extension-${{ github.sha }}
           path: workspace/extension/build/svelte-devtools.zip
 
+      - if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
+          WORKFLOW: ${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts
+        run: |
+          url=https://github.com/$WORKFLOW/$(gh api repos/$WORKFLOW --jq '.artifacts[0].id')
+          commented=$(gh pr view $PR_NUMBER --json comments --jq '.comments[].author.login | select(. | contains("github-actions"))')
+          body="Try the changes in this PR by [side-loading the built extension]($url). :rocket:"
+
+          if [ -z "$commented" ]; then
+            gh pr comment $PR_NUMBER --body "$body"
+          else
+            gh pr comment $PR_NUMBER --edit-last --body "$body"
+          fi
+
   publish:
     runs-on: ubuntu-latest
     needs: [manifest, bundle]
