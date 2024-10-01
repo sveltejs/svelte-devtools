@@ -76,7 +76,13 @@ function courier(tabId, changed) {
 			// because `detail` in the dispatched custom events is `null`
 			const script = document.createElement('script');
 			script.setAttribute('src', source);
-			document.head.appendChild(script);
+			if (document.head) {
+				document.head.appendChild(script);
+			} else {
+				document.addEventListener('DOMContentLoaded', function () {
+					document.head.appendChild(script);
+				});
+			}
 
 			chrome.runtime.onMessage.addListener((message, sender) => {
 				if (sender.id !== chrome.runtime.id) return; // unexpected sender
