@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Svelte DevTools",
-	"version": "2.2.0",
+	"version": "2.2.2",
 	"description": "Browser DevTools extension for debugging Svelte applications.",
 	"icons": {
 		"16": "icons/default-16.png",
@@ -29,6 +29,7 @@
 	"permissions": ["activeTab", "scripting"],
 	"web_accessible_resources": [{ "matches": ["*://*/*"], "resources": ["courier.js"] }],
 
+	"minimum_chrome_version": "121",
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "firefox-devtools@svelte.dev",

@@ -118,16 +118,16 @@
 		display: flex;
 		flex-wrap: wrap;
 		padding: 1rem;
-	}
 
-	.panel div {
-		width: calc(100% / 3);
-		display: flex;
-		gap: 0.417rem /* 5px */;
-		margin: 0.417rem /* 5px */ 0;
-	}
+		div {
+			width: calc(100% / 3);
+			display: flex;
+			gap: 0.417rem /* 5px */;
+			margin: 0.417rem /* 5px */ 0;
+		}
 
-	.panel span:first-child {
-		font-weight: 500;
+		span:first-child {
+			font-weight: 500;
+		}
 	}
 </style>

@@ -15,6 +15,6 @@
 	},
 	"devDependencies": {
 		"@types/chrome": "^0.0.266",
-		"rollup": "^4.14.3"
+		"rollup": "^4.22.4"
 	}
 }

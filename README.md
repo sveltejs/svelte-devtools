@@ -11,19 +11,21 @@ Svelte DevTools is a browser extension for the [Svelte](https://svelte.dev/) fra
 
 After installing you will see a new tab in Developer Tools. This tab displays a tree of Svelte components, HTMLx blocks, and DOM elements that were rendered on the page. By selecting one of the nodes in the tree, you can inspect and edit its current state in the panel to the right.
 
-> For Firefox users, you can grab the [`.zip` file of the latest version from the GitHub releases page](https://github.com/sveltejs/svelte-devtools/releases/latest) and load it as a temporary extension. Note that you may need to enable "Always Allow on localhost" in the extension settings.
+> For Firefox users, you can install the [`.xpi` file of the latest version from the GitHub releases page](https://github.com/sveltejs/svelte-devtools/releases/latest). Note that if you grab the `.zip` file, you will need to load it as a temporary extension and enable "Always Allow on localhost" in the extension settings.
 
 ![2.0.0 Screenshot](./.github/assets/screenshot-2.0.0.png '2.0.0 Screenshot')
 
 ## Requirements
 
-The `svelte-devtools` extension requires your Svelte application to be compiled with the `dev` option set to `true`. If you're using [SvelteKit](https://kit.svelte.dev/), this is done automatically, outside of that you will need to set it manually.
+The `svelte-devtools` extension requires the following to be true:
 
-This extension officially supports Svelte version `^4.0.0`.
+- Chrome or Firefox version 121 or higher
+- Application running Svelte version `^4.0.0`
+- Application compiled with `dev: true` ([SvelteKit](https://kit.svelte.dev/) does this automatically for you)
 
 ## Development
 
-Clone this repository, setup and run the build script
+Clone this repository and setup the environment with `pnpm`
 
 ```sh
 git clone https://github.com/sveltejs/svelte-devtools.git
@@ -34,7 +36,14 @@ cd workspace/extension
 pnpm dev
 ```
 
-This will build the codebase and output all the required files in the `build` directory. To load the extension for development, follow these steps:
+To work on the extension, run the `dev` script from `workspace/extension` directory
+
+```sh
+cd workspace/extension
+pnpm dev
+```
+
+This will build the extension and create a directory called `build`. Steps may vary depending on the browser you are using, but generally:
 
 1. Navigate to the extensions settings page
 2. Turn on the 'Developer mode' switch

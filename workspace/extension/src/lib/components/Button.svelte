@@ -26,58 +26,58 @@
 		border-radius: 0.2rem;
 		outline: none;
 
-		background-color: transparent;
+		background: transparent;
 		color: rgb(12, 12, 13);
 		line-height: 0;
-	}
-	button.active {
-		color: rgb(0, 96, 223);
-	}
-	button:hover {
-		background: rgb(237, 237, 240);
-	}
 
-	button:active:hover {
-		color: inherit;
-	}
+		&:active {
+			color: rgba(12, 12, 13, 0.8);
+		}
 
-	button:active {
-		color: rgba(12, 12, 13, 0.8);
-	}
+		&:hover {
+			background: rgb(237, 237, 240);
 
-	button:disabled {
-		color: rgba(12, 12, 13, 0.2);
+			&:active {
+				color: inherit;
+			}
+		}
+
+		&:disabled {
+			cursor: default;
+			background: transparent;
+			color: rgba(12, 12, 13, 0.2);
+		}
+
+		&.active {
+			color: rgb(0, 96, 223);
+		}
+
+		& :global(svg) {
+			width: 1.25rem;
+			height: 1.25rem;
+			fill: currentColor;
+		}
 	}
 
 	:global(.dark) button {
 		color: rgba(249, 249, 250, 0.7);
-	}
 
-	:global(.dark) button.active {
-		color: rgb(117, 186, 255);
-	}
+		&:active {
+			color: rgba(249, 249, 250, 0.8);
+		}
 
-	:global(.dark) button:hover {
-		background-color: rgb(37, 37, 38);
-	}
+		&:hover {
+			background-color: rgb(37, 37, 38);
+		}
 
-	:global(.dark) button:active {
-		color: rgba(249, 249, 250, 0.8);
-	}
+		&:disabled {
+			cursor: default;
+			background: transparent;
+			color: rgba(249, 249, 250, 0.2);
+		}
 
-	:global(.dark) button:disabled {
-		color: rgba(249, 249, 250, 0.2);
-	}
-
-	:global(.dark) button:disabled,
-	button:disabled {
-		background-color: transparent;
-		cursor: default;
-	}
-
-	button :global(svg) {
-		width: 1.25rem;
-		height: 1.25rem;
-		fill: currentColor;
+		&.active {
+			color: rgb(117, 186, 255);
+		}
 	}
 </style>

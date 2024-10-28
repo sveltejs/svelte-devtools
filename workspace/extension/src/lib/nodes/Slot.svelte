@@ -8,10 +8,10 @@
 		children: import('svelte').Snippet;
 	}
 
-	let { tagName, expanded, children }: Props = $props();
+	let { tagName, expanded = $bindable(), children }: Props = $props();
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class:expanded class="expandable tag-open tag-name" ondblclick={() => (expanded = !expanded)}>
 	<Indexer text="<{tagName}>" color="#c586c0" />
 

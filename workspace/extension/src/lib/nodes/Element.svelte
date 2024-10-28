@@ -87,7 +87,7 @@
 
 <style>
 	.tag {
-		color: rgb(0, 116, 232);
+		color: rgb(142, 0, 75);
 	}
 
 	:global(.dark) .tag {

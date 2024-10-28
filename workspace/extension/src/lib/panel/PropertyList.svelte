@@ -25,8 +25,7 @@
 			{@const keys = [...parents, key]}
 			{@const type = typeof value}
 
-			<!-- svelte-ignore a11y-click-events-have-key-events -->
-			<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+			<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
 			<li
 				data-tooltip={errors[`${app.selected?.id}+${keys.join('.')}`] || null}
 				style:--indent="-3px"
@@ -116,12 +115,13 @@
 		align-items: center;
 		padding: 0.25rem;
 		border-radius: 0.25rem;
-	}
-	li[data-tooltip] {
-		background: rgba(179, 0, 0, 0.8);
-	}
-	li:hover {
-		background: rgba(135, 135, 137, 0.075);
+
+		&:hover {
+			background: rgba(135, 135, 137, 0.075);
+		}
+		&[data-tooltip] {
+			background: rgba(179, 0, 0, 0.8);
+		}
 	}
 
 	.function,
@@ -130,9 +130,11 @@
 		color: rgb(0, 116, 232);
 	}
 
-	:global(.dark) .function,
-	:global(.dark) .symbol,
-	:global(.dark) .object {
-		color: rgb(117, 191, 255);
+	:global(.dark) {
+		.function,
+		.symbol,
+		.object {
+			color: rgb(117, 191, 255);
+		}
 	}
 </style>

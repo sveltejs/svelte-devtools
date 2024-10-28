@@ -19,8 +19,8 @@
 />
 
 <aside class={axis} style="{axis === 'x' ? 'width' : 'height'}: {size}px">
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class="{axis} resize" onmousedown={() => (resizing = true)} />
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="{axis} resize" onmousedown={() => (resizing = true)}></div>
 
 	<div>{@render children()}</div>
 </aside>
@@ -30,12 +30,13 @@
 		position: relative;
 		display: grid;
 		color: rgb(57, 63, 76);
-	}
-	aside.x {
-		grid-template-columns: auto 1fr;
-	}
-	aside.y {
-		grid-template-rows: auto 1fr;
+
+		&.x {
+			grid-template-columns: auto 1fr;
+		}
+		&.y {
+			grid-template-rows: auto 1fr;
+		}
 	}
 
 	.resize {
@@ -43,41 +44,50 @@
 		left: 0;
 		width: 0.25rem;
 		background: rgb(224, 224, 226);
-	}
-	.resize:hover {
-		background: rgb(177, 177, 179);
-	}
-	.resize.x {
-		cursor: ew-resize;
-		bottom: 0;
-		width: 0.2rem;
-	}
-	.resize.y {
-		cursor: ns-resize;
-		right: 0;
-		height: 0.2rem;
-	}
-	.resize + div {
-		display: grid;
-		gap: 0.625rem;
-		align-content: flex-start;
-		padding-top: 1rem;
-	}
-	.resize.x + div {
-		overflow-x: hidden;
-	}
-	.resize.y + div {
-		overflow-y: hidden;
+
+		&:hover {
+			background: rgb(177, 177, 179);
+		}
+
+		&.x {
+			cursor: ew-resize;
+			bottom: 0;
+			width: 0.2rem;
+
+			& + div {
+				overflow-x: hidden;
+			}
+		}
+		&.y {
+			cursor: ns-resize;
+			right: 0;
+			height: 0.2rem;
+
+			& + div {
+				overflow-y: hidden;
+			}
+		}
+
+		& + div {
+			display: grid;
+			gap: 0.625rem;
+			align-content: flex-start;
+			padding-top: 1rem;
+		}
 	}
 
-	:global(.dark) aside {
-		background: rgb(36, 36, 36);
-		color: rgb(177, 177, 179);
-	}
-	:global(.dark) .resize {
-		background: rgb(60, 60, 61);
-	}
-	:global(.dark) .resize:hover {
-		background: rgb(107, 107, 108);
+	:global(.dark) {
+		aside {
+			background: rgb(36, 36, 36);
+			color: rgb(177, 177, 179);
+		}
+
+		.resize {
+			background: rgb(60, 60, 61);
+
+			&:hover {
+				background: rgb(107, 107, 108);
+			}
+		}
 	}
 </style>
