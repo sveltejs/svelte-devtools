@@ -31,6 +31,9 @@ Clone this repository and setup the environment with `pnpm`
 git clone https://github.com/sveltejs/svelte-devtools.git
 cd svelte-devtools
 pnpm install
+
+cd workspace/extension
+pnpm dev
 ```
 
 To work on the extension, run the `dev` script from `workspace/extension` directory
