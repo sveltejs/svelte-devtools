@@ -33,7 +33,8 @@
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "firefox-devtools@svelte.dev",
-			"strict_min_version": "121.0"
+			"strict_min_version": "121.0",
+			"update_url": "https://svelte.dev/devtools/updates.json"
 		}
 	}
 }
