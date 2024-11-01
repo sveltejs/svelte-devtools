@@ -56,6 +56,8 @@ function courier(tabId, changed) {
 
 	chrome.scripting.executeScript({
 		target: { tabId },
+
+		// ensures we're listening to the events before they're dispatched
 		injectImmediately: true,
 
 		// no lexical context, `func` is serialized and deserialized.
@@ -69,15 +71,6 @@ function courier(tabId, changed) {
 		//	- chrome.i18n
 		//	- chrome.runtime
 		func: () => {
-			const source = chrome.runtime.getURL('/courier.js');
-			if (document.querySelector(`script[src="${source}"]`)) return;
-
-			// attach script manually instead of declaring through `files`
-			// because `detail` in the dispatched custom events is `null`
-			const script = document.createElement('script');
-			script.setAttribute('src', source);
-			document.head.appendChild(script);
-
 			chrome.runtime.onMessage.addListener((message, sender) => {
 				if (sender.id !== chrome.runtime.id) return; // unexpected sender
 				window.postMessage(message); // relay to content script (courier.js)

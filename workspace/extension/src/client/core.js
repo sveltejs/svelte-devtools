@@ -3,7 +3,7 @@ import { send } from './runtime.js';
 import { index as v4 } from './svelte-4.js';
 import { serialize } from './utils.js';
 
-// @ts-ignore - for the app to call with `eval`
+// @ts-ignore - https://developer.chrome.com/docs/extensions/how-to/devtools/extend-devtools#selected-element
 window['#SvelteDevTools'] = {
 	/**
 	 * @param {string} id

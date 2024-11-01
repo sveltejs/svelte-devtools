@@ -24,6 +24,14 @@
 		"scripts": ["background.js"],
 		"service_worker": "background.js"
 	},
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"js": ["courier.js"],
+			"run_at": "document_start",
+			"world": "MAIN"
+		}
+	],
 	"devtools_page": "register.html",
 	"host_permissions": ["*://*/*"],
 	"permissions": ["activeTab", "scripting"],
