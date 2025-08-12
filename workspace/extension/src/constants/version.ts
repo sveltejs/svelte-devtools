@@ -1,0 +1,1 @@
+export const SVELTE_SUPPORTED_MAJOR_VERSIONS: number[] = [4];

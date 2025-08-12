@@ -1,5 +1,19 @@
 type Overwrite<A, B> = Omit<A, keyof B> & B;
 
+type AppState = {
+	svelteVersion?: number;
+
+	nodes: Record<string, DebugNode>;
+	root: Readonly<DebugNode[]>;
+
+	selected?: DebugNode;
+	hovered?: DebugNode;
+
+	inspecting: boolean;
+	query: string;
+}
+
+
 export type DebugNode = Overwrite<
 	SvelteBlockDetail,
 	{
@@ -28,15 +42,17 @@ export type DebugNode = Overwrite<
 	}
 >;
 
-export const app = $state({
-	nodes: {} as { [key: string]: DebugNode },
+export const app: AppState = $state({
+	svelteVersion: undefined,
+
+	nodes: {} as Record<string, DebugNode>,
 	get root() {
 		const nodes = Object.values(this.nodes);
 		return nodes.filter((node) => !node.parent);
 	},
 
-	selected: undefined as undefined | DebugNode,
-	hovered: undefined as undefined | DebugNode,
+	selected: undefined,
+	hovered: undefined,
 
 	inspecting: false,
 	query: '',

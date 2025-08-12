@@ -1,9 +1,27 @@
 <script>
 	import { background } from '$lib/runtime.svelte';
+	import { app } from '$lib/state.svelte';
+	import { SVELTE_SUPPORTED_MAJOR_VERSIONS } from '../constants/version';
 </script>
 
 <main>
-	<h1 style:font-size="3rem">Svelte DevTools</h1>
+	{#if app.svelteVersion && !SVELTE_SUPPORTED_MAJOR_VERSIONS.includes(app.svelteVersion)}
+		<h1 style:font-size="3rem">Svelte DevTools</h1>
+		<p style:display="inline-flex" style:font-size="1.25rem">
+			<span>Unsupported Svelte version detected</span>
+
+			<button onclick={() => background.send('bypass::ext/page->refresh')}>reload</button>
+		</p>
+
+		<footer>
+			<p style:font-size="1rem">Svelte app is using an unsupported major version.</p>
+			<ul>
+				<li>Currently using Svelte version ^{app.svelteVersion}.0.0</li>
+				<li>Supported major versions: {SVELTE_SUPPORTED_MAJOR_VERSIONS.join(', ')}</li>
+			</ul>
+		</footer>
+	{:else}
+		<h1 style:font-size="3rem">Svelte DevTools</h1>
 	<p style:display="inline-flex" style:font-size="1.25rem">
 		<span>No Svelte app detected</span>
 
@@ -17,6 +35,7 @@
 			<li>Use Svelte version ^4.0.0?</li>
 		</ul>
 	</footer>
+	{/if}
 </main>
 
 <style>

@@ -44,6 +44,11 @@ function resolveEventBubble(node: any) {
 
 port.onMessage.addListener(({ type, payload }) => {
 	switch (type) {
+		case 'bridge::ext/svelte_version:set': {
+			app.svelteVersion = payload;
+			break;
+		}
+		
 		case 'bridge::ext/clear': {
 			app.nodes = {};
 			app.selected = undefined;
