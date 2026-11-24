@@ -1,5 +1,11 @@
 # Svelte DevTools
 
+## Deprecated
+
+For Svelte 5 support, please see [sveltejs/vite-devtools-svelte](https://github.com/sveltejs/vite-devtools-svelte) and [its documentation](https://sveltejs.github.io/vite-devtools-svelte/).
+
+## Overview
+
 <a href="https://chrome.google.com/webstore/detail/svelte-devtools/kfidecgcdjjfpeckbblhmfkhmlgecoff">
 	<picture>
 		<source media="(prefers-color-scheme: dark)" srcset="https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4xis.png">
