@@ -15,6 +15,7 @@ chrome.runtime.onConnect.addListener((port) => {
 				if (!chrome.tabs.onUpdated.hasListener(courier)) {
 					chrome.tabs.onUpdated.addListener(courier);
 				}
+				sensor(message.tabId);
 				break;
 			}
 			case 'bypass::ext/page->refresh': {
@@ -40,10 +41,13 @@ chrome.runtime.onConnect.addListener((port) => {
 chrome.runtime.onMessage.addListener((message, sender) => {
 	if (sender.id !== chrome.runtime.id) return; // unexpected sender
 
-	if (message.type === 'bypass::ext/icon:set') {
+	if (message.type === 'bridge::ext/svelte_version:set' && sender.tab?.id) {
 		const selected = message.payload ? 'default' : 'disabled';
 		const icons = [16, 24, 48, 96, 128].map((s) => [s, `icons/${selected}-${s}.png`]);
-		return chrome.action.setIcon({ path: Object.fromEntries(icons) });
+		chrome.action.setIcon({ 
+			path: Object.fromEntries(icons),
+			tabId: sender.tab.id 
+		});
 	}
 
 	const port = sender.tab?.id && ports.get(sender.tab.id);
@@ -107,17 +111,19 @@ async function sensor(tabId) {
 				});
 			},
 		});
+		// Small delay to let Svelte load
+		await new Promise(resolve => setTimeout(resolve, 100));
 		// capture data to send to listener
 		await chrome.scripting.executeScript({
 			target: { tabId },
 			world: 'MAIN',
 			func: () => {
 				// @ts-ignore - injected if the website is using svelte
-				const [major] = [...(window.__svelte?.v ?? [])];
+				const [major] = [...(window.__svelte?.v ?? [])].map(v => parseInt(v));
 
 				document.dispatchEvent(
 					new CustomEvent('SvelteDevTools', {
-						detail: { type: 'bypass::ext/icon:set', payload: major },
+						detail: { type: 'bridge::ext/svelte_version:set', payload: major },
 					}),
 				);
 			},
@@ -126,6 +132,9 @@ async function sensor(tabId) {
 		// for internal URLs like `chrome://` or `edge://` and extension gallery
 		// https://chromium.googlesource.com/chromium/src/+/ee77a52baa1f8a98d15f9749996f90e9d3200f2d/chrome/common/extensions/chrome_extensions_client.cc#131
 		const icons = [16, 24, 48, 96, 128].map((s) => [s, `icons/disabled-${s}.png`]);
-		chrome.action.setIcon({ path: Object.fromEntries(icons) });
+		chrome.action.setIcon({ 
+			path: Object.fromEntries(icons),
+			tabId: tabId 
+		});
 	}
 }
